@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://rtxndabaxvhk" path="res://Scenes/Menu/RoomEntry.tscn" id="2_llb0o"]
 [ext_resource type="PackedScene" uid="uid://djeb0cuoeaeet" path="res://Scenes/main.tscn" id="3_6qwyy"]
 
-[node name="UI_MainMenu" type="Control" node_paths=PackedStringArray("PageMain", "PageRoomList", "PageLobby", "BtnHost", "BtnSinglePlayer", "BtnFind", "BtnQuit", "VersionLabel", "BtnRefresh", "BtnBackToMain", "RoomContainer", "BtnReady", "BtnStart", "BtnBack", "PlayerListContainer", "OptRace", "OptTeam", "OptMap")]
+[node name="UI_MainMenu" type="Control" node_paths=PackedStringArray("PageMain", "PageRoomList", "PageLobby", "BtnHost", "BtnSinglePlayer", "BtnFind", "BtnQuit", "VersionLabel", "BtnRefresh", "BtnBackToMain", "RoomContainer", "BtnReady", "BtnStart", "BtnBack", "PlayerListContainer", "OptRace", "OptTeam", "OptMap", "PlayerList", "SpectatorList", "PlayerSectionHeader", "SpectatorSectionHeader")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,6 +29,10 @@ BtnReady = NodePath("Page_Lobby/Btn_Ready")
 BtnStart = NodePath("Page_Lobby/Btn_Start")
 BtnBack = NodePath("Page_Lobby/Btn_Back")
 PlayerListContainer = NodePath("Page_Lobby/PlayerListContainer")
+PlayerList = NodePath("Page_Lobby/LobbyListScroll/LobbyListColumn/PlayerList")
+SpectatorList = NodePath("Page_Lobby/LobbyListScroll/LobbyListColumn/SpectatorList")
+PlayerSectionHeader = NodePath("Page_Lobby/LobbyListScroll/LobbyListColumn/PlayerSectionHeader")
+SpectatorSectionHeader = NodePath("Page_Lobby/LobbyListScroll/LobbyListColumn/SpectatorSectionHeader")
 OptRace = NodePath("Page_Lobby/OptRac")
 OptTeam = NodePath("Page_Lobby/OptTeam")
 OptMap = NodePath("Page_Lobby/OptMap")
@@ -85,11 +89,42 @@ text = "返回
 metadata/tr_key = "back"
 
 [node name="PlayerListContainer" type="VBoxContainer" parent="Page_Lobby"]
+visible = false
 layout_mode = 0
 offset_left = 386.0
 offset_top = 114.0
 offset_right = 1075.0
-offset_bottom = 624.0
+offset_bottom = 114.0
+
+[node name="LobbyListScroll" type="ScrollContainer" parent="Page_Lobby"]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.30
+anchor_top = 0.13
+anchor_right = 0.97
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LobbyListColumn" type="VBoxContainer" parent="Page_Lobby/LobbyListScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerSectionHeader" type="Label" parent="Page_Lobby/LobbyListScroll/LobbyListColumn"]
+layout_mode = 2
+text = "参战者"
+
+[node name="PlayerList" type="VBoxContainer" parent="Page_Lobby/LobbyListScroll/LobbyListColumn"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SpectatorSectionHeader" type="Label" parent="Page_Lobby/LobbyListScroll/LobbyListColumn"]
+layout_mode = 2
+text = "观战者"
+
+[node name="SpectatorList" type="VBoxContainer" parent="Page_Lobby/LobbyListScroll/LobbyListColumn"]
+layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="OptRac" type="OptionButton" parent="Page_Lobby"]
 layout_mode = 0

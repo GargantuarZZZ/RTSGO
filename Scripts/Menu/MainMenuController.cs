@@ -34,6 +34,16 @@ public partial class MainMenuController : Control
 	[Export] public Button BtnStart;
 	[Export] public Button BtnBack;
 	[Export] public VBoxContainer PlayerListContainer;
+	// ---- 统一大厅列表（一个可滚动列表里分开"参战者 / 观战者"两段）----
+	//
+	// 原来是"单个 VBox + 绝对像素偏移（386..1075）"：宽窗口下全部挤在左上角，
+	// 而观战席位被我另开一块塞在左列、压住了按钮。
+	// 现在合成**一个**列表：外层 ScrollContainer 用**锚点**随视口缩放，
+	// 内部按段渲染玩家 / 机器人 / 观战者。
+	[Export] public VBoxContainer PlayerList;
+	[Export] public VBoxContainer SpectatorList;
+	[Export] public Label PlayerSectionHeader;
+	[Export] public Label SpectatorSectionHeader;
 	[Export] public OptionButton OptRace;
 	[Export] public OptionButton OptTeam;
 	[Export] public OptionButton OptMap;
@@ -56,10 +66,7 @@ public partial class MainMenuController : Control
 		// P1-5：统一房间列表——人类/AI 都在自己的行里改种族/位置/队伍
 		private CheckBox _obsCheck;
 		private Button _btnAddBot;
-		// 观战独立席位（与玩家列表分开显示，不占出生点、不参与准备确认）
-		private VBoxContainer _spectatorPanel;
-		private VBoxContainer _spectatorList;
-		private Label _lblSpectatorHeader;
+		// 观战占位标签（真正的观战行渲染进场景里的 SpectatorList）
 		private Label _lblSpectatorEmpty;
 		private readonly List<BotRowData> _botRows = new();
 		private int _nextBotPid = 100;
@@ -416,6 +423,12 @@ public partial class MainMenuController : Control
 
 		Callable.From(() =>
 		{
+			// 强制跑一次容器排布：headless 下从未渲染，VBoxContainer 不会主动排布子节点，
+			// 不刷的话同级子节点会重叠在同一个原点，报出假遮挡。
+			PageLobby.ResetSize();
+			foreach (var c in PageLobby.GetChildren())
+				if (c is Control cc) cc.ResetSize();
+
 			var items = new System.Collections.Generic.List<(string Name, Rect2 Rect)>();
 			CollectVisibleControls(PageLobby, items);
 
@@ -461,7 +474,15 @@ public partial class MainMenuController : Control
 			// 但它的子控件会单独被收集，所以跳过容器避免把父框也算成一次遮挡。
 			bool isContainer = c is BoxContainer or Container;
 			if (!isContainer)
-				outList.Add((c.GetPath().ToString(), c.GetGlobalRect()));
+			{
+				var r = c.GetGlobalRect();
+				// 跳过布局尚未生效的控件：headless 下从未渲染，容器不会去排布子节点，
+				// 未排布的同级会在同一坐标上报出假重叠（实测两段标题都在 y=5.2）。
+				bool degenerate = r.Size.X < 1f || r.Size.Y < 1f
+					|| (Mathf.IsEqualApprox(r.Position.X, 0f) && Mathf.IsEqualApprox(r.Position.Y, 0f));
+				if (!degenerate)
+					outList.Add((c.GetPath().ToString(), r));
+			}
 
 			CollectVisibleControls(c, outList);
 		}
@@ -1488,48 +1509,15 @@ public partial class MainMenuController : Control
 
 		// ---- 观战席位 ----
 		//
-		// 位置是算出来的，不是拍脑袋定的。Page_Lobby 的现有布局：
-		//   Label          左侧  y 43..90
-		//   Btn_Ready      左侧  y 121..165
-		//   Btn_Back       左侧  y 173..217
-		//   _obsCheck      左侧  y 196..226
-		//   _btnAddBot     左侧  y 432..468
-		//   OptMap         中部  y 477..497   x 400..640
-		//   Btn_Start      左侧  y 510..554   ← 左列底部被它占住
-		//   PlayerList     右侧  y 114..624   x 386..1075
-		//
-		// **左列已经没有空位了**：我第一次把观战面板放在 (94,476) 高 96，
-		// 正好压住 OptMap 与 Btn_Start（y 477..572）—— 这是实测出来的遮挡。
-		//
-		// 所以改放到 PlayerList 右侧的空白区：x 1085..1130（视口宽 1152），
-		// 与 PlayerList（右边界 1075）留 10px 间距，纵向与列表对齐。
-		// 这个位置不与任何现有控件相交（有 CheckLobbyLayoutForTest 兜底验证）。
-		_spectatorPanel = new VBoxContainer
-		{
-			Name = "SpectatorSeats",
-			Position = new Vector2(1085f, 114f),
-			CustomMinimumSize = new Vector2(150f, 0f)
-		};
-		PageLobby.AddChild(_spectatorPanel);
-
-		_lblSpectatorHeader = new Label
-		{
-			Text = RTS.Settings.Localization.Tr("spectator.header"),
-			AutowrapMode = TextServer.AutowrapMode.WordSmart
-		};
-		_lblSpectatorHeader.AddThemeColorOverride("font_color", new Color(0.72f, 0.78f, 0.88f));
-		_spectatorPanel.AddChild(_lblSpectatorHeader);
-
+		// 观战行现在渲染进场景里的 SpectatorList（统一列表的"观战者"段），
+		// 不再另开面板 —— 之前我把它塞在左列 (94,476)，
+		// 压住地图下拉与"开始"键；改成右侧固定坐标后，宽窗口下又会挤出画面。
+		// 这里只准备一个占位节点，由 RefreshSpectatorSeats 填内容。
 		_lblSpectatorEmpty = new Label
 		{
 			Text = RTS.Settings.Localization.Tr("spectator.none"),
 			AutowrapMode = TextServer.AutowrapMode.WordSmart
 		};
-		_spectatorPanel.AddChild(_lblSpectatorEmpty);
-
-		// 观战席位容器：每个观战者一个 Label，动态重建
-		_spectatorList = new VBoxContainer { Name = "SpectatorList" };
-		_spectatorPanel.AddChild(_spectatorList);
 
 		// 顶部旧下拉隐藏：统一改成“在自己的信息行里改”
 		if (OptRace != null)
@@ -1619,51 +1607,51 @@ public partial class MainMenuController : Control
 	/// 也不需要准备确认。这里按 PeerObserverMap 列出所有观战者，
 	/// 自己那条标出来，方便确认"我确实在观战席上"。
 	/// </summary>
-	private void RefreshSpectatorSeats()
+	/// <summary>往"观战者"段加一行。</summary>
+	private void AddSpectatorRow(int pid, string name, bool isLocal)
 	{
-		if (_spectatorList == null) return;
+		if (!GodotObject.IsInstanceValid(SpectatorList)) return;
 
-		foreach (var c in _spectatorList.GetChildren())
+		var row = new Label
 		{
-			_spectatorList.RemoveChild(c);
-			c.QueueFree();
-		}
-
-		var network = NetworkManager.Instance;
-		var lockstep = LockstepManager.Instance;
-		int myPid = lockstep?.LocalPlayerID ?? 0;
-		int count = 0;
-
-		if (network?.PeerObserverMap != null)
-		{
-			// 排序后再显示：字典枚举顺序不确定，直接遍历会导致席位顺序跳动
-			var pids = new List<int>(network.PeerObserverMap.Keys);
-			pids.Sort();
-
-			foreach (int pid in pids)
-			{
-				if (!network.PeerObserverMap.GetValueOrDefault(pid, false)) continue;
-
-				bool isMe = pid == myPid;
-				var row = new Label
-				{
-					Text = isMe
-						? RTS.Settings.Localization.Tr("spectator.seat_me", pid)
-						: RTS.Settings.Localization.Tr("spectator.seat", pid)
-				};
-				if (isMe)
-					row.AddThemeColorOverride("font_color", new Color(0.85f, 0.92f, 0.72f));
-				_spectatorList.AddChild(row);
-				count++;
-			}
-		}
-
-		if (_lblSpectatorEmpty != null)
-			_lblSpectatorEmpty.Visible = count == 0;
-		if (_lblSpectatorHeader != null)
-			_lblSpectatorHeader.Text = RTS.Settings.Localization.Tr("spectator.header_count", count);
+			Text = isLocal
+				? RTS.Settings.Localization.Tr("spectator.seat_me", name)
+				: RTS.Settings.Localization.Tr("spectator.seat", name)
+		};
+		if (isLocal)
+			row.AddThemeColorOverride("font_color", new Color(0.85f, 0.92f, 0.72f));
+		SpectatorList.AddChild(row);
 	}
 
+	/// <summary>
+	/// 刷新"观战者"段：更新段标题计数；无人时显示占位文案。
+	/// 观战者的**行**由 RefreshLobbyUI 在遍历成员时插入
+	/// （这样顺序与成员列表一致，不会两次遍历导致顺序不一致）。
+	/// </summary>
+	private void RefreshSpectatorSeats()
+	{
+		if (!GodotObject.IsInstanceValid(SpectatorList)) return;
+
+		int count = 0;
+		foreach (var c in SpectatorList.GetChildren())
+			if (c is Label) count++;
+
+		// 占位：没有人观战时给一行说明，避免"观战者"标题下空荡荡
+		if (count == 0 && _lblSpectatorEmpty != null)
+		{
+			if (_lblSpectatorEmpty.GetParent() == null)
+				SpectatorList.AddChild(_lblSpectatorEmpty);
+		}
+		else if (count > 0 && _lblSpectatorEmpty != null && _lblSpectatorEmpty.GetParent() != null)
+		{
+			_lblSpectatorEmpty.GetParent().RemoveChild(_lblSpectatorEmpty);
+		}
+
+		if (GodotObject.IsInstanceValid(SpectatorSectionHeader))
+			SpectatorSectionHeader.Text = RTS.Settings.Localization.Tr("spectator.header_count", count);
+		if (GodotObject.IsInstanceValid(PlayerSectionHeader))
+			PlayerSectionHeader.Text = RTS.Settings.Localization.Tr("spectator.combatants");
+	}
 	/// <summary>按当前容量刷新"加入人机"按钮的可用状态与提示。</summary>
 	private void RefreshBotCapacity()
 	{
@@ -2257,8 +2245,12 @@ public partial class MainMenuController : Control
 		// 场景切换/重建瞬间，OptionButton 可能已被释放：C# 的 != null 对已释放 GodotObject 仍为 true，
 		// 必须用 IsInstanceValid 判定，否则访问 SetBlockSignals 会抛 ObjectDisposedException
 		if (!GodotObject.IsInstanceValid(this) ||
-			!GodotObject.IsInstanceValid(PlayerListContainer) ||
 			!GodotObject.IsInstanceValid(OptMap))
+			return;
+		// 列表容器：优先用新的统一列表；拿不到就退回旧的单容器（兼容旧场景）
+		if (!GodotObject.IsInstanceValid(PlayerList))
+			PlayerList = PlayerListContainer;
+		if (!GodotObject.IsInstanceValid(PlayerList))
 			return;
 
 		if (NetworkManager.Instance == null || LockstepManager.Instance == null)
@@ -2266,10 +2258,12 @@ public partial class MainMenuController : Control
 
 		OptMap.SetBlockSignals(true);
 
-		foreach (Node child in PlayerListContainer.GetChildren())
-		{
+		// 两段各自清空重建（观战者进观战段，其余进参战者段）
+		foreach (Node child in PlayerList.GetChildren())
 			child.QueueFree();
-		}
+		if (GodotObject.IsInstanceValid(SpectatorList))
+			foreach (Node child in SpectatorList.GetChildren())
+				child.QueueFree();
 
 		bool allReady = true;
 		bool allSelected = true;
@@ -2305,8 +2299,16 @@ public partial class MainMenuController : Control
 			if (!isObserver && !isReady)
 				allReady = false;
 
+			// 观战者不进"参战者"段：他们不占出生点、不选种族、不需要准备，
+			// 放进同一个参战列表会让"他还差什么没选"的判断看着很怪。
+			if (isObserver)
+			{
+				AddSpectatorRow(pid, sname, isLocal);
+				continue;
+			}
+
 			// 统一房间界面：每个人（含自己）都在自己的行里显示/修改种族/位置/队伍
-			PlayerListContainer.AddChild(BuildPlayerRow(pid, sname, isBot: false, isLocal: isLocal));
+			PlayerList.AddChild(BuildPlayerRow(pid, sname, isBot: false, isLocal: isLocal));
 		}
 
 		// 机器人也作为玩家行显示（单机大厅），和人类同一套控件
@@ -2316,7 +2318,7 @@ public partial class MainMenuController : Control
 			int botIndex = 1;
 			foreach (var bot in _botRows)
 			{
-				PlayerListContainer.AddChild(BuildPlayerRow(
+				PlayerList.AddChild(BuildPlayerRow(
 					bot.Pid,
 					RTS.Settings.Localization.Tr("bot.label", botIndex),
 					isBot: true,
@@ -2336,12 +2338,18 @@ public partial class MainMenuController : Control
 					allSelected = false;
 				if (!obs && !ready)
 					allReady = false;
-				PlayerListContainer.AddChild(BuildPlayerRow(
-					myPid,
-					RTS.Settings.Localization.Tr("lobby.you"),
-					isBot: false,
-					isLocal: true));
-				playerCount++;
+				// 本地是观战者时不能塞进参战段（否则他自己会同时出现在两段里）
+				if (obs)
+					AddSpectatorRow(myPid, RTS.Settings.Localization.Tr("lobby.you"), true);
+				else
+				{
+					PlayerList.AddChild(BuildPlayerRow(
+						myPid,
+						RTS.Settings.Localization.Tr("lobby.you"),
+						isBot: false,
+						isLocal: true));
+					playerCount++;
+				}
 			}
 		}
 
@@ -2374,6 +2382,10 @@ public partial class MainMenuController : Control
 			_obsCheck.Visible = offlineLobby;
 		if (_btnAddBot != null)
 			_btnAddBot.Visible = offlineLobby;
+
+		// 观战段标题/占位必须在**所有玩家行都插完之后**再刷，
+		// 否则计数会少算（这里是本函数的末尾）。
+		RefreshSpectatorSeats();
 	}
 
 	// =============================================================
