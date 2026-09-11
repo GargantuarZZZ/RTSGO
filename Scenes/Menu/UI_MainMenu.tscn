@@ -29,10 +29,10 @@ BtnReady = NodePath("Page_Lobby/Btn_Ready")
 BtnStart = NodePath("Page_Lobby/Btn_Start")
 BtnBack = NodePath("Page_Lobby/Btn_Back")
 PlayerListContainer = NodePath("Page_Lobby/PlayerListContainer")
-PlayerList = NodePath("Page_Lobby/LobbyListScroll/LobbyListColumn/PlayerList")
-SpectatorList = NodePath("Page_Lobby/LobbyListScroll/LobbyListColumn/SpectatorList")
-PlayerSectionHeader = NodePath("Page_Lobby/LobbyListScroll/LobbyListColumn/PlayerSectionHeader")
-SpectatorSectionHeader = NodePath("Page_Lobby/LobbyListScroll/LobbyListColumn/SpectatorSectionHeader")
+PlayerList = NodePath("Page_Lobby/PlayerListContainer/LobbyListColumn/PlayerListScroll/PlayerList")
+SpectatorList = NodePath("Page_Lobby/PlayerListContainer/LobbyListColumn/SpectatorList")
+PlayerSectionHeader = NodePath("Page_Lobby/PlayerListContainer/LobbyListColumn/PlayerSectionHeader")
+SpectatorSectionHeader = NodePath("Page_Lobby/PlayerListContainer/LobbyListColumn/SpectatorSectionHeader")
 OptRace = NodePath("Page_Lobby/OptRac")
 OptTeam = NodePath("Page_Lobby/OptTeam")
 OptMap = NodePath("Page_Lobby/OptMap")
@@ -46,9 +46,12 @@ texture = ExtResource("1_d1wfq")
 
 [node name="Page_Lobby" type="Control" parent="."]
 visible = false
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Label" type="Label" parent="Page_Lobby"]
 layout_mode = 0
@@ -88,41 +91,45 @@ text = "返回
 "
 metadata/tr_key = "back"
 
-[node name="PlayerListContainer" type="VBoxContainer" parent="Page_Lobby"]
-visible = false
-layout_mode = 0
-offset_left = 386.0
-offset_top = 114.0
-offset_right = 1075.0
-offset_bottom = 114.0
-
-[node name="LobbyListScroll" type="ScrollContainer" parent="Page_Lobby"]
+[node name="PlayerListContainer" type="MarginContainer" parent="Page_Lobby"]
 layout_mode = 1
 anchors_preset = 15
-anchor_left = 0.30
-anchor_top = 0.13
+anchor_left = 0.28
+anchor_top = 0.10
 anchor_right = 0.97
-anchor_bottom = 0.95
+anchor_bottom = 0.96
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 
-[node name="LobbyListColumn" type="VBoxContainer" parent="Page_Lobby/LobbyListScroll"]
+[node name="LobbyListColumn" type="VBoxContainer" parent="Page_Lobby/PlayerListContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="PlayerSectionHeader" type="Label" parent="Page_Lobby/LobbyListScroll/LobbyListColumn"]
+[node name="PlayerSectionHeader" type="Label" parent="Page_Lobby/PlayerListContainer/LobbyListColumn"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "参战者"
 
-[node name="PlayerList" type="VBoxContainer" parent="Page_Lobby/LobbyListScroll/LobbyListColumn"]
+[node name="PlayerListScroll" type="ScrollContainer" parent="Page_Lobby/PlayerListContainer/LobbyListColumn"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PlayerList" type="VBoxContainer" parent="Page_Lobby/PlayerListContainer/LobbyListColumn/PlayerListScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SpectatorSectionHeader" type="Label" parent="Page_Lobby/LobbyListScroll/LobbyListColumn"]
+[node name="SpectatorSectionHeader" type="Label" parent="Page_Lobby/PlayerListContainer/LobbyListColumn"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "观战者"
 
-[node name="SpectatorList" type="VBoxContainer" parent="Page_Lobby/LobbyListScroll/LobbyListColumn"]
+[node name="SpectatorList" type="VBoxContainer" parent="Page_Lobby/PlayerListContainer/LobbyListColumn"]
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -148,9 +155,12 @@ offset_right = 640.0
 offset_bottom = 497.0
 
 [node name="Page_Main" type="Control" parent="."]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Label" type="Label" parent="Page_Main"]
 layout_mode = 0
@@ -210,9 +220,12 @@ text = "v0.0.0"
 
 [node name="Page_RoomList" type="Control" parent="."]
 visible = false
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Label" type="Label" parent="Page_RoomList"]
 layout_mode = 0

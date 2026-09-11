@@ -235,6 +235,13 @@ public partial class MainMenuController : Control
 		if (OS.GetEnvironment("FX_DEBUG") == "1")
 			CallDeferred(nameof(CheckFxGeometryForTest));
 
+		// 无头/截图用：LOBBY_PAGE=1 直接翻到大厅页。
+		// 为什么需要：大厅布局出过多次问题（控件遮挡、内容跑到画面外），
+		// 而截默认启动页看不到大厅 —— 没有这个开关就只能靠人肉截图反馈，
+		// 我因此改错了好几轮。打开它之后截图工具能直接拍到大厅。
+		if (OS.GetEnvironment("LOBBY_PAGE") == "1")
+			CallDeferred(nameof(OpenLobbyPageForTest));
+
 		// 无头回归：HUD_DEBUG=1 检查 HUD 面板内容是否被写死的像素尺寸裁掉
 		if (OS.GetEnvironment("HUD_DEBUG") == "1")
 			CallDeferred(nameof(CheckHudLayoutForTest));
@@ -432,6 +439,22 @@ public partial class MainMenuController : Control
 			var items = new System.Collections.Generic.List<(string Name, Rect2 Rect)>();
 			CollectVisibleControls(PageLobby, items);
 
+			// 布局未生效时不要报遮挡：headless 下页面从未真正排布，
+			// 控件会拿到负坐标（实测 -63,-158）——那是废值，不是真遮挡。
+			// 这种情况直接说"跳过"，而不是输出假阳性把真正的问题淹掉。
+			int invalid = 0;
+			foreach (var it in items)
+				if (it.Rect.Position.X < 0f || it.Rect.Position.Y < 0f) invalid++;
+
+			if (invalid > 0)
+			{
+				GD.Print($"[LobbyDbg] 跳过：{invalid}/{items.Count} 个控件拿到负坐标，" +
+					"说明布局尚未生效（headless 常见）。请用截图确认：\n" +
+					"  LOBBY_PAGE=1 godot --path . res://Scenes/Tools/ScreenshotTool.tscn " +
+					"-- --shot=res://Scenes/Menu/UI_MainMenu.tscn --wait=200 --out=x.png");
+				return;
+			}
+
 			GD.Print($"[LobbyDbg] 大厅可见控件 {items.Count} 个");
 
 			int overlaps = 0;
@@ -461,6 +484,60 @@ public partial class MainMenuController : Control
 			else
 				GD.PrintErr($"[LobbyDbg] 发现 {overlaps} 处遮挡");
 		}).CallDeferred();
+	}
+
+	/// <summary>截图/无头用：直接翻到大厅页（LOBBY_PAGE=1）。</summary>
+	private void OpenLobbyPageForTest()
+	{
+		// 先摆好离线大厅（真人 + 几个机器人），否则列表是空的，
+		// 截图看不出真实排版 —— 我之前就是拿空列表的图去判断，白改了几轮。
+		SetupAutoLobby(3);
+		SwitchPage(MenuPage.Lobby);
+		EnsureLobbyMembersAndRefresh();
+
+		// LOBBY_RECTS=1 把控件实际矩形打出来。改布局前先量，别再猜坐标。
+		if (OS.GetEnvironment("LOBBY_RECTS") == "1")
+			Callable.From(DumpLobbyRects).CallDeferred();
+	}
+
+	/// <summary>打印 Page_Lobby 下所有控件的实际全局矩形（排查布局用）。</summary>
+	private void DumpLobbyRects()
+	{
+		if (PageLobby == null) return;
+		PageLobby.ResetSize();
+		foreach (var c in PageLobby.GetChildren())
+			if (c is Control cc) cc.ResetSize();
+
+		GD.Print($"[RectDump] === Page_Lobby 控件实际矩形 ===");
+		GD.Print($"[RectDump] 视口={GetViewport().GetVisibleRect().Size} 本节点 Scale={Scale} " +
+			$"PageLobby.Scale={PageLobby.Scale} PageLobby.Rect={PageLobby.GetRect()}");
+		DumpRect(PageLobby, 0);
+	}
+
+	private static void DumpRect(Node n, int depth)
+	{
+		if (n is Control c)
+		{
+			var r = c.GetGlobalRect();
+			GD.Print($"[RectDump] {new string(' ', depth * 2)}{n.Name} [{n.GetClass()}] " +
+				$"全局=({r.Position.X:0},{r.Position.Y:0}) 尺寸=({r.Size.X:0},{r.Size.Y:0})" +
+				(c.Visible ? "" : " (隐藏)"));
+		}
+		foreach (var ch in n.GetChildren())
+			DumpRect(ch, depth + 1);
+	}
+
+	/// <summary>
+	/// 分段标题样式。尺寸与字号一律取自 <see cref="RTS.UI.UiLayout"/>，不再写字面量。
+	///
+	/// 必须显式设字号：主题默认字号很大，一个"参战者"标题曾占 689×75，
+	/// 把列表容器撑到 985 高（视口只有 648），把"观战者"段顶到屏幕外。
+	/// </summary>
+	private static void StyleSectionHeader(Label header)
+	{
+		header.AddThemeFontSizeOverride("font_size", RTS.UI.UiLayout.FontSection);
+		header.AddThemeColorOverride("font_color", new Color(0.78f, 0.82f, 0.88f));
+		header.CustomMinimumSize = new Vector2(0f, RTS.UI.UiLayout.HeaderHeight);
 	}
 
 	/// <summary>收集可见控件及其在 PageLobby 坐标系下的矩形（递归）。</summary>
@@ -1648,9 +1725,15 @@ public partial class MainMenuController : Control
 		}
 
 		if (GodotObject.IsInstanceValid(SpectatorSectionHeader))
+		{
 			SpectatorSectionHeader.Text = RTS.Settings.Localization.Tr("spectator.header_count", count);
+			StyleSectionHeader(SpectatorSectionHeader);
+		}
 		if (GodotObject.IsInstanceValid(PlayerSectionHeader))
+		{
 			PlayerSectionHeader.Text = RTS.Settings.Localization.Tr("spectator.combatants");
+			StyleSectionHeader(PlayerSectionHeader);
+		}
 	}
 	/// <summary>按当前容量刷新"加入人机"按钮的可用状态与提示。</summary>
 	private void RefreshBotCapacity()
