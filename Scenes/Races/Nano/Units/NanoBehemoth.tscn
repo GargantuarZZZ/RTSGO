@@ -1,0 +1,137 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Unit.cs" id="1_6om5a"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/Rifle.cs" id="2_lp3hx"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="3_aev54"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="4_2hbpg"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="5_vgvei"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_pdypd"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/AuraRangeVisual.cs" id="7_4hbdn"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/HarvesterMiningFX.cs" id="8_5vheu"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/Behaviors/AutoHarvestBehavior.cs" id="9_auto"]
+
+[node name="NanoBehemoth" type="Node3D"]
+script = ExtResource("1_6om5a")
+TeamID = 1
+UnitName = "NanoBehemoth"
+VisionRange = 768.0
+RequiresCarpet = true
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="NanoBehemothGun" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -110, 95, -150)
+script = ExtResource("2_lp3hx")
+HitFxRadius = 48.0
+HitFxDuration = 0.35
+HitFxColor = Color(1, 0.9, 0.3, 1)
+TracerThickness = 4.5
+TracerDuration = 0.2
+MuzzleFlashRadius = 22.0
+WeaponName = "NanoBehemothGun"
+AttackRange = 384.0
+Cooldown = 0.5
+FirePoint = NodePath("FirePoint")
+CanTargetAir = true
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/NanoBehemothGun"]
+
+[node name="Muzzle" type="Marker3D" parent="Visuals/WeaponMount/NanoBehemothGun"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 14, -26)
+
+[node name="@Node3D@4" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 110, 95, -150)
+script = ExtResource("2_lp3hx")
+HitFxRadius = 48.0
+HitFxDuration = 0.35
+HitFxColor = Color(1, 0.9, 0.3, 1)
+TracerThickness = 4.5
+TracerDuration = 0.2
+MuzzleFlashRadius = 22.0
+WeaponName = "NanoBehemothGun"
+AttackRange = 384.0
+Cooldown = 0.5
+FirePoint = NodePath("FirePoint")
+CanTargetAir = true
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@4"]
+
+[node name="Muzzle" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 14, -26)
+
+[node name="@Node3D@5" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -110, 95, 150)
+script = ExtResource("2_lp3hx")
+HitFxRadius = 48.0
+HitFxDuration = 0.35
+HitFxColor = Color(1, 0.9, 0.3, 1)
+TracerThickness = 4.5
+TracerDuration = 0.2
+MuzzleFlashRadius = 22.0
+WeaponName = "NanoBehemothGun"
+AttackRange = 384.0
+Cooldown = 0.5
+FirePoint = NodePath("FirePoint")
+CanTargetAir = true
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@5"]
+
+[node name="Muzzle" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 14, 26)
+
+[node name="@Node3D@6" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 110, 95, 150)
+script = ExtResource("2_lp3hx")
+HitFxRadius = 48.0
+HitFxDuration = 0.35
+HitFxColor = Color(1, 0.9, 0.3, 1)
+TracerThickness = 4.5
+TracerDuration = 0.2
+MuzzleFlashRadius = 22.0
+WeaponName = "NanoBehemothGun"
+AttackRange = 384.0
+Cooldown = 0.5
+FirePoint = NodePath("FirePoint")
+CanTargetAir = true
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@6"]
+
+[node name="Muzzle" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 14, 26)
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("3_aev54")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("4_2hbpg")
+MaxHp = 2000.0
+ArmorType = 1
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("5_vgvei")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_pdypd")
+
+[node name="AuraRangeActive" type="Node3D" parent="."]
+script = ExtResource("7_4hbdn")
+TechId = "NanoTech_GeneralA"
+RingColor = Color(0.3, 1, 0.4, 0.28)
+
+[node name="AuraRangeSmoke" type="Node3D" parent="."]
+script = ExtResource("7_4hbdn")
+TechId = "NanoTech_GeneralB"
+RingColor = Color(0.45, 0.7, 1, 0.28)
+
+[node name="HarvesterMiningFX" type="Node3D" parent="."]
+script = ExtResource("8_5vheu")
+
+[node name="AutoHarvest" type="Node" parent="."]
+script = ExtResource("9_auto")
+RadiusTiles = 8
+RatePerSecondPerNode = 5.0

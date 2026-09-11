@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "TerranTech_Jammer"
+DisplayName = "干扰弹"
+Description = "指挥车获得干扰弹技能：半径3格内敌方单位无法使用技能。"
+Category = 1
+RequiresHarvester = false
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+0: 100.0,
+5: 200.0
+})

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 240.0
+VisionRange = 350.0
+Costs = Dictionary[int, float]({
+})
+BuildTime = 1.0
+CanMove = true
+MoveSpeed = 45
+FootprintTiles = 2.0
+Tags = Array[String](["Demon", "Mechanical", "HeavyArmor"])
+CannotBeHealed = true
+LifespanSeconds = 120.0
+SupplyCost = 0
+WeaponIds = Array[String](["TankCannon"])
+Role = 3

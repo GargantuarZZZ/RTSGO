@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="StructureConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://c0oxwdisfkj8y" path="res://Scripts/Data/Configs/StructureConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 550.0
+VisionRange = 350.0
+Costs = Dictionary[int, float]({
+0: 200.0
+})
+BuildTime = 12.0
+GridWidth = 2
+GridHeight = 2
+TrainableUnitIds = Array[String](["Marine", "HeavyInfantry"])
+ProvidesTechIds = Array[String](["TerranT1"])

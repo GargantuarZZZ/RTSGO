@@ -1,0 +1,15 @@
+[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://b7v47751ah60y"]
+
+[ext_resource type="Texture2D" uid="uid://b3b2qcmckt81w" path="res://ArtRes/imgs/NanoCreep.png" id="1_40fd6"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8fntc"]
+texture = ExtResource("1_40fd6")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+1:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+
+[resource]
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetAtlasSource_8fntc")

@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 100.0
+VisionRange = 320.0
+Costs = Dictionary[int, float]({
+0: 100.0,
+8: 30.0
+})
+BuildTime = 10.0
+CanMove = true
+MoveSpeed = 115
+Tags = Array[String](["Mechanical"])
+NoControlNeeded = true
+SupplyCost = 1
+WeaponIds = Array[String](["WandererHunterBeam"])
+AttackMoveFiresWhileMoving = true
+HasPigeon = true
+PigeonTechId = "WandererTech_Pigeon"
+Role = 6

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "HpGun"
+DisplayName = "速射枪"
+Damage = 3.0
+BonusDamage = 1.0
+BonusDamageTags = Array[String](["HeavyArmor"])
+DamageType = 0
+RangeType = 1
+AttackRange = 256.0
+CooldownTicks = 2
+ProjectileBehavior = 0
+HitFxRadius = 30.0
+HitFxDuration = 0.2
+HitFxColor = Color(1, 0.9, 0.3, 1)
+TracerThickness = 3.0
+TracerDuration = 0.14
+MuzzleFlashRadius = 16.0
+MuzzleFlashDuration = 0.08
+CanTargetGround = true
+CanTargetStructure = true
+CanTargetNeutral = true

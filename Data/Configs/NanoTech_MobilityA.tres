@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "NanoTech_MobilityA"
+DisplayName = "机动A：地毯生成"
+Description = "纳米巨兽可以在半径8格内持续生成纳米地毯，自由移动。"
+Category = 3
+ExclusiveGroup = "Mobility"
+RequiresHarvester = true
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+6: 1500.0
+})
+SelfCreepRadius = 8

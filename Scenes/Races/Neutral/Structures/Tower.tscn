@@ -1,0 +1,54 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Structure.cs" id="1_pfkw2"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/ProjectileWeapon.cs" id="2_sbyrg"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="3_heey1"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="4_sd0f1"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="5_gnsv1"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_pcr4a"]
+[ext_resource type="ArrayMesh" path="res://ArtRes/models/turrets/Cannon_1.obj" id="7_y72n6"]
+
+[node name="Tower" type="Node3D"]
+script = ExtResource("1_pfkw2")
+TeamID = -2
+StructureName = "Tower"
+GridSize = 1
+VisionRange = 800.0
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="MagicBallShooter" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+script = ExtResource("2_sbyrg")
+FirePoint = NodePath("FirePoint")
+HitFxRadius = 56.0
+HitFxDuration = 0.4
+WeaponName = "MagicBallShooter"
+DmgType = 1
+Damage = 4.0
+AttackRange = 800.0
+Cooldown = 3.0
+CanTargetAir = true
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/MagicBallShooter"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("3_heey1")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("4_sd0f1")
+MaxHp = 1000.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("5_gnsv1")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_pcr4a")
+
+[node name="Model" type="MeshInstance3D" parent="."]
+transform = Transform3D(42.967262, 0, 0, 0, 42.967262, 0, 0, 0, 42.967262, 2.3049435e-05, 1.8735446, -0.4221965)
+mesh = ExtResource("7_y72n6")

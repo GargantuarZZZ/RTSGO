@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 50.0
+VisionRange = 320.0
+Costs = Dictionary[int, float]({
+})
+BuildTime = 1.0
+CanMove = true
+MoveSpeed = 64
+Tags = Array[String](["Demon", "Worker", "Biological"])
+CannotBeHealed = true
+SupplyCost = 0
+AllowAttackMoveWithoutWeapon = true
+CanHarvest = true
+HarvestAmountPerCycle = 10.0
+HarvestCycleTicks = 20
+CarryCapacity = 50.0
+HarvestableResources = Array[int]([0, 8])
+CanBuild = true
+BuildableStructureIds = Array[String](["HellCity", "GreatRift", "HeavyWorkshop", "DragonNest", "ManaTower", "SoulStone", "LavaAltar", "CurseFortress", "DemonTower"])
+BuildPowerPercent = 100
+IsWorker = true
+Role = 1

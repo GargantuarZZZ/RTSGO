@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Unit.cs" id="1_8uloc"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/ProjectileWeapon.cs" id="2_w5rw7"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="3_tk4gn"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="4_4dnxf"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="5_ac4nn"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_45vkt"]
+
+[node name="Tank" type="Node3D"]
+script = ExtResource("1_8uloc")
+TeamID = 1
+UnitName = "Tank"
+VisionRange = 0.0
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="WandererTankGun" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+script = ExtResource("2_w5rw7")
+WeaponName = "WandererTankGun"
+DmgType = 3
+Damage = 25.0
+AttackRange = 384.0
+FirePoint = NodePath("FirePoint")
+CanTargetAir = true
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/WandererTankGun"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("3_tk4gn")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("4_4dnxf")
+MaxHp = 1200.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("5_ac4nn")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_45vkt")

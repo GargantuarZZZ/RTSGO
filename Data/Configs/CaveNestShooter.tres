@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 150.0
+VisionRange = 350.0
+Costs = Dictionary[int, float]({
+5: 50.0
+})
+BuildTime = 10.0
+CanMove = true
+MoveSpeed = 64
+FootprintTiles = 1.0
+Tags = Array[String](["Cave", "Biological"])
+SupplyCost = 1
+WeaponIds = Array[String](["CaveSpitter"])
+Role = 2

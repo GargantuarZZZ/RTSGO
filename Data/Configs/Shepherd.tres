@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 350.0
+VisionRange = 960.0
+Costs = Dictionary[int, float]({
+0: 100.0,
+8: 200.0
+})
+BuildTime = 20.0
+CanMove = true
+MoveSpeed = 83
+FootprintTiles = 2.0
+Tags = Array[String](["Mechanical"])
+ControlRangeTiles = 15
+IsTechBuilding = true
+ResearchableTechIds = Array[String](["WandererTech_Leap", "WandererTech_AutoHarvest", "WandererTech_DefKinetic", "WandererTech_DefThermal", "WandererTech_DefBeam", "WandererTech_DefEM", "WandererTech_Pigeon", "WandererTech_Link"])
+SupplyCost = 0
+SupplyProvided = 25
+SupplyUsed = 5
+WeaponIds = Array[String](["WandererShepherdBeam"])
+Role = 10

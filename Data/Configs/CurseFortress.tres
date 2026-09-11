@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="StructureConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://c0oxwdisfkj8y" path="res://Scripts/Data/Configs/StructureConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 2500.0
+VisionRange = 500.0
+Costs = Dictionary[int, float]({
+0: 1600.0
+})
+BuildTime = 20.0
+GridWidth = 4
+GridHeight = 4
+IsProductionBuilding = true
+IsDefenseBuilding = true
+RequiresSacrifice = true
+IsUnique = true
+RequiredTechIds = Array[String](["DemonT2"])
+ProvidesTechIds = Array[String](["DemonT3"])
+FieldRadius = 18
+AutoProduceUnitIds = Array[String](["FortGuard"])
+AutoProduceIntervalSeconds = 15.0
+BonusUnitOnCompleteIds = Array[String](["HellLord"])
+WeaponIds = Array[String](["CurseFortressGun"])
+SupplyUsed = 15

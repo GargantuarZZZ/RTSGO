@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+TechId = "WandererTech_DefEM"
+DisplayName = "针对防御:电磁"
+Description = "所有单位 +1 固定电磁防御，可循环研究，每次价格翻倍。"
+Category = 2
+RequiresHarvester = false
+IsRepeatable = true
+RepeatCostMultiplier = 2.0
+DefenseType = 3
+ResearchTimeSeconds = 10.0
+Cost = Dictionary[int, float]({
+0: 100.0,
+8: 100.0,
+9: 10.0
+})

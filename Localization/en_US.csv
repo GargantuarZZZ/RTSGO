@@ -1,0 +1,460 @@
+key,text
+settings,Settings
+language,Language
+keybinds,Keybinds
+audio,Audio
+video,Video
+master_volume,Master
+music_volume,Music
+sfx_volume,SFX
+fullscreen,Fullscreen
+save,Save
+back,Back
+press_key,Press a key…
+pause,Pause
+surrender,Surrender
+chat,Chat
+main_menu_single,Single Player
+main_menu_host,Host Game
+main_menu_find,Find Game
+main_menu_quit,Quit
+action.Move,Move
+action.Stop,Stop
+action.Attack,Attack
+action.AttackMove,Attack Move
+action.Hold,Hold
+action.Harvest,Harvest
+action.Repair,Repair
+action.Deploy,Deploy/Pack
+action.SwitchAmmo,Switch Ammo
+action.Garrison,Garrison
+action.ReleaseWorkers,Release Workers
+action.Stim,Stim
+action.CruiserMobility,Mobility Mode
+action.Radar,Radar
+action.OrbitalStrike,Orbital Strike
+action.NanoSpread,Spread Creep
+action.PlasmaStrike,Plasma Cannon
+action.PlasmaMode,Auto/Manual
+action.SelfDestruct,Self-Destruct
+name.DemonWorker,Demon Worker
+name.DemonDog,Demon Dog
+name.DemonFlyer,Flying Shooter
+name.HeavyTank,Heavy War Vehicle
+name.FireDragon,Fire Dragon
+name.LavaBanner,Lava Banner Carrier
+name.Banner,Banner
+name.FortGuard,Fortress Guard
+name.HellLord,Hell Lord
+name.FireTitan,Fire Titan
+name.HellCity,Hell City
+name.GreatRift,Great Rift
+name.HeavyWorkshop,Heavy Workshop
+name.DragonNest,Dragon Nest
+name.ManaTower,Mana Tower
+name.SoulStone,Soul Stone
+name.LavaAltar,Lava Altar
+name.CurseFortress,Curse Fortress
+name.DemonTower,Demon Tower
+name.SCV,SCV
+name.RifleMan,Rifleman
+name.RocketMan,Rocket Trooper
+name.Medic,Medic
+name.Biped,Dual-Cannon Mech
+name.Hp,Gunship
+name.BattleCruiser,Battlecruiser
+name.CommandCenter,Command Center
+name.BB,Barracks
+name.VF,Factory
+name.SupplyDepot,Supply Depot
+name.Academy,Academy
+name.Starport,Starport
+name.OrbitalControl,Orbital Control
+name.Engineer,Engineer
+name.Marine,Marine
+name.HeavyInfantry,Heavy Infantry
+name.CommandVehicle,Command Vehicle
+name.Artillery,Artillery
+name.Liberator,Liberator Orbital Gun
+name.Fighter,Fighter Jet
+name.MissileVehicle,Missile Vehicle
+name.FortressCore,Fortress Core
+name.FrontlineCamp,Frontline Camp
+name.FieldCamp,Field Camp
+name.ArmorFactory,Armor Factory
+name.Airfield,Airfield
+name.Armory,Armory
+name.AlgaeFactory,Algae Factory
+name.Builder,Builder
+name.Hunter,Hunter
+name.Harvester,Harvester
+name.Shepherd,Shepherd
+name.Tank,War Tank
+name.PlasmaCannon,Plasma Cannon
+name.NanoBehemoth,Nano Behemoth
+name.NanoTurret,Gun Turret
+name.NanoSniper,Sniper Turret
+name.NanoAA,AA Missile Turret
+name.NanoHarvester,Harvester Structure
+name.NanoActiveTower,Activation Tower
+name.NanoSmokeTower,Smoke Tower
+name.NanoCore,Nano Core
+menu.title,RTS Arcade
+menu.lobby_title,Waiting for players…
+menu.room_list_title,Room List
+menu.refresh,Refresh
+menu.pkg_ok,Package OK
+menu.pkg_missing,Missing files!
+menu.version,"v{0} · {1} · {2}"
+lobby.ready,Ready
+lobby.unready,Unready
+lobby.start,Start
+lobby.race_prompt,Select Race
+lobby.team_prompt,Select Spawn
+lobby.map_classic,Classic Map
+lobby.map_1v1,1v1 Broken-Wall
+lobby.map_debug,Debug Map
+lobby.team_slot,Slot {0}
+lobby.not_selected,Not selected
+lobby.no_team,No slot
+lobby.ready_yes,[Ready]
+lobby.ready_no,[Not ready]
+lobby.player_line,"{0} (P{1}) | {2} | {3} | {4}"
+lobby.room_fallback,Lobby: {0}
+lobby.local_player,Player {0}
+lobby.unknown_player,Unknown
+lobby.join,Join
+race.union,Union
+race.nano,Nano
+race.demon,Demon
+race.wanderer,Wanderer
+race.terran,Terran
+resource.metal,Minerals
+resource.gas,Gas
+resource.energy,Energy
+resource.data,Data
+resource.food,Supply
+resource.money,Money
+resource.wood,Wood
+resource.supply,Supply
+resource.biomass,Biomass
+resource.nanobots,Nanobots
+hud.supply,"Supply {0}/{1}"
+hud.bound_count,"Souls {0}/{1}"
+hud.garrison_count,"Workers {0}/{1}"
+hud.fps_line,"Render {0} FPS  Logic {1} TPS"
+info.resource_remaining,"[Resource] Remaining {0} / {1}"
+info.attrs,"[Stats] Armor:{0}"
+info.tags,"  Tags:{0}"
+info.move_speed,"  Speed:{0} tiles/s"
+info.vision,"  Vision:{0} tiles"
+info.energy,"  Energy:{0:F0}/{1:F0}"
+info.no_weapon,No weapon
+info.energy_value,"Energy {0:F0}"
+info.ammo_value,"Ammo {0:F0}"
+info.combat_rating,"  Rating:{0}"
+armor.light,Light
+armor.armored,Armored
+armor.biological,Biological
+armor.mechanical,Mechanical
+armor.structure,Structure
+armor.other,Armor {0}
+dmg.kinetic,Kinetic
+dmg.thermal,Thermal
+dmg.explosive,Explosive
+dmg.em,EM
+dmg.beam,Beam
+dmg_short.kinetic,K
+dmg_short.thermal,T
+dmg_short.explosive,E
+dmg_short.em,EM
+dmg_short.beam,B
+target.ground,Ground
+target.air,Air
+target.structure,Structure
+proj.instant,Instant
+weapon.melee,Melee
+weapon.ranged,Ranged
+proj.homing,Homing
+proj.fixed,Fixed
+proj.lob,Lob
+weapon.splash,"Splash {0} tiles"
+weapon.cone,"Cone {0}°"
+weapon.footprint,Footprint² dmg
+weapon.cooldown,"[CD {0}s]"
+weapon.stats,"{0}{1} {2} | Range {3} tiles Speed {4}s | {5}{6}{7}"
+buff.tooltip,"{0} x{1}  Remaining {2:F1}s / {3:F1}s"
+buff.permanent,"{0} x{1}  Permanent"
+net.desync,"Desync detected, simulation paused. Report: {0}"
+net.player_dropped,"Player {0} disconnected and removed from lockstep"
+net.waiting_input,"Waiting for input from {0}… auto-requesting"
+nano.spread_btn,Spread Creep
+nano.spread_confirm,"Click ground to confirm spread [{0}]"
+nano.spread_cd,"Spread Creep [x{0}] {1}s"
+nano.spread_ready,"Spread Creep [x{0}] Ready"
+nano.btn_turret,"Gun Turret\n150n"
+nano.btn_sniper,"Sniper\n200n"
+nano.btn_aa,"AA Missile\n150n"
+nano.btn_harvester,"Harvester\n300n"
+nano.btn_active,"Activation Tower\n200n"
+nano.btn_smoke,"Smoke Tower\n200n"
+orbital.energy,"Energy: {0}"
+orbital.btn_radar,Radar 20e
+orbital.btn_strike,Orbital Strike 40e
+orbital.btn_ex_metal,Metal→Gas 20e
+orbital.btn_ex_gas,Gas→Metal 20e
+room.join,Join
+action.AutoProduceMode,Toggle Mode
+action.ExchangeMetalToGas,Metal→Gas
+action.ExchangeGasToMetal,Gas→Metal
+action.HeroSkill1,Skill 1
+action.HeroSkill2,Skill 2
+action.SelfDestructTip,Destroy self
+build.requires,Requires: {0}
+list_sep,,
+vote.rematch,Rematch
+vote.surrender_team,Team Surrender
+vote.banner,"Player {0} calls [{1}] vote  Yes N / No M  ({2:0}s)"
+vote.passed_rematch,Rematch vote passed, match ends in a draw
+vote.failed_rematch,Rematch vote failed
+vote.passed_surrender,Team surrender vote passed
+vote.failed_surrender,Team surrender vote failed
+bot.none,No Bots
+bot.count,Bots x{0}
+bot.easy,Easy
+bot.normal,Normal
+bot.hard,Insane
+skill.BattleCruiser.1,Mobility Mode
+skill.CommandVehicle.1,Smoke Grenade
+skill.CommandVehicle.2,Jammer
+skill.FireTitan.1,Roar 30e
+skill.FireTitan.2,Charge 10e
+skill.HellLord.1,Fear Soul 10e
+skill.HellLord.2,Fanatic Armor 15e
+skill.PlasmaCannon.1,Plasma Cannon
+skill.PlasmaCannon.2,Auto/Manual
+skill.RifleMan.1,Stim
+name.GasSpring,Gas Spring
+name.IronOre,Iron Ore
+name.MetalMine,Metal Mine
+name.WildFruit,Wild Fruit
+name.Shrine,Shrine
+name.Tower,Sentry Tower
+name.Blueprint_Builder,Builder Blueprint
+name.Blueprint_Harvester,Harvester Blueprint
+name.Blueprint_Hunter,Hunter Blueprint
+name.Blueprint_PlasmaCannon,Plasma Cannon Blueprint
+name.Blueprint_Shepherd,Shepherd Blueprint
+name.Blueprint_Tank,Tank Blueprint
+name.DemonTech_Blood,Demon Blood
+name.DemonTech_Feudal,Feudalism
+name.DemonTech_Fire,Fire
+name.DemonTech_Greed,Greedy Swarm
+name.DemonTech_March,Forced March
+name.DemonTech_Rift,Rift Expansion
+name.DemonTech_SoulFire,Soul Fire
+name.DemonTech_Spread,Hell Spread
+name.NanoTech_AdvancedHarvester,Advanced Harvester
+name.NanoTech_CombatA,"Combat A: Fortify"
+name.NanoTech_CombatB,"Combat B: Ion Breath"
+name.NanoTech_DefenseA,"Defense A: Hive Armor"
+name.NanoTech_DefenseB,"Defense B: Mirror Armor"
+name.NanoTech_EconomyPhoto,Efficient Photosynthesis
+name.NanoTech_GeneralA,"General A: Activation"
+name.NanoTech_GeneralB,"General B: Electron Cloud"
+name.NanoTech_MobilityA,"Mobility A: Creep Generation"
+name.NanoTech_MobilityB,"Mobility B: Creep Rush"
+name.TerranTech_AmmoRecovery,Ammo Recovery
+name.TerranTech_Buckshot,Buckshot
+name.TerranTech_Entrench,Entrench
+name.TerranTech_FastDeploy,Fast Deploy
+name.TerranTech_Gunpowder,Gunpowder
+name.TerranTech_Jammer,Jammer
+name.TerranTech_LongRange,Long-Range Missiles
+name.TerranTech_Ray,Annihilation Ray
+name.UnionTech_Casting,Integrated Casting
+name.UnionTech_Optics,Optical Sights
+name.UnionTech_RegenSteel,Regen Steel
+name.UnionTech_Stim,Stim
+name.UnionTech_Streamline,Streamlined
+name.WandererTech_AutoHarvest,Auto Harvest
+name.WandererTech_DefBeam,"Counter Defense: Beam"
+name.WandererTech_DefEM,"Counter Defense: EM"
+name.WandererTech_DefKinetic,"Counter Defense: Kinetic"
+name.WandererTech_DefThermal,"Counter Defense: Thermal"
+name.WandererTech_Leap,Leap
+name.WandererTech_Link,Command Link
+name.WandererTech_Pigeon,Pigeon
+name.ArtilleryCannon,Artillery Cannon
+name.BattleCruiserAA,Anti-Air Battery
+name.BattleCruiserGun,Ground Battery
+name.BipedGan,Twin Cannons
+name.DemonDogBite,Bite
+name.DragonBreath,Dragon Breath
+name.EngineerPunch,Wrench
+name.FighterMissile,Air-to-Air Missiles
+name.FlyerBolt,Magic Bolt
+name.FortressGun,Fortress Gun
+name.GuardPunch,Heavy Punch
+name.HeavyAPCannon,Armor-Piercing Shells
+name.HeavyCannon,Grenade Rifle
+name.HellCityGun,Hell City Gun
+name.HellLordBlast,Mana Blast
+name.HpGun,Rapid Gun
+name.LiberatorBeam,Orbital Beam
+name.MagicBallShooter,Magic Ball Tower
+name.ManaBolt,Mana Bolt
+name.MarineRifle,EM Rifle
+name.MissileVolley,Missile Volley
+name.NanoAAMissile,AA Missile
+name.NanoBehemothFortressAA,Fortress AA
+name.NanoBehemothFortressGun,Fortress Cannon
+name.NanoBehemothGun,Personal Gun
+name.NanoMachineGun,Machine Gun
+name.NanoSniperCannon,Sniper Cannon
+name.PlasmaArtillery,Plasma Cannon
+name.Rifle,Rifle
+name.RocketGun,Rocket
+name.ScvGun,SCV Welder
+name.TankCannon,Tank Cannon
+name.TitanSlam,Titan Slam
+name.WandererHarvesterClaw,Harvest Beam
+name.WandererHunterBeam,Beam
+name.WandererPlasmaBeam,Plasma Beam
+name.WandererShepherdBeam,Shepherd Beam
+name.WandererTankGun,EM Cannon
+name.ArmorBuff,Reinforced Armor
+name.SlowBuff,Slow
+name.StimBuff,Stim
+chat.title,Chat
+chat.input_hint,Type a message, Enter to send (Esc to close)
+chat.open_hint,Press T to chat. Ctrl+Middle-click to ping (allies can see it); Middle-drag pans the camera
+observer.check,Observer mode (full map, no control, see all resources)
+observer.short,Observer
+observer.title,[Observer] Full map | Spectating
+lobby.group_prompt,Select team
+lobby.group,Team {0}
+lobby.group_auto,Auto
+bot.add,Add Bot
+bot.label,Bot {0}
+bot.add_full,Player limit reached
+bot.full,Team slots are full (max {0}). Spectating is still available — tick "Observer mode"
+bot.limit,Bot limit reached (6 max)
+spectator.header,Spectator seats ({0})
+spectator.header_count,Spectator seats ({0})
+spectator.none,No spectators
+spectator.seat,Spectator {0}
+spectator.seat_me,Spectator {0} (you)
+lobby.you,Me
+race.plant,Plant
+race.cave,Cave
+name.PlantLeafDog,Leaf Dog
+name.PlantSpider,Spider
+name.PlantTreeGuard,Tree Guardian
+name.PlantLifeTree,Life Tree
+name.PlantBranchTree,Branch Tree
+name.PlantForestNode,Forest Node
+name.PlantLeafPit,Leaf Pit
+name.PlantSproutNest,Sprout Nest
+name.PlantFlowerField,Flower Field
+name.PlantNestFort,Nest Fort
+name.PlantSunlightTurret,Sunlight Turret
+name.PlantLifeSpring,Life Spring
+name.PlantTreeWall,Tree Wall
+name.PlantEarthCore,Earth Core
+name.PlantTech_Photo,Photosynthesis
+name.PlantTech_Spread,Creep Spread
+name.PlantTech_Fiber,Fiber Armor
+name.PlantTech_Ironwood1,Ironwood Carapace I
+name.PlantTech_Ironwood2,Ironwood Carapace II
+name.PlantTech_Omni,Omnipresence
+name.PlantTech_Leech,Leech
+name.PlantTech_Web,Sticky Web
+name.PlantTech_Sunflower,Sunflower
+name.PlantTech_Fission,Accelerated Fission
+name.PlantTech_DivineBow,Divine Bow
+name.PlantTech_VineTendon,Vine Tendon
+name.CaveWorker,Worker
+name.CaveNestShooter,Nest Shooter
+name.CaveBreaker,Breaker
+name.CaveSage,Sage
+name.CaveScorpion,Armored Scorpion
+name.CaveSandworm,Sandworm
+name.CaveSandwormMid,Sandworm Mid-Segment
+name.CaveSandwormTail,Sandworm Tail-Segment
+name.CaveMainNest,Main Nest
+name.CaveTrainingGround,Training Ground
+name.CaveDen,Den
+name.CaveExcavation,Excavation
+name.CaveFungusField,Fungus Field
+name.CaveNest,Nest
+name.CaveAcademy,Academy
+name.CaveSeismograph,Seismograph
+name.CaveRanch,Ranch
+name.CaveOutpost,Outpost
+name.CaveCrustCracker,Crust Cracker
+name.CaveWormholeCore,Wormhole Core
+name.CaveWormhole,Wormhole
+name.CaveSandwormPit,Sandworm Pit
+name.CaveTech_FastMag,Fast Magazine
+name.CaveTech_Shield,Shield
+name.CaveTech_Feed,Enhanced Feed
+name.CaveTech_Fungus,Fungus Breeding
+name.CaveTech_Steel,Refined Steel
+name.CaveTech_Weapon,Weapon Upgrade
+name.CaveTech_Militia,Militia
+skill.CaveSandworm.1,Burrow
+skill.CaveSandworm.2,Devour
+action_state.auto_on,Auto ON
+action_state.auto_off,Auto OFF
+action_state.burrowed,Buried
+action_state.surface,Surface
+action_state.deploying,Setup
+action_state.deployed,Deployed
+action_state.packing,Packing
+action_state.mobile,Mobile
+keybind_hint,Click a key button to rebind; press Esc to cancel. A * marks a changed binding; "used by" means that key is also bound to another action.
+keybind_click_to_change,Click, then press a new key (Esc cancels)
+keybind_fixed,Fixed: ability slots follow grid position and are not rebindable
+keybind_conflict,Used by:
+keybind_applied,Bound
+keybind_cancelled,Rebind cancelled
+keybind_waiting,Press the key you want to bind…
+reset_keys,Restore default keys
+reset_keys_done,Restored defaults, changed
+reset_keys_none,Keys are already at defaults
+keygroup_camera,Camera
+keygroup_selection,Selection &amp; Groups
+keygroup_orders,Unit Orders
+keygroup_match,Match &amp; Social
+keygroup_panel,Ability Slots (fixed)
+cam_up,Pan camera up
+cam_down,Pan camera down
+cam_left,Pan camera left
+cam_right,Pan camera right
+cam_center,Center camera
+select_all_army,Select all combat units
+select_all_workers,Select all workers
+select_idle_workers,Select idle workers
+attack_move,Attack move
+stop,Stop
+hold,Hold position
+pause,Pause / Resume
+surrender,Surrender
+chat,Open chat
+vote_rematch,Call rematch vote (Ctrl+combo)
+slot_1,Ability slot 1
+slot_2,Ability slot 2
+slot_3,Ability slot 3
+slot_4,Ability slot 4
+slot_5,Ability slot 5
+slot_6,Ability slot 6
+slot_7,Ability slot 7
+slot_8,Ability slot 8
+slot_9,Ability slot 9
+slot_10,Ability slot 10
+slot_11,Ability slot 11
+slot_12,Ability slot 12
+slot_13,Ability slot 13
+slot_14,Ability slot 14
+slot_15,Ability slot 15

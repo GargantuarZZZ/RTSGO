@@ -1,0 +1,58 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Unit.cs" id="1_jfvwc"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/Rifle.cs" id="2_epe6d"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="3_x55li"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="4_r5b3s"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="5_ktqr1"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_uy3kv"]
+[ext_resource type="PackedScene" uid="uid://dot0fv8cmeph6" path="res://ArtRes/models/TerranLiberator/msr.fbx" id="7_msr"]
+
+[node name="Liberator" type="Node3D"]
+script = ExtResource("1_jfvwc")
+TeamID = 1
+UnitName = "Liberator"
+FlyHeight = 360.0
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="LiberatorBeam" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+script = ExtResource("2_epe6d")
+FirePoint = NodePath("../../../Model/Muzzle")
+WeaponName = "LiberatorBeam"
+DmgType = 4
+Damage = 15.0
+AttackRange = 896.0
+Cooldown = 0.05
+CanTargetStructure = false
+TracerColor = Color(0.45, 0.75, 1, 1)
+TracerThickness = 4.0
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/LiberatorBeam"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("3_x55li")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("4_r5b3s")
+MaxHp = 350.0
+ArmorType = 1
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("5_ktqr1")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_uy3kv")
+
+[node name="Model" type="Node3D" parent="." instance=ExtResource("7_msr")]
+transform = Transform3D(2000, 0, 0, 0, 2000, 0, 0, 0, 2000, 0, 90, 0)
+
+[node name="Muzzle" type="Marker3D" parent="Model"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.024, 0)
+
+[editable path="Model"]

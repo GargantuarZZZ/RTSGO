@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+TechId = "CaveTech_Shield"
+DisplayName = "盾牌"
+Description = "突破者生命 +50。"
+Category = 2
+RequiresHarvester = false
+ResearchTimeSeconds = 40.0
+Cost = Dictionary[int, float]({
+8: 200.0
+})
+TargetUnitIds = Array[String](["CaveBreaker"])
+FlatHpBonus = 50

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+TechId = "DemonTech_Feudal"
+DisplayName = "分封制"
+Description = "英雄单位人口 -3。"
+Category = 1
+RequiresHarvester = false
+RequiredTechIds = Array[String](["DemonT3"])
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+0: 500.0,
+8: 400.0
+})

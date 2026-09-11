@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "TerranTech_Gunpowder"
+DisplayName = "火药除沙"
+Description = "所有 AOE 范围 +0.5 格。"
+Category = 1
+RequiresHarvester = false
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+5: 700.0
+})
+RequiredTechIds = Array[String](["TerranT3"])
+AoeRadiusBonusTiles = 0.5

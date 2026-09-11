@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="StructureConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://c0oxwdisfkj8y" path="res://Scripts/Data/Configs/StructureConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 600.0
+VisionRange = 450.0
+Costs = Dictionary[int, float]({
+0: 1500.0,
+8: 1000.0
+})
+BuildTime = 6.0
+GridWidth = 3
+GridHeight = 3
+IsInteractiveBuilding = true
+IsUnique = true
+RequiredTechIds = Array[String](["UnionT2"])
+ProvidesResourceIncome = true
+IncomeResourceType = 4
+IncomeAmountPerCycle = 1
+IncomeCycleTicks = 20
+RadarRadiusTiles = 10
+RadarDurationSeconds = 5.0
+RadarEnergyCost = 20.0
+StrikeRadiusTiles = 1
+StrikeDamage = 200.0
+StrikeEnergyCost = 40.0
+ExchangeMetalAmount = 100.0
+ExchangeGasAmount = 150.0
+ExchangeEnergyCost = 20.0
+PanelSkillMode = 7

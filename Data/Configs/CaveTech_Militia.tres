@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+TechId = "CaveTech_Militia"
+DisplayName = "民兵化"
+Description = "工兵获得近战武器（5 伤害、2 攻速）；驻扎时改为远程射击。"
+Category = 1
+RequiresHarvester = false
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+0: 200.0
+})
+TargetUnitIds = Array[String](["CaveWorker"])
+GrantWeaponIds = Array[String](["CaveWorkerClaw"])
+GrantWeaponCount = 1

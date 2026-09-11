@@ -1,0 +1,41 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Unit.cs" id="1_lwuyi"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="2_4js6p"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="3_k4jdv"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="4_nd1vm"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitHarvest.cs" id="5_go1ti"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_lj3fd"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/HarvesterMiningFX.cs" id="7_r070h"]
+
+[node name="Builder" type="Node3D"]
+script = ExtResource("1_lwuyi")
+TeamID = 1
+UnitName = "Builder"
+VisionRange = 0.0
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("2_4js6p")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("3_k4jdv")
+MaxHp = 200.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("4_nd1vm")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitHarvest" type="Node" parent="Modules"]
+script = ExtResource("5_go1ti")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_lj3fd")
+
+[node name="HarvesterMiningFX" type="Node3D" parent="."]
+script = ExtResource("7_r070h")

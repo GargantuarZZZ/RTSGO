@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "BattleCruiserGun"
+DisplayName = "对地炮组"
+Damage = 40
+DamageType = 0
+RangeType = 1
+AttackRange = 640
+CooldownTicks = 20
+ProjectileBehavior = 2
+ProjectileSpeed = 500
+HitRadius = 24
+CanTargetGround = true
+CanTargetAir = false
+CanTargetStructure = true
+CanTargetNeutral = true
+HasAreaDamage = true
+AreaRadius = 64
+AreaEdgeDamagePercent = 100
+HitFxRadius = 64.0
+HitFxDuration = 0.4
+HitFxColor = Color(1, 0.55, 0.2, 1)

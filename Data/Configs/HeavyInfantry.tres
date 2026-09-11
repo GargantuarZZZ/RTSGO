@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 130.0
+VisionRange = 350.0
+Costs = Dictionary[int, float]({
+5: 125.0
+})
+BuildTime = 16.0
+MoveSpeed = 70
+FootprintTiles = 1.3
+ArmorType = 1
+Tags = Array[String](["Biological", "HeavyArmor"])
+SupplyCost = 1
+WeaponIds = Array[String](["HeavyCannon", "HeavyAPCannon"])
+MaxAmmo = 14
+CanDeploy = true
+DeployTimeSeconds = 1.0
+DeployedMaxHpMultiplier = 2.0
+DeployedAttackRangeBonusTiles = 2.0
+CanSwitchAmmoMode = true

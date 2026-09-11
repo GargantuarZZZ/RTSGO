@@ -1,0 +1,20 @@
+# 恶魔（Demon）建筑参考图 prompt：每行只写外观，风格锚点由脚本拼接。
+# 依据：桌面 o2\rts\设计数据表-副本.xlsx “恶魔”工作表建筑部分。只生成正面 + 右面。
+
+a demonic fortress city main building, massive dark stone and iron structure with spikes and a central tower, dark red and black with lava orange accents
+
+a demonic rift building, cracked stone portal-like structure with jagged edges, dark red and black with lava orange accents
+
+a demonic heavy workshop building, bulky dark iron structure with a large opening and spikes, dark red and black with lava orange accents
+
+a demonic dragon nest building, dark stone cave-like structure with a wide opening, dark red and black with lava orange accents
+
+a demonic magic tower, tall dark stone spire with spikes, dark red and black with lava orange accents
+
+a demonic soul stone, large dark crystal rock with jagged edges, dark red and black with lava orange accents
+
+a demonic lava altar building, wide dark stone platform with a central pillar, dark red and black with lava orange accents
+
+a demonic cursed fortress, massive dark iron castle with towers and spikes, dark red and black with lava orange accents
+
+a demonic tech tower, tall dark iron structure with antenna and spikes, dark red and black with lava orange accents

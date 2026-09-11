@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://bjbgk5wvuyfr6"]
+
+[ext_resource type="Script" uid="uid://ck3rsqd5xkcl7" path="res://Scripts/Tools/AIShowcase1v1.cs" id="1_show"]
+[ext_resource type="PackedScene" uid="uid://c8r1v1smllmp0" path="res://Scenes/main_1v1.tscn" id="2_show"]
+
+[node name="AIShowcase1v1" type="Node"]
+script = ExtResource("1_show")
+
+[node name="Main" parent="." instance=ExtResource("2_show")]

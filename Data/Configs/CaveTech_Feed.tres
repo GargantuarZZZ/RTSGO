@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+TechId = "CaveTech_Feed"
+DisplayName = "强化饲料"
+Description = "武装巨蝎移速 +10%、攻击力 +5、生命 +100；沙虫生命 +100。"
+Category = 1
+RequiresHarvester = false
+RequiredTechIds = Array[String](["CaveT3"])
+ResearchTimeSeconds = 100.0
+Cost = Dictionary[int, float]({
+8: 600.0
+})
+TargetUnitIds = Array[String](["CaveScorpion", "CaveSandworm"])
+MoveSpeedMultiplier = 1.1
+FlatHpBonus = 100
+FlatDamageBonus = 5

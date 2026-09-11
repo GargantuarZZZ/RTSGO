@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "RocketGun"
+DisplayName = "火箭弹"
+Damage = 5
+BonusDamage = 3
+BonusDamageTags = Array[String](["Worker"])
+DamageType = 0
+RangeType = 1
+AttackRange = 192
+CooldownTicks = 20
+ProjectileBehavior = 0
+HitFxRadius = 30.0
+HitFxDuration = 0.2
+HitFxColor = Color(1, 0.7, 0.3, 1)
+TracerThickness = 3.0
+TracerDuration = 0.14
+MuzzleFlashRadius = 16.0
+MuzzleFlashDuration = 0.08
+CanTargetGround = true
+CanTargetAir = false
+CanTargetStructure = true
+CanTargetNeutral = true

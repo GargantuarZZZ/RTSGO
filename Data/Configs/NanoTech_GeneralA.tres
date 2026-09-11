@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "NanoTech_GeneralA"
+DisplayName = "通用A：活性化"
+Description = "纳米巨兽获得活性化永久技能；解锁活性化塔（周围炮台攻速+10%，地毯灼烧地面敌人）。"
+Category = 0
+ExclusiveGroup = "General"
+RequiresHarvester = true
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+6: 1000.0
+})
+UnlockStructureIds = Array[String](["NanoActiveTower"])
+UnlockSkillIds = Array[String](["ActiveCloud"])
+AuraRadiusTiles = 6
+AuraAttackSpeedBonus = 0.1
+AuraBurnDamagePerSecond = 5.0

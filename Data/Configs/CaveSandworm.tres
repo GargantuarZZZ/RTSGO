@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 800.0
+VisionRange = 400.0
+Costs = Dictionary[int, float]({
+0: 500.0,
+5: 500.0,
+8: 500.0
+})
+BuildTime = 60.0
+CanMove = true
+MoveSpeed = 96
+FootprintTiles = 3.0
+ArmorType = 1
+Tags = Array[String](["Cave", "Biological", "HeavyArmor", "Giant"])
+SupplyCost = 5
+WeaponIds = Array[String](["CaveSandwormBite"])
+Role = 3
+Skill1Kind = 6
+Skill1Name = "潜地"
+Skill2Kind = 7
+Skill2Name = "吞噬"
+Skill2TargetMode = 1
+Skill2Damage = 300
+Skill2RangeTiles = 12
+AttackMoveFiresWhileMoving = true

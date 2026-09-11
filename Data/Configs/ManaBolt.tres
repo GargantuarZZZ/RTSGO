@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+WeaponId = "ManaBolt"
+DisplayName = "魔能弹"
+Damage = 15
+DamageType = 2
+RangeType = 1
+AttackRange = 576
+CooldownTicks = 20
+ProjectileBehavior = 1
+ProjectileSpeed = 520
+HitRadius = 18
+CanTargetGround = true
+CanTargetAir = true
+CanTargetStructure = true
+CanTargetNeutral = true

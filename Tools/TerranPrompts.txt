@@ -1,0 +1,28 @@
+# 泰伦（Terran）单位与建筑参考图 prompt：每行只写外观，风格锚点由脚本拼接。
+# 依据：桌面 o2\rts\设计数据表 (version 1).xlsb.xlsx “泰伦”工作表。只生成正面 + 右面。
+
+a rugged human engineer in brown and gray work armor, holding a wrench and a scanner tool, backpack, standing posture
+
+a human marine in bulky gray and orange armor, holding a large rifle, helmet with a visor, standing combat posture
+
+a heavy human infantry in very thick gray armor, holding a big cannon rifle, bulky frame, standing posture
+
+a rugged armored command vehicle on wheels, boxy hull with antennas and a sensor dome, gray and green panels
+
+a sleek jet fighter with swept wings, gray and orange panels, a cockpit, flying posture
+
+a rugged missile launcher vehicle on wheels, boxy hull with a raised missile rack, gray and green panels
+
+a rugged military fortress base building, wide armored bunker with a command tower and defense turrets, gray and green panels
+
+a small military camp building, bunker-like structure with a flag, gray and green panels
+
+a field military building, armored prefab structure with a door, gray and green panels
+
+a heavy military factory building, wide industrial structure with big bay doors, gray and green panels
+
+a military airfield building, hangar with a large opening, gray and green panels
+
+a military armory building, compact armored structure, gray and green panels
+
+an algae processing building, round tank-like structure with pipes and a small entrance, gray and green panels

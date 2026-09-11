@@ -1,0 +1,118 @@
+[gd_scene load_steps=18 format=4]
+
+[ext_resource type="Script" uid="uid://b1dcd8a3dfm4e" path="res://Scripts/Core/Main.cs" id="1_6bp64"]
+[ext_resource type="Script" uid="uid://5suqibsrq0e" path="res://Scripts/World/MapGrid.cs" id="2_6bp64"]
+[ext_resource type="Script" uid="uid://qy8gpss708v" path="res://Scripts/Core/RTSCamera.cs" id="3_ynf5e"]
+[ext_resource type="TileSet" uid="uid://b7v47751ah60y" path="res://Set/Creep.tres" id="4_fevyy"]
+[ext_resource type="TileSet" uid="uid://b6b6g5dupe30p" path="res://Set/St.tres" id="4_wsu2k"]
+[ext_resource type="Script" uid="uid://ds2c33130q21l" path="res://Scripts/Player/Player.cs" id="5_jkdf5"]
+[ext_resource type="Script" uid="uid://cqdorxkin6tjw" path="res://Scripts/Player/PlayerController.cs" id="6_fdnlq"]
+[ext_resource type="Script" uid="uid://ru7ibhyjpntr" path="res://Scripts/Player/PlayerData.cs" id="7_jkdf5"]
+[ext_resource type="Script" uid="uid://bxh58nt6aapcq" path="res://Scripts/Race/Union.cs" id="10_hptm8"]
+[ext_resource type="PackedScene" uid="uid://dm5lu6nar2y81" path="res://Scenes/UI/user_ui.tscn" id="12_jkdf5"]
+[ext_resource type="Script" uid="uid://b8siko3dljlyb" path="res://Scripts/User/UserController.cs" id="13_wsu2k"]
+[ext_resource type="PackedScene" uid="uid://l64t4mva1apl" path="res://Scenes/Game/fog_of_war.tscn" id="15_k12tt"]
+[ext_resource type="Script" uid="uid://dme86giqt2l42" path="res://Scripts/World/Game.cs" id="15_wsu2k"]
+[ext_resource type="Script" uid="uid://bhno7tmxjwl4k" path="res://Scripts/World/EntitySpawner.cs" id="16_k12tt"]
+[ext_resource type="Script" uid="uid://cy0io07ivnp1m" path="res://Scripts/Core/CreepManager.cs" id="18_b3802"]
+[ext_resource type="Script" uid="uid://bx6jno3d38he2" path="res://Scripts/World/MapGround3D.cs" id="30_ground"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_debug"]
+vertices = PackedVector2Array(3840, 3840, -3840, 3840, -3840, -3840, 3840, -3840)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+cell_size = 64.0
+
+[node name="Main" type="Node2D"]
+z_index = 4096
+script = ExtResource("1_6bp64")
+
+[node name="MapGrid" type="Node2D" parent="." node_paths=PackedStringArray("BaseMapLayer", "NavRegion")]
+script = ExtResource("2_6bp64")
+MapPresetId = 2
+BaseMapLayer = NodePath("../NavigationRegion2D/TileMapLayer")
+NavRegion = NodePath("../NavigationRegion2D")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_debug")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="NavigationRegion2D"]
+tile_set = ExtResource("4_wsu2k")
+collision_enabled = false
+
+[node name="CreepLayer" type="TileMapLayer" parent="NavigationRegion2D"]
+tile_set = ExtResource("4_fevyy")
+collision_enabled = false
+
+[node name="RTSCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 30, 0)
+current = true
+script = ExtResource("3_ynf5e")
+
+[node name="Players" type="Node2D" parent="."]
+
+[node name="Player2" type="Node2D" parent="Players"]
+position = Vector2(3000, 0)
+script = ExtResource("5_jkdf5")
+TeamId = 1
+
+[node name="Race" type="Node2D" parent="Players/Player2"]
+script = ExtResource("10_hptm8")
+
+[node name="PlayerController" type="Node2D" parent="Players/Player2"]
+script = ExtResource("6_fdnlq")
+
+[node name="PlayerData" type="Node2D" parent="Players/Player2"]
+script = ExtResource("7_jkdf5")
+
+[node name="Player1" type="Node2D" parent="Players"]
+position = Vector2(0, 0)
+script = ExtResource("5_jkdf5")
+TeamId = 1
+
+[node name="Race" type="Node2D" parent="Players/Player1"]
+script = ExtResource("10_hptm8")
+
+[node name="PlayerController" type="Node2D" parent="Players/Player1"]
+script = ExtResource("6_fdnlq")
+
+[node name="PlayerData" type="Node2D" parent="Players/Player1"]
+script = ExtResource("7_jkdf5")
+
+[node name="Entities" type="Node2D" parent="."]
+
+[node name="User" type="Node2D" parent="."]
+
+[node name="UserController" type="Node2D" parent="User" node_paths=PackedStringArray("TargetController")]
+script = ExtResource("13_wsu2k")
+TargetController = NodePath("../../Players/Player1/PlayerController")
+
+[node name="FogOfWar" parent="User" instance=ExtResource("15_k12tt")]
+
+[node name="UserUI" parent="User" instance=ExtResource("12_jkdf5")]
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.8660254, 0.40957603, -0.28678823, 0, 0.57357645, 0.81915206, 0.5, -0.7094065, 0.49673176, 0, 0, 0)
+
+[node name="Ground" type="Node3D" parent="."]
+script = ExtResource("30_ground")
+
+[node name="Game" type="Node2D" parent="."]
+script = ExtResource("15_wsu2k")
+
+[node name="Spawner" type="Node" parent="Game"]
+script = ExtResource("16_k12tt")
+
+[node name="CreepManager" type="Node2D" parent="Game" node_paths=PackedStringArray("CreepMapLayer")]
+script = ExtResource("18_b3802")
+CreepMapLayer = NodePath("../../NavigationRegion2D/CreepLayer")
+CreepAtlasMap = Dictionary[int, Vector2i]({
+3: Vector2i(0, 0)
+})
+
+[node name="SpawnPoints" type="Node2D" parent="."]
+
+[node name="Spawn_1" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(0, 0)
+
+[node name="Spawn_2" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(3000, 0)

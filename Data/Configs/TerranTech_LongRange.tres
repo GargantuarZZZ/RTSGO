@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "TerranTech_LongRange"
+DisplayName = "长程飞弹"
+Description = "鲲式战斗机、导弹发射车射程 +2。"
+Category = 1
+RequiresHarvester = false
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+0: 700.0
+})
+RequiredTechIds = Array[String](["TerranT3"])
+TargetUnitIds = Array[String](["Fighter", "MissileVehicle"])
+AttackRangeBonus = 128.0

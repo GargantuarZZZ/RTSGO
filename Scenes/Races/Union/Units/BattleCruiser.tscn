@@ -1,0 +1,71 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Unit.cs" id="1_kg0ei"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/ProjectileWeapon.cs" id="2_btdn3"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/Rifle.cs" id="3_qcq1f"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="4_sikmj"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="5_5lw8p"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="6_uv7cq"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="7_3r5ax"]
+
+[node name="BattleCruiser" type="Node3D"]
+script = ExtResource("1_kg0ei")
+TeamID = 1
+UnitName = "BattleCruiser"
+VisionRange = 500.0
+FlyHeight = 360.0
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="BattleCruiserGun" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
+script = ExtResource("2_btdn3")
+HitFxRadius = 64.0
+HitFxDuration = 0.4
+HitFxColor = Color(1, 0.55, 0.2, 1)
+WeaponName = "BattleCruiserGun"
+Damage = 40.0
+AttackRange = 640.0
+FirePoint = NodePath("FirePoint")
+HasAreaDamage = true
+AreaRadius = 64.0
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/BattleCruiserGun"]
+
+[node name="BattleCruiserAA" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, -3.4969112e-06)
+script = ExtResource("3_qcq1f")
+HitFxRadius = 30.0
+HitFxDuration = 0.2
+HitFxColor = Color(1, 0.9, 0.3, 1)
+TracerDuration = 0.16
+WeaponName = "BattleCruiserAA"
+Damage = 5.0
+AttackRange = 512.0
+Cooldown = 0.3
+FirePoint = NodePath("FirePoint")
+CanTargetGround = false
+CanTargetAir = true
+CanTargetStructure = false
+CanTargetNeutral = false
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/BattleCruiserAA"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("4_sikmj")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("5_5lw8p")
+MaxHp = 1000.0
+ArmorType = 3
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("6_uv7cq")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("7_3r5ax")

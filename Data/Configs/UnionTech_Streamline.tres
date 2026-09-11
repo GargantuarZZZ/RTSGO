@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "UnionTech_Streamline"
+DisplayName = "流线型"
+Description = "飞行单位移动速度 +20%。"
+Category = 3
+RequiresHarvester = false
+TargetTag = "Air"
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+0: 150.0,
+8: 150.0
+})
+MoveSpeedMultiplier = 1.2

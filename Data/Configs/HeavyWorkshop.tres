@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="StructureConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://c0oxwdisfkj8y" path="res://Scripts/Data/Configs/StructureConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 600.0
+VisionRange = 400.0
+Costs = Dictionary[int, float]({
+0: 500.0,
+8: 300.0
+})
+BuildTime = 10.0
+GridWidth = 3
+GridHeight = 3
+IsProductionBuilding = true
+RequiresSacrifice = true
+FieldRadius = 10
+AutoProduceUnitIds = Array[String](["HeavyTank"])
+AutoProduceIntervalSeconds = 32.0
+ProvidesTechIds = Array[String](["DemonT2"])
+SupplyUsed = 4

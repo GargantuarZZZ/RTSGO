@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4we8jldwd85h"]
+
+[ext_resource type="Script" uid="uid://f46626a8oe5u" path="res://Scripts/Test/StressTest200Rifle.cs" id="1_stress"]
+
+[node name="StressTest200Rifle" type="Node"]
+script = ExtResource("1_stress")

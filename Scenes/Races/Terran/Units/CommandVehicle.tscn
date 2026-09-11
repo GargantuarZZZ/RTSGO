@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Unit.cs" id="1_c3s55"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="2_yspn4"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="3_pdpai"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="4_orwoe"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="5_16nle"]
+
+[node name="CommandVehicle" type="Node3D"]
+script = ExtResource("1_c3s55")
+TeamID = 1
+UnitName = "CommandVehicle"
+VisionRange = 960.0
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("2_yspn4")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("3_pdpai")
+MaxHp = 220.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("4_orwoe")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("5_16nle")

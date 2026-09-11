@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "NanoTech_GeneralB"
+DisplayName = "通用B：电子云"
+Description = "纳米巨兽获得永久电子云技能；解锁烟雾塔（周围炮台回血×5，敌人射程-1）。"
+Category = 0
+ExclusiveGroup = "General"
+RequiresHarvester = true
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+6: 1000.0
+})
+UnlockStructureIds = Array[String](["NanoSmokeTower"])
+UnlockSkillIds = Array[String](["ElectronicCloud"])
+AuraRadiusTiles = 8
+AuraHpRegenPerSecond = 8.0
+AuraEnemyRangeReductionTiles = 1

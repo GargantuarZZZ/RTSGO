@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "UnionT3"
+DisplayName = "太空船坞（T3）"
+Description = "建造太空船坞后解锁第三时代建筑与单位。"
+Category = 1
+RequiresHarvester = false
+ResearchTimeSeconds = 1.0

@@ -1,0 +1,460 @@
+key,text
+settings,设置
+language,语言
+keybinds,键位
+audio,声音
+video,画面
+master_volume,主音量
+music_volume,音乐音量
+sfx_volume,音效音量
+fullscreen,全屏
+save,保存
+back,返回
+press_key,按任意键…
+pause,暂停
+surrender,投降
+chat,聊天
+main_menu_single,单机
+main_menu_host,创建房间
+main_menu_find,寻找房间
+main_menu_quit,退出游戏
+action.Move,移动
+action.Stop,停止
+action.Attack,攻击
+action.AttackMove,攻击移动
+action.Hold,驻守
+action.Harvest,采集
+action.Repair,维修
+action.Deploy,架设/收起
+action.SwitchAmmo,切换弹种
+action.Garrison,驻扎
+action.ReleaseWorkers,放出工人
+action.Stim,兴奋剂
+action.CruiserMobility,机动模式
+action.Radar,雷达
+action.OrbitalStrike,轨道炮打击
+action.NanoSpread,地毯扩散
+action.PlasmaStrike,电浆炮
+action.PlasmaMode,自动/手动切换
+action.SelfDestruct,自杀
+name.DemonWorker,怨灵
+name.DemonDog,恶魔狗
+name.DemonFlyer,飞行射手
+name.HeavyTank,重型战车
+name.FireDragon,喷火龙
+name.LavaBanner,熔岩旗手
+name.Banner,旗帜
+name.FortGuard,堡垒守卫
+name.HellLord,地狱领主
+name.FireTitan,火焰巨魔
+name.HellCity,地狱城
+name.GreatRift,大裂隙
+name.HeavyWorkshop,重型车间
+name.DragonNest,喷火龙巢
+name.ManaTower,魔能塔
+name.SoulStone,灵魂石
+name.LavaAltar,熔岩祭坛
+name.CurseFortress,诅咒堡垒
+name.DemonTower,魔塔
+name.SCV,工程车
+name.RifleMan,步枪兵
+name.RocketMan,火箭兵
+name.Medic,医疗兵
+name.Biped,双管重装
+name.Hp,武装直升机
+name.BattleCruiser,战列巡洋舰
+name.CommandCenter,指挥中心
+name.BB,兵营
+name.VF,工厂
+name.SupplyDepot,补给站
+name.Academy,研究院
+name.Starport,太空船坞
+name.OrbitalControl,轨道控制中心
+name.Engineer,工程兵
+name.Marine,大兵
+name.HeavyInfantry,重装步兵
+name.CommandVehicle,指挥车
+name.Artillery,自行火炮
+name.Liberator,解放者天基炮
+name.Fighter,鲲式战斗机
+name.MissileVehicle,导弹发射车
+name.FortressCore,指挥堡垒
+name.FrontlineCamp,前线营地
+name.FieldCamp,野战营
+name.ArmorFactory,装甲工厂
+name.Airfield,机场
+name.Armory,军械所
+name.AlgaeFactory,藻类工厂
+name.Builder,建造型
+name.Hunter,游猎型
+name.Harvester,收割型
+name.Shepherd,牧羊人型
+name.Tank,战车型
+name.PlasmaCannon,电浆炮型
+name.NanoBehemoth,纳米巨兽
+name.NanoTurret,机炮
+name.NanoSniper,狙击炮
+name.NanoAA,防空飞弹
+name.NanoHarvester,采集器
+name.NanoActiveTower,活性化塔
+name.NanoSmokeTower,烟雾塔
+name.NanoCore,纳米核心
+menu.title,县际争霸3
+menu.lobby_title,房间等待中
+menu.room_list_title,房间列表
+menu.refresh,刷新
+menu.pkg_ok,包完整
+menu.pkg_missing,缺文件!
+menu.version,"v{0} · {1} · {2}"
+lobby.ready,准备
+lobby.unready,取消准备
+lobby.start,开始
+lobby.race_prompt,请选择种族
+lobby.team_prompt,请选择出生点
+lobby.map_classic,经典大地图
+lobby.map_1v1,1v1 断墙小图
+lobby.map_debug,调试地图
+lobby.team_slot,位置 {0}
+lobby.not_selected,未选择
+lobby.no_team,未选位
+lobby.ready_yes,[已准备]
+lobby.ready_no,[未准备]
+lobby.player_line,"{0} (P{1}) | {2} | {3} | {4}"
+lobby.room_fallback,大厅: {0}
+lobby.local_player,玩家 {0}
+lobby.unknown_player,未知玩家
+lobby.join,加入
+race.union,联合
+race.nano,纳米虫
+race.demon,恶魔
+race.wanderer,多足机械
+race.terran,泰伦
+resource.metal,矿物
+resource.gas,瓦斯
+resource.energy,能量
+resource.data,数据
+resource.food,人口
+resource.money,金钱
+resource.wood,木材
+resource.supply,人口
+resource.biomass,生物质
+resource.nanobots,纳米机器人
+hud.supply,人口 {0}/{1}
+hud.bound_count,怨灵 {0}/{1}
+hud.garrison_count,工人 {0}/{1}
+hud.fps_line,"画面 {0} FPS  逻辑 {1} TPS"
+info.resource_remaining,"[资源] 剩余 {0} / {1}"
+info.attrs,"[属性] 护甲:{0}"
+info.tags,"  标签:{0}"
+info.move_speed,"  移速:{0}格/s"
+info.vision,"  视野:{0}格"
+info.energy,"  能量:{0:F0}/{1:F0}"
+info.no_weapon,无武器
+info.energy_value,"能量 {0:F0}"
+info.ammo_value,"弹药 {0:F0}"
+info.combat_rating,"  战力:{0}"
+armor.light,轻甲
+armor.armored,重甲
+armor.biological,生物
+armor.mechanical,机械
+armor.structure,建筑
+armor.other,甲{0}
+dmg.kinetic,动能
+dmg.thermal,热能
+dmg.explosive,爆破
+dmg.em,电磁
+dmg.beam,光束
+dmg_short.kinetic,动
+dmg_short.thermal,热
+dmg_short.explosive,爆
+dmg_short.em,电
+dmg_short.beam,光
+target.ground,对地
+target.air,对空
+target.structure,建筑
+proj.instant,即时
+weapon.melee,近战
+weapon.ranged,远程
+proj.homing,跟踪
+proj.fixed,弹道
+proj.lob,抛射
+weapon.splash,"溅射{0}格"
+weapon.cone,"扇形{0}°"
+weapon.footprint,长宽²结算
+weapon.cooldown,"[冷却{0}s]"
+weapon.stats,"{0}{1} {2} | 射程{3}格 攻速{4}s | {5}{6}{7}"
+buff.tooltip,"{0} x{1}  剩余 {2:F1}s / {3:F1}s"
+buff.permanent,"{0} x{1}  永久"
+net.desync,"检测到脱步，模拟已暂停。报告: {0}"
+net.player_dropped,"玩家 {0} 已掉线，已从锁步中移除"
+net.waiting_input,"等待玩家 {0} 的指令…自动补发中"
+nano.spread_btn,扩散菌毯
+nano.spread_confirm,"点击地面确认扩散 [{0}]"
+nano.spread_cd,扩散菌毯 [x{0}] 恢复{1}s
+nano.spread_ready,扩散菌毯 [x{0}] 就绪
+nano.btn_turret,"机炮\n150n"
+nano.btn_sniper,"狙击炮\n200n"
+nano.btn_aa,"防空飞弹\n150n"
+nano.btn_harvester,"采集器\n300n"
+nano.btn_active,"活性化塔\n200n"
+nano.btn_smoke,"烟雾塔\n200n"
+orbital.energy,"能量: {0}"
+orbital.btn_radar,雷达 20e
+orbital.btn_strike,轨道炮 40e
+orbital.btn_ex_metal,金属→瓦斯 20e
+orbital.btn_ex_gas,瓦斯→金属 20e
+room.join,加入
+action.AutoProduceMode,切换模式
+action.ExchangeMetalToGas,金属→瓦斯
+action.ExchangeGasToMetal,瓦斯→金属
+action.HeroSkill1,技能 1
+action.HeroSkill2,技能 2
+action.SelfDestructTip,摧毁自身
+build.requires,需要：{0}
+list_sep,、
+vote.rematch,重新开局
+vote.surrender_team,队伍投降
+vote.banner,"玩家 {0} 发起[{1}]投票  同意 N / 反对 M  ({2:0}s)"
+vote.passed_rematch,重开投票通过，本局以平局结束
+vote.failed_rematch,重开投票未通过
+vote.passed_surrender,队伍投降投票通过
+vote.failed_surrender,队伍投降投票未通过
+bot.none,无机器人
+bot.count,机器人 x{0}
+bot.easy,休闲
+bot.normal,标准
+bot.hard,疯狂
+skill.BattleCruiser.1,机动模式
+skill.CommandVehicle.1,烟雾弹
+skill.CommandVehicle.2,干扰弹
+skill.FireTitan.1,咆哮 30能
+skill.FireTitan.2,冲锋 10能
+skill.HellLord.1,恐惧勾魂 10能
+skill.HellLord.2,狂热武装 15能
+skill.PlasmaCannon.1,电浆炮
+skill.PlasmaCannon.2,切换自动/手动
+skill.RifleMan.1,兴奋剂
+name.GasSpring,瓦斯喷泉
+name.IronOre,铁矿
+name.MetalMine,金属矿
+name.WildFruit,野果
+name.Shrine,圣地
+name.Tower,哨塔
+name.Blueprint_Builder,建造蓝图
+name.Blueprint_Harvester,收割蓝图
+name.Blueprint_Hunter,游猎蓝图
+name.Blueprint_PlasmaCannon,电浆炮蓝图
+name.Blueprint_Shepherd,牧羊蓝图
+name.Blueprint_Tank,战车蓝图
+name.DemonTech_Blood,恶魔血肉
+name.DemonTech_Feudal,分封制
+name.DemonTech_Fire,烈火
+name.DemonTech_Greed,贪婪涌出
+name.DemonTech_March,急行军
+name.DemonTech_Rift,裂痕扩张
+name.DemonTech_SoulFire,灵魂火
+name.DemonTech_Spread,地狱扩散
+name.NanoTech_AdvancedHarvester,先进采集器
+name.NanoTech_CombatA,战斗A：要塞化
+name.NanoTech_CombatB,战斗B：离子吐息
+name.NanoTech_DefenseA,防御A：蜂巢装甲
+name.NanoTech_DefenseB,防御B：镜面装甲
+name.NanoTech_EconomyPhoto,高效光合
+name.NanoTech_GeneralA,通用A：活性化
+name.NanoTech_GeneralB,通用B：电子云
+name.NanoTech_MobilityA,机动A：地毯生成
+name.NanoTech_MobilityB,机动B：地毯疾行
+name.TerranTech_AmmoRecovery,弹药回收
+name.TerranTech_Buckshot,铅弹
+name.TerranTech_Entrench,深埋工事
+name.TerranTech_FastDeploy,快速展开
+name.TerranTech_Gunpowder,火药除沙
+name.TerranTech_Jammer,干扰弹
+name.TerranTech_LongRange,长程飞弹
+name.TerranTech_Ray,毁灭射线
+name.UnionTech_Casting,一体铸造
+name.UnionTech_Optics,光学瞄具
+name.UnionTech_RegenSteel,再生钢
+name.UnionTech_Stim,兴奋剂
+name.UnionTech_Streamline,流线型
+name.WandererTech_AutoHarvest,采集自动化
+name.WandererTech_DefBeam,针对防御:光束
+name.WandererTech_DefEM,针对防御:电磁
+name.WandererTech_DefKinetic,针对防御:动能
+name.WandererTech_DefThermal,针对防御:热能
+name.WandererTech_Leap,腾跃
+name.WandererTech_Link,指挥链路
+name.WandererTech_Pigeon,信鸽
+name.ArtilleryCannon,自行火炮
+name.BattleCruiserAA,对空炮组
+name.BattleCruiserGun,对地炮组
+name.BipedGan,双管炮
+name.DemonDogBite,撕咬
+name.DragonBreath,龙息
+name.EngineerPunch,扳手
+name.FighterMissile,空空飞弹
+name.FlyerBolt,魔能箭
+name.FortressGun,堡垒机炮
+name.GuardPunch,重拳
+name.HeavyAPCannon,穿甲弹
+name.HeavyCannon,榴弹步枪
+name.HellCityGun,地狱城炮
+name.HellLordBlast,魔能爆
+name.HpGun,速射枪
+name.LiberatorBeam,天基光束
+name.MagicBallShooter,魔法弹塔
+name.ManaBolt,魔能弹
+name.MarineRifle,电磁步枪
+name.MissileVolley,导弹齐射
+name.NanoAAMissile,防空飞弹
+name.NanoBehemothFortressAA,要塞防空
+name.NanoBehemothFortressGun,要塞火炮
+name.NanoBehemothGun,随身机炮
+name.NanoMachineGun,机炮
+name.NanoSniperCannon,狙击炮
+name.PlasmaArtillery,电浆炮
+name.Rifle,步枪
+name.RocketGun,火箭弹
+name.ScvGun,SCV焊枪
+name.TankCannon,战车炮
+name.TitanSlam,巨锤
+name.WandererHarvesterClaw,收割光束
+name.WandererHunterBeam,光束
+name.WandererPlasmaBeam,光束线
+name.WandererShepherdBeam,牧羊光束
+name.WandererTankGun,电磁炮
+name.ArmorBuff,强化装甲
+name.SlowBuff,减速
+name.StimBuff,兴奋剂
+chat.title,聊天
+chat.input_hint,输入消息，回车发送（Esc 关闭）
+chat.open_hint,按 T 打开聊天。Ctrl+中键在地图上打信号（联机时队友可见）；中键拖拽可平移视角
+observer.check,旁观者模式（全图视野，不可操控，可看所有人资源）
+observer.short,旁观者
+observer.title,[旁观者] 全图视野 | 不可操控
+lobby.group_prompt,选择队伍
+lobby.group,队伍{0}
+lobby.group_auto,自动
+bot.add,添加机器人
+bot.label,机器人{0}
+bot.add_full,已达人数上限
+bot.full,参战方已满（上限 {0}）：观战不受影响，可勾选"旁观者模式"
+bot.limit,机器人数量已达上限（最多 6 个）
+spectator.header,观战席位（{0}）
+spectator.header_count,观战席位（{0} 人）
+spectator.none,暂无观战者
+spectator.seat,观战 {0}
+spectator.seat_me,观战 {0}（我）
+lobby.you,我
+race.plant,植物
+race.cave,洞穴族
+name.PlantLeafDog,叶犬
+name.PlantSpider,蜘蛛
+name.PlantTreeGuard,大树守卫
+name.PlantLifeTree,生命树
+name.PlantBranchTree,分支生命树
+name.PlantForestNode,森林节点
+name.PlantLeafPit,落叶坑
+name.PlantSproutNest,树苗巢
+name.PlantFlowerField,花田
+name.PlantNestFort,巢堡
+name.PlantSunlightTurret,光合炮台
+name.PlantLifeSpring,生命之泉
+name.PlantTreeWall,树墙
+name.PlantEarthCore,大地核心
+name.PlantTech_Photo,光合效率
+name.PlantTech_Spread,菌毯增殖
+name.PlantTech_Fiber,纤维装甲
+name.PlantTech_Ironwood1,铁木甲壳1
+name.PlantTech_Ironwood2,铁木甲壳2
+name.PlantTech_Omni,全能性
+name.PlantTech_Leech,汲取
+name.PlantTech_Web,粘液蛛网
+name.PlantTech_Sunflower,向日葵
+name.PlantTech_Fission,加速分裂
+name.PlantTech_DivineBow,神力弓
+name.PlantTech_VineTendon,藤曼肌腱
+name.CaveWorker,工兵
+name.CaveNestShooter,巢穴射手
+name.CaveBreaker,突破者
+name.CaveSage,智者
+name.CaveScorpion,武装巨蝎
+name.CaveSandworm,沙虫
+name.CaveSandwormMid,沙虫中段
+name.CaveSandwormTail,沙虫尾段
+name.CaveMainNest,主巢
+name.CaveTrainingGround,训练场
+name.CaveDen,地穴
+name.CaveExcavation,采掘场
+name.CaveFungusField,真菌农田
+name.CaveNest,巢穴
+name.CaveAcademy,学院
+name.CaveSeismograph,地动仪
+name.CaveRanch,牧场
+name.CaveOutpost,前哨
+name.CaveCrustCracker,地壳裂解器
+name.CaveWormholeCore,虫洞核心
+name.CaveWormhole,虫洞
+name.CaveSandwormPit,沙虫窟
+name.CaveTech_FastMag,快速弹匣
+name.CaveTech_Shield,盾牌
+name.CaveTech_Feed,强化饲料
+name.CaveTech_Fungus,真菌育种
+name.CaveTech_Steel,精炼钢
+name.CaveTech_Weapon,武器升级
+name.CaveTech_Militia,民兵化
+skill.CaveSandworm.1,潜地
+skill.CaveSandworm.2,吞噬
+action_state.auto_on,自动开
+action_state.auto_off,自动关
+action_state.burrowed,地下
+action_state.surface,地表
+action_state.deploying,架设中
+action_state.deployed,已架设
+action_state.packing,收起中
+action_state.mobile,移动态
+keybind_hint,"点右侧按键即可重新绑定；按 Esc 取消。带 * 表示已改过；显示""被 XX 占用""说明那个键同时绑了别的动作。"
+keybind_click_to_change,点击后按下新按键（Esc 取消）
+keybind_fixed,固定键位：面板技能槽按格子位置排布，不开放修改
+keybind_conflict,被占用：
+keybind_applied,已绑定
+keybind_cancelled,已取消改键
+keybind_waiting,请按下要绑定的按键…
+reset_keys,恢复默认键位
+reset_keys_done,已恢复默认键位，改动
+reset_keys_none,键位本来就是默认值
+keygroup_camera,镜头
+keygroup_selection,选择与编队
+keygroup_orders,单位指令
+keygroup_match,对局与社交
+keygroup_panel,面板技能槽（固定）
+cam_up,镜头上移
+cam_down,镜头下移
+cam_left,镜头左移
+cam_right,镜头右移
+cam_center,镜头回中
+select_all_army,全选作战单位
+select_all_workers,全选工人
+select_idle_workers,选中空闲工人
+attack_move,攻击移动
+stop,停止
+hold,驻守
+pause,暂停/继续
+surrender,投降
+chat,打开聊天
+vote_rematch,发起重开投票（Ctrl+组合）
+slot_1,技能槽 1
+slot_2,技能槽 2
+slot_3,技能槽 3
+slot_4,技能槽 4
+slot_5,技能槽 5
+slot_6,技能槽 6
+slot_7,技能槽 7
+slot_8,技能槽 8
+slot_9,技能槽 9
+slot_10,技能槽 10
+slot_11,技能槽 11
+slot_12,技能槽 12
+slot_13,技能槽 13
+slot_14,技能槽 14
+slot_15,技能槽 15

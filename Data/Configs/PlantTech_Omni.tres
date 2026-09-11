@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+TechId = "PlantTech_Omni"
+DisplayName = "全能性"
+Description = "花田消耗10能量在任意菌毯处建造叶犬"
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+1: 200.0
+})

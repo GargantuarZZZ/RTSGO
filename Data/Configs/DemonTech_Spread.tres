@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+TechId = "DemonTech_Spread"
+DisplayName = "地狱扩散"
+Description = "所有恶魔建筑立场范围 +2。"
+Category = 2
+RequiresHarvester = false
+TargetTag = "Demon"
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+0: 150.0,
+8: 100.0
+})
+FieldRadiusBonus = 2

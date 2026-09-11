@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 220.0
+VisionRange = 960.0
+Costs = Dictionary[int, float]({
+0: 150.0,
+5: 100.0
+})
+BuildTime = 25.0
+MoveSpeed = 128
+FootprintTiles = 2.0
+Tags = Array[String](["Mechanical"])
+SupplyCost = 2
+MaxAmmo = 25
+HeroEnergyMax = 100.0
+EnergyRegenInAmmoRange = true
+Skill1Kind = 1
+Skill1Name = "烟雾弹"
+Skill1Cost = 20.0
+Skill1RangeTiles = 10
+Skill1DurationSeconds = 8.0
+Skill1TargetMode = 3
+Skill1BehaviorId = "TerranSmoke"
+Skill1AttackRangeBonus = -128.0
+Skill2Kind = 1
+Skill2Name = "干扰弹"
+Skill2Cost = 40.0
+Skill2RangeTiles = 10
+Skill2DurationSeconds = 5.0
+Skill2TargetMode = 3
+Skill2BehaviorId = "TerranDisrupt"
+Skill2RequiredTechId = "TerranTech_Jammer"

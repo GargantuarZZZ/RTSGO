@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Unit.cs" id="1_kkb62"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/Rifle.cs" id="2_3rduc"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="3_naq20"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="4_24wml"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="5_8qges"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_nbnvi"]
+
+[node name="RocketMan" type="Node3D"]
+script = ExtResource("1_kkb62")
+TeamID = 1
+UnitName = "RocketMan"
+FlyHeight = 300.0
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="RocketGun" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+script = ExtResource("2_3rduc")
+HitFxRadius = 30.0
+HitFxDuration = 0.2
+HitFxColor = Color(1, 0.7, 0.3, 1)
+TracerThickness = 3.0
+TracerDuration = 0.14
+MuzzleFlashRadius = 16.0
+MuzzleFlashDuration = 0.08
+WeaponName = "RocketGun"
+Damage = 4.0
+BonusDamage = 3.0
+AttackRange = 192.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/RocketGun"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("3_naq20")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("4_24wml")
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("5_8qges")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_nbnvi")

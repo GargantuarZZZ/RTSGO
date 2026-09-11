@@ -1,0 +1,54 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Structure.cs" id="1_6fad3"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/Rifle.cs" id="2_ofyyu"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="3_r3c5e"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="4_p88sa"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="5_cbobk"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_hiwbh"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/Behaviors/AutoBuildBehavior.cs" id="7_5nelr"]
+
+[node name="NanoTurret" type="Node3D"]
+script = ExtResource("1_6fad3")
+TeamID = 1
+StructureName = "NanoTurret"
+RequiredCreep = 3
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="NanoMachineGun" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+script = ExtResource("2_ofyyu")
+HitFxRadius = 48.0
+HitFxColor = Color(1, 0.9, 0.3, 1)
+TracerThickness = 4.0
+MuzzleFlashRadius = 20.0
+WeaponName = "NanoMachineGun"
+Damage = 5.0
+AttackRange = 320.0
+Cooldown = 0.2
+FirePoint = NodePath("FirePoint")
+CanTargetAir = true
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/NanoMachineGun"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("3_r3c5e")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("4_p88sa")
+MaxHp = 400.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("5_cbobk")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_hiwbh")
+
+[node name="AutoBuild" type="Node" parent="."]
+script = ExtResource("7_5nelr")
+BuildTime = 8.0

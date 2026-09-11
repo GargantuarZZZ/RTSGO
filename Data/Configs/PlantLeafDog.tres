@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 120.0
+VisionRange = 300.0
+Costs = Dictionary[int, float]({
+1: 50.0
+})
+BuildTime = 15.0
+CanMove = true
+MoveSpeed = 102
+FootprintTiles = 1.0
+Tags = Array[String](["Plant", "Biological"])
+SupplyCost = 1
+WeaponIds = Array[String](["PlantLeafBite"])
+Role = 2

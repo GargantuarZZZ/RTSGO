@@ -1,0 +1,73 @@
+[gd_resource type="Resource" script_class="RaceConfig" load_steps=6 format=3]
+[ext_resource type="Script" uid="uid://ggpnodg7xyut" path="res://Scripts/Data/Configs/RaceConfig.cs" id="1"]
+[ext_resource type="Script" uid="uid://c7llurdu6glbx" path="res://Scripts/Data/Configs/StartingEntityConfig.cs" id="2"]
+[ext_resource type="Script" uid="uid://ckybmajpqah2h" path="res://Scripts/Data/ResourceStartConfig.cs" id="3"]
+[sub_resource type="Resource" id="nr_start"]
+script = ExtResource("3")
+Type = 6
+Amount = 100
+
+[sub_resource type="Resource" id="nse_behemoth"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "NanoBehemoth"
+TeamMode = 0
+Offset = Vector2(300, 0)
+
+[sub_resource type="Resource" id="nse_harvester"]
+script = ExtResource("2")
+Kind = 1
+EntityId = "NanoHarvester"
+TeamMode = 0
+Offset = Vector2(0, 0)
+
+[sub_resource type="Resource" id="nse_ore1"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "IronOre"
+TeamMode = 1
+Offset = Vector2(-440, -240)
+
+[sub_resource type="Resource" id="nse_ore2"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "IronOre"
+TeamMode = 1
+Offset = Vector2(-440, 0)
+
+[sub_resource type="Resource" id="nse_ore3"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "IronOre"
+TeamMode = 1
+Offset = Vector2(-440, 240)
+
+[resource]
+script = ExtResource("1")
+RaceId = "Nano"
+DisplayName = "纳米虫"
+Offense = 1
+Defense = 4
+Economy = 3
+Support = 2
+Technology = 5
+Difficulty = 1
+CarpetSpreadCost = 300.0
+CarpetSpreadCooldownSeconds = 10.0
+CarpetSpreadRadiusTiles = 10.0
+CarpetSpreadMaxCharges = 3
+CarpetSpreadDurationSeconds = 1.0
+CarpetIncomeCellsPerResource = 500
+VisionMode = 1
+StartingResources = Array[Resource]([SubResource("nr_start")])
+StartingEntities = Array[Resource]([SubResource("nse_behemoth"), SubResource("nse_harvester"), SubResource("nse_ore1"), SubResource("nse_ore2"), SubResource("nse_ore3")])
+AvailableUnitIds = Array[String](["NanoBehemoth"])
+AvailableStructureIds = Array[String](["NanoTurret", "NanoSniper", "NanoAA", "NanoHarvester", "NanoActiveTower", "NanoSmokeTower"])
+AvailableTechIds = Array[String](["NanoTech_GeneralA", "NanoTech_GeneralB", "NanoTech_CombatA", "NanoTech_CombatB", "NanoTech_DefenseA", "NanoTech_DefenseB", "NanoTech_MobilityA", "NanoTech_MobilityB", "NanoTech_EconomyPhoto", "NanoTech_AdvancedHarvester"])
+AiBuildOrderIds = Array[String](["NanoHarvester", "NanoTurret", "NanoSniper", "NanoAA", "NanoActiveTower", "NanoSmokeTower"])
+AiBuildTargetCounts = { "NanoHarvester": 3, "NanoTurret": 2, "NanoSniper": 2, "NanoAA": 2, "NanoActiveTower": 1, "NanoSmokeTower": 1 }
+AiTechOrderIds = Array[String](["NanoTech_CombatA", "NanoTech_MobilityA", "NanoTech_EconomyPhoto", "NanoTech_AdvancedHarvester", "NanoTech_CombatB", "NanoTech_DefenseA", "NanoTech_DefenseB", "NanoTech_MobilityB", "NanoTech_GeneralA", "NanoTech_GeneralB"])
+AiWorkerTarget = 0
+AiWorkerUnitId = ""
+AiArmyTarget = 3
+AiExpansionBaseIds = Array[String](["NanoHarvester"])

@@ -1,0 +1,62 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Unit.cs" id="1_jfvwc"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/Rifle.cs" id="2_epe6d"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="3_x55li"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="4_r5b3s"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="5_ktqr1"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_uy3kv"]
+
+[node name="HeavyInfantry" type="Node3D"]
+script = ExtResource("1_jfvwc")
+TeamID = 1
+UnitName = "HeavyInfantry"
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="HeavyCannon" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
+script = ExtResource("2_epe6d")
+WeaponName = "HeavyCannon"
+Damage = 20.0
+BonusDamageVsArmorType = 1
+BonusDamage = 20.0
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+HasAreaDamage = true
+AreaRadius = 48.0
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/HeavyCannon"]
+
+[node name="HeavyAPCannon" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, -3.4969112e-06)
+script = ExtResource("2_epe6d")
+WeaponName = "HeavyAPCannon"
+Damage = 20.0
+BonusDamageVsArmorType = 1
+BonusDamage = 20.0
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/HeavyAPCannon"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("3_x55li")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("4_r5b3s")
+MaxHp = 130.0
+ArmorType = 1
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("5_ktqr1")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_uy3kv")

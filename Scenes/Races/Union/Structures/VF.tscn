@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Structure.cs" id="1_pribl"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="2_vctx2"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="3_mpt0l"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="4_2de2e"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="5_bxk4q"]
+
+[node name="VF" type="Node3D"]
+script = ExtResource("1_pribl")
+TeamID = 1
+StructureName = "VF"
+GridSize = 3
+VisionRange = 400.0
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("2_vctx2")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("3_mpt0l")
+MaxHp = 500.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("4_2de2e")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("5_bxk4q")

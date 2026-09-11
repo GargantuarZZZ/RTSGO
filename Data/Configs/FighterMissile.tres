@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "FighterMissile"
+DisplayName = "空空飞弹"
+Damage = 100
+DamageType = 0
+AttackRange = 384
+CooldownTicks = 100
+ProjectileBehavior = 1
+ProjectileSpeed = 900
+HitRadius = 24
+CanTargetGround = false
+CanTargetAir = true
+CanTargetStructure = false

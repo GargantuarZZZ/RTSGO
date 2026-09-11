@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BuffConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://bnyuwvxdiv5b3" path="res://Scripts/Data/Configs/BuffConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+BuffId = "SlowBuff"
+DisplayName = "减速"
+Duration = 3.0
+MaxStacks = 1
+MoveSpeedMultiplier = 0.6

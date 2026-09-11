@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+WeaponId = "PlantTreeSword"
+DisplayName = "大剑"
+Damage = 40
+DamageType = 0
+RangeType = 0
+AttackRange = 64
+CooldownTicks = 20
+ProjectileBehavior = 0
+CanTargetGround = true
+CanTargetStructure = true
+CanTargetNeutral = true

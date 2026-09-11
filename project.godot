@@ -1,0 +1,76 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="RTSarcade"
+run/main_scene="uid://hf7dl7idqch1"
+config/features=PackedStringArray("4.5", "C#", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+SteamService="*res://Scripts/Network/SteamService.gd"
+SimManager="*res://Scripts/Core/SimManager.cs"
+NetworkManager="*res://Scripts/Network/NetworkManager.cs"
+LockstepManager="*res://Scripts/Network/LockstepManager.cs"
+SceneEnvironment="*res://Scripts/Core/SceneEnvironment.cs"
+
+[display]
+
+window/stretch/mode="canvas_items"
+window/stretch/aspect="ignore"
+
+[dotnet]
+
+project/assembly_name="RTSarcade"
+
+[editor]
+
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/AI-Context-Generator/plugin.cfg")
+
+[file_customization]
+
+folder_colors={
+"res://ArtRes/": "blue",
+"res://Menu/": "pink",
+"res://Scripts/": "green",
+"res://Scripts/Menu/": "pink",
+"res://Scripts/Network/": "pink"
+}
+
+[filesystem]
+
+import/blender/enabled=false
+
+[steam]
+
+initialization/app_id=0
+initialization/initialize_on_startup=false
+initialization/embed_callbacks=false
+multiplayer_peer/max_channels=4
+
+[rendering]
+
+; 本项目原先**完全没有** [rendering] 段，一切走引擎默认：
+;   msaa_3d=0（完全无抗锯齿，边缘全是锯齿）、use_debanding=false（暗部有明显色带）。
+; 这里只开三件"低开销、收益明确"的事，先不做画质档位（那是后续设置 UI 的事）。
+;
+; 注意：ScreenSpaceAA / MSAA 属于 **Viewport** 而不是 Environment，
+; 所以只能在这里配，不能在 SceneEnvironment.cs 里设（该类里已注明）。
+anti_aliasing/quality/msaa_3d=2
+anti_aliasing/quality/screen_space_aa=1
+anti_aliasing/quality/use_debanding=true
+textures/default_filters/anisotropic_filtering_level=2

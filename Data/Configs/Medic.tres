@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 80.0
+VisionRange = 350.0
+Costs = Dictionary[int, float]({
+0: 50.0,
+8: 25.0
+})
+BuildTime = 15.0
+CanMove = true
+MoveSpeed = 102
+Tags = Array[String](["Biological"])
+SupplyCost = 1
+CanHeal = true
+HealRangeTiles = 4
+HealPerSecond = 10.0
+Role = 8

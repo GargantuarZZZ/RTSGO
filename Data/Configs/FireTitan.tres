@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 800.0
+VisionRange = 350.0
+Costs = Dictionary[int, float]({
+0: 400.0,
+8: 200.0
+})
+BuildTime = 20.0
+CanMove = true
+MoveSpeed = 77
+FootprintTiles = 2.5
+Tags = Array[String](["Demon", "HeavyArmor", "Biological"])
+CannotBeHealed = true
+FieldRadius = 5
+FieldAuraEnemyIncomingDamageMultiplier = 1.3
+SupplyCost = 8
+WeaponIds = Array[String](["TitanSlam"])
+HeroEnergyMax = 50.0
+HeroEnergyRegenPerSecond = 1.0
+Skill1Cost = 30.0
+Skill1RangeTiles = 10
+Skill1DurationSeconds = 8.0
+Skill1MoveSpeedBonus = 0.2
+Skill1EnemyMovePenalty = 0.2
+Skill1TargetMode = 0
+Skill1Kind = 1
+Skill1Name = "咆哮 30能"
+Skill1BehaviorId = "DemonRoar"
+Skill2Cost = 10.0
+Skill2RangeTiles = 5
+Skill2Damage = 20.0
+Skill2TargetMode = 3
+Skill2Kind = 1
+Skill2Name = "冲锋 10能"
+Skill2BehaviorId = "DemonDash"
+IsHero = true
+Role = 10

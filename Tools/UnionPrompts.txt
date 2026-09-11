@@ -1,0 +1,30 @@
+# 联盟（Union）单位与建筑参考图 prompt：每行只写外观（含该单位自己的配色），风格锚点由脚本拼接。
+# 依据：桌面 o2\rts\设计数据表-副本.xlsx “联盟”工作表。只生成正面 + 右面。
+
+a small sturdy sci-fi worker robot with a rounded yellow and gray armored body, one wrench arm and one claw arm, compact practical posture
+
+a human soldier in white and blue powered armor, holding a long electromagnetic rifle, helmet with a visor, light armor, standing combat posture
+
+a human soldier with a jetpack on the back, white and blue light armor, holding a rocket launcher, hovering flying posture
+
+a medic in white and red light armor, holding a medical kit and a small scanner device, no weapon, standing posture
+
+a heavy two-legged mech robot with twin cannons on both arms, thick gray and blue armor, bulky slow frame, standing posture
+
+a military helicopter with twin rotors, gray and blue fuselage, a large minigun under the belly, flying posture
+
+a massive sci-fi battleship with a long angular hull, several turrets on top, a big cannon under the hull, dark gray and blue armor, flying posture
+
+a large sci-fi command center building, pyramid-like armored base with a command tower, gray and blue panels, wide base
+
+a compact sci-fi barracks building, rectangular armored structure with a door and a small antenna, gray and blue panels
+
+a sci-fi factory building, wide industrial structure with large bay doors, pipes and vents, gray and blue panels
+
+a sci-fi supply depot building, compact bunker-like structure with storage hatches, gray and blue panels
+
+a sci-fi research institute building, tall tower with lab sections and antennas, gray and blue panels
+
+a large sci-fi spaceport building with a big hangar opening and docking structures, gray and blue panels
+
+a large radar station building with a big dish and antenna array, gray and blue panels

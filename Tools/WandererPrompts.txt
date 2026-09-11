@@ -1,0 +1,14 @@
+# 多足（Wanderer）阵营单位参考图 prompt：每行只写外观描述，风格锚点由脚本自动拼接。
+# 依据：桌面 o2\rts\设计数据表-副本.xlsx “多足”工作表。只生成正面 + 右面。
+
+a long-armed six-legged worker robot with a beam tool arm, a claw arm and a small cargo container on its back, sturdy compact frame, calm sturdy posture, mechanical worker
+
+a light fast four-legged hunter robot with a compact sleek body and one beam rifle mounted on top, small agile frame, quick nimble posture
+
+a fast six-legged harvester robot with two large beam claws in front and springy articulated legs built for leaping, agile light frame, low attack stance
+
+a large six-legged shepherd command robot with a sturdy chassis, tall sensor mast and antenna array on top, modest beam weapon under the hull, cyan indicator lights
+
+a heavy four-legged war tank robot with a thick armored hull and one large electric cannon mounted on top, massive bulky slow frame, heavy tank presence
+
+a massive giant six-legged heavy-armor hero walker with extremely thick armor plates and a huge plasma cannon on a wide shoulder platform, bulky slow intimidating siege presence, super-heavy hero unit

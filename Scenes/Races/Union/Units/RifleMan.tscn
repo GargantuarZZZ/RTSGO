@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Unit.cs" id="1_kqolj"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/Rifle.cs" id="2_3r3hh"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="3_t1kf7"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="4_njjcw"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="5_rk25p"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_4mwkh"]
+
+[node name="RifleMan" type="Node3D"]
+script = ExtResource("1_kqolj")
+TeamID = 1
+UnitName = "RifleMan"
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="Rifle" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+script = ExtResource("2_3r3hh")
+HitFxDuration = 0.25
+HitFxColor = Color(1, 0.9, 0.3, 1)
+TracerDuration = 0.16
+WeaponName = "Rifle"
+Damage = 5.0
+AttackRange = 320.0
+FirePoint = NodePath("FirePoint")
+CanTargetAir = true
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/Rifle"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("3_t1kf7")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("4_njjcw")
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("5_rk25p")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_4mwkh")

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "NanoTech_DefenseA"
+DisplayName = "防御A：蜂巢装甲"
+Description = "纳米巨兽与所有炮台+30%血量，对动能/热能攻击获得25%抗性。"
+Category = 2
+ExclusiveGroup = "Defense"
+RequiresHarvester = true
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+6: 1500.0
+})
+HpBonusPercent = 0.3
+KineticResist = 0.25
+ThermalResist = 0.25

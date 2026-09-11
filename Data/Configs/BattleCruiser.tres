@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 1000.0
+VisionRange = 500.0
+ArmorType = 3
+Costs = Dictionary[int, float]({
+0: 500.0,
+8: 300.0
+})
+BuildTime = 40.0
+CanMove = true
+MoveSpeed = 51
+FootprintTiles = 3.0
+IsAir = true
+FlyHeight = 360.0
+Tags = Array[String](["Mechanical", "Air", "HeavyArmor"])
+SupplyCost = 10
+WeaponIds = Array[String](["BattleCruiserGun", "BattleCruiserAA"])
+DefaultAttackMove = true
+AttackMoveFiresWhileMoving = true
+RequiredTechIds = Array[String](["UnionT3"])
+MobilitySpeedBonus = 64.0
+MobilityDurationSeconds = 30.0
+MobilityCooldownSeconds = 20.0
+MobilitySpeedMultiplier = 5.0
+MobilityRangeTiles = 30
+Skill1Kind = 5
+Skill1Name = "机动模式"
+Role = 3

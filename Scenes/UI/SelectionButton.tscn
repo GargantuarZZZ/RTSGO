@@ -1,0 +1,4 @@
+[gd_scene format=3 uid="uid://5r3ych1sj6cw"]
+
+[node name="SelectionButton" type="Button"]
+custom_minimum_size = Vector2(30, 30)

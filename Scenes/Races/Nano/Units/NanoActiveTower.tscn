@@ -1,0 +1,43 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Structure.cs" id="1_cc6r5"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="2_b063t"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="3_kgatv"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="4_yv4m3"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="5_bbtpx"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/Behaviors/AutoBuildBehavior.cs" id="6_acwgv"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/AuraRangeVisual.cs" id="7_5k6pd"]
+
+[node name="NanoActiveTower" type="Node3D"]
+script = ExtResource("1_cc6r5")
+TeamID = 1
+StructureName = "NanoActiveTower"
+VisionRange = 400.0
+RequiredCreep = 3
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("2_b063t")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("3_kgatv")
+MaxHp = 400.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("4_yv4m3")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("5_bbtpx")
+
+[node name="AutoBuild" type="Node" parent="."]
+script = ExtResource("6_acwgv")
+BuildTime = 8.0
+
+[node name="AuraRangeVisual" type="Node3D" parent="."]
+script = ExtResource("7_5k6pd")

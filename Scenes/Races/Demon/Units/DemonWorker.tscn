@@ -1,0 +1,41 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Unit.cs" id="1_1halt"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="2_ictbb"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="3_w13oi"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="4_23rrm"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitHarvest.cs" id="5_chx2n"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_m5on5"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/HarvesterMiningFX.cs" id="7_8rldu"]
+
+[node name="DemonWorker" type="Node3D"]
+script = ExtResource("1_1halt")
+TeamID = 1
+UnitName = "DemonWorker"
+VisionRange = 320.0
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("2_ictbb")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("3_w13oi")
+MaxHp = 50.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("4_23rrm")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitHarvest" type="Node" parent="Modules"]
+script = ExtResource("5_chx2n")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_m5on5")
+
+[node name="HarvesterMiningFX" type="Node3D" parent="."]
+script = ExtResource("7_8rldu")

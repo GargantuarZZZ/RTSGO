@@ -1,0 +1,77 @@
+[gd_resource type="Resource" script_class="RaceConfig" load_steps=7 format=3]
+[ext_resource type="Script" uid="uid://ggpnodg7xyut" path="res://Scripts/Data/Configs/RaceConfig.cs" id="1"]
+[ext_resource type="Script" uid="uid://c7llurdu6glbx" path="res://Scripts/Data/Configs/StartingEntityConfig.cs" id="2"]
+[ext_resource type="Script" uid="uid://ckybmajpqah2h" path="res://Scripts/Data/Configs/ResourceStartConfig.cs" id="3"]
+[sub_resource type="Resource" id="c_start_meat"]
+script = ExtResource("3")
+Type = 5
+Amount = 200
+[sub_resource type="Resource" id="c_start_gold"]
+script = ExtResource("3")
+Type = 0
+Amount = 100
+[sub_resource type="Resource" id="cse_nest"]
+script = ExtResource("2")
+Kind = 1
+EntityId = "CaveMainNest"
+TeamMode = 0
+Offset = Vector2(0, 0)
+[sub_resource type="Resource" id="cse_w1"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "CaveWorker"
+Offset = Vector2(-140, -140)
+[sub_resource type="Resource" id="cse_w2"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "CaveWorker"
+Offset = Vector2(140, -140)
+[sub_resource type="Resource" id="cse_w3"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "CaveWorker"
+Offset = Vector2(0, 140)
+[sub_resource type="Resource" id="cse_ore1"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "IronOre"
+TeamMode = 1
+Offset = Vector2(400, -260)
+[sub_resource type="Resource" id="cse_ore2"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "IronOre"
+TeamMode = 1
+Offset = Vector2(400, 0)
+[sub_resource type="Resource" id="cse_gas"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "GasSpring"
+TeamMode = 1
+Offset = Vector2(400, 260)
+[resource]
+script = ExtResource("1")
+RaceId = "Cave"
+DisplayName = "洞穴族"
+Offense = 3
+Defense = 4
+Economy = 3
+Support = 3
+Technology = 3
+Difficulty = 5
+StartingResources = Array[Resource]([SubResource("c_start_meat"), SubResource("c_start_gold")])
+StartingEntities = Array[Resource]([SubResource("cse_nest"), SubResource("cse_w1"), SubResource("cse_w2"), SubResource("cse_w3"), SubResource("cse_ore1"), SubResource("cse_ore2"), SubResource("cse_gas")])
+AvailableUnitIds = Array[String](["CaveWorker", "CaveNestShooter", "CaveBreaker", "CaveSage", "CaveScorpion", "CaveSandworm"])
+AvailableStructureIds = Array[String](["CaveMainNest", "CaveTrainingGround", "CaveDen", "CaveExcavation", "CaveFungusField", "CaveNest", "CaveAcademy", "CaveSeismograph", "CaveRanch", "CaveOutpost", "CaveCrustCracker", "CaveWormholeCore", "CaveWormhole", "CaveSandwormPit"])
+AvailableTechIds = Array[String](["CaveTech_FastMag", "CaveTech_Shield", "CaveTech_Feed", "CaveTech_Fungus", "CaveTech_Steel", "CaveTech_Weapon", "CaveTech_Militia"])
+VisibleResourceTypes = Array[int]([0, 5, 8])
+SupplyCapMode = 1
+MaxSupplyCap = 200
+AiBuildOrderIds = Array[String](["CaveDen", "CaveTrainingGround", "CaveExcavation", "CaveFungusField", "CaveAcademy", "CaveRanch", "CaveOutpost", "CaveNest", "CaveSeismograph"])
+AiBuildTargetCounts = { "CaveDen": 2, "CaveTrainingGround": 1, "CaveExcavation": 2, "CaveFungusField": 1, "CaveAcademy": 1, "CaveRanch": 1, "CaveOutpost": 3 }
+AiTechOrderIds = Array[String](["CaveTech_FastMag", "CaveTech_Shield", "CaveTech_Fungus", "CaveTech_Steel", "CaveTech_Weapon", "CaveTech_Feed", "CaveTech_Militia"])
+AiUnitMixIds = Array[String](["CaveNestShooter", "CaveNestShooter", "CaveBreaker", "CaveScorpion"])
+AiWorkerTarget = 8
+AiWorkerUnitId = "CaveWorker"
+AiArmyTarget = 12
+AiExpansionBaseIds = Array[String](["CaveNest"])

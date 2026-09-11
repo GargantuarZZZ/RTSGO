@@ -1,0 +1,22 @@
+# 恶魔（Demon）阵营单位参考图 prompt：每行只写外观描述（含该单位自己的配色/材质），风格锚点由脚本自动拼接。
+# 依据：桌面 o2\rts\设计数据表-副本.xlsx “恶魔”工作表。只生成正面 + 右面。
+
+a pale ghost-like demon spirit with a tattered dark gray-black cloak and two pale gray clawed hands, no weapon, small slender body, floating upright
+
+a small demon war dog with dark gray skin, sharp white teeth, light gray armor plates on the chest, lean muscular four-legged body, aggressive low stance
+
+a small demonic flying creature with dark red bat-like wings and a dark gray body, holds a dark metal gun in its claws, light armor, hovering posture
+
+a heavy mechanical war vehicle with a dark charcoal iron armored hull on four thick dark metal legs, one large dark cannon on top, heavy armor plates, wide low stance
+
+a huge fire dragon with a dark red body and a magma orange belly, broad wings, long neck, wide jaws, thick heavy scales, flying posture
+
+a small demon with a dark red body and light armor, carrying a tall banner pole with a flat lava orange flag on its back and a pouch of explosives on its belt, running posture
+
+a tall vertical banner pole with a dark iron pole, a flat lava orange flag and a metal spike base, no combat equipment
+
+a hulking demon guard with dark iron heavy armor and large fists, bulky body, sturdy stance
+
+a demon lord with dark ornate armor, large curved dark horns, a long dark cape, holds a dark blast weapon, commanding stance
+
+a massive fire demon giant with dark red skin and magma orange cracks, thick heavy armor-like skin, huge fists, towering body

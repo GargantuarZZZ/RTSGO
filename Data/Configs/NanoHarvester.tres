@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="StructureConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://c0oxwdisfkj8y" path="res://Scripts/Data/Configs/StructureConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 600.0
+VisionRange = 400.0
+Costs = Dictionary[int, float]({
+6: 300.0
+})
+BuildTime = 60.0
+GridWidth = 4
+GridHeight = 4
+RequiresCreep = true
+AutoBuild = true
+PassiveHpRegenPerSecond = 2.0
+RequiredCreepType = 3
+AutoHarvestRadiusTiles = 8
+AutoHarvestPerSecondPerNode = 5.0
+IsResourceBuilding = true
+ResearchableTechIds = Array[String](["NanoTech_GeneralA", "NanoTech_GeneralB", "NanoTech_CombatA", "NanoTech_CombatB", "NanoTech_DefenseA", "NanoTech_DefenseB", "NanoTech_MobilityA", "NanoTech_MobilityB", "NanoTech_EconomyPhoto", "NanoTech_AdvancedHarvester"])
+CreepSpreadRadius = 6.0
+CreepSpreadTime = 1.0
+GeneratedCreepType = 3

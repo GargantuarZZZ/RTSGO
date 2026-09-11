@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "NanoSniperCannon"
+DisplayName = "狙击炮"
+Damage = 30.0
+BonusDamageVsArmorType = 1
+BonusDamage = 40.0
+DamageType = 0
+RangeType = 1
+AttackRange = 576.0
+CooldownTicks = 40
+ProjectileBehavior = 1
+ProjectileSpeed = 800
+HitRadius = 12
+HitFxRadius = 48.0
+HitFxDuration = 0.35
+HitFxColor = Color(0.4, 0.9, 1, 1)
+CanTargetGround = true
+CanTargetStructure = true
+CanTargetNeutral = true

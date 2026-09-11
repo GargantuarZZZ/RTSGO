@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "MagicBallShooter"
+DisplayName = "魔法弹塔"
+Damage = 20.0
+DamageType = 1
+RangeType = 1
+AttackRange = 800.0
+CooldownTicks = 40
+ProjectileBehavior = 1
+ProjectileSpeed = 600
+HitRadius = 16
+HitFxRadius = 56.0
+HitFxDuration = 0.4
+HitFxColor = Color(1, 0.75, 0.2, 1)
+CanTargetGround = true
+CanTargetAir = true
+CanTargetStructure = true
+CanTargetNeutral = true

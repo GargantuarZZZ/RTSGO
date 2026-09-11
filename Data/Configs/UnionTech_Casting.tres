@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "UnionTech_Casting"
+DisplayName = "一体铸造"
+Description = "机械单位生产时间 -30%。"
+Category = 4
+RequiresHarvester = false
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+0: 150.0,
+8: 150.0
+})
+ProductionTimeMultiplier = 0.7

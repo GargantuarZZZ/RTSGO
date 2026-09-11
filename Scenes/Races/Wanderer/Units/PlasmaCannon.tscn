@@ -1,0 +1,204 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Unit.cs" id="1_4pk37"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/Rifle.cs" id="2_pjfqg"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="3_u36hl"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="4_c1s51"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="5_l2pyu"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_c1ika"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/AuraRangeVisual.cs" id="7_2oiug"]
+
+[node name="PlasmaCannon" type="Node3D"]
+script = ExtResource("1_4pk37")
+TeamID = 1
+UnitName = "PlasmaCannon"
+VisionRange = 1600.0
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="WandererPlasmaBeam" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/WandererPlasmaBeam"]
+
+[node name="@Node3D@4" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.541817, 0, 16.269466)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@4"]
+
+[node name="@Node3D@5" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.765223, 0, 29.725796)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@5"]
+
+[node name="@Node3D@6" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.360679, 0, 38.042263)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@6"]
+
+[node name="@Node3D@7" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.1811404, 0, 39.780876)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@7"]
+
+[node name="@Node3D@8" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.000002, 0, 34.641014)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@8"]
+
+[node name="@Node3D@9" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.360683, 0, 23.511408)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@9"]
+
+[node name="@Node3D@10" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.125904, 0, 8.316464)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@10"]
+
+[node name="@Node3D@11" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.125904, 0, -8.316471)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@11"]
+
+[node name="@Node3D@12" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.36068, 0, -23.511414)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@12"]
+
+[node name="@Node3D@13" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.999996, 0, -34.641018)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@13"]
+
+[node name="@Node3D@14" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.1811333, 0, -39.780876)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@14"]
+
+[node name="@Node3D@15" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.360685, 0, -38.04226)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@15"]
+
+[node name="@Node3D@16" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26.76523, 0, -29.72579)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@16"]
+
+[node name="@Node3D@17" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 36.54182, 0, -16.269459)
+script = ExtResource("2_pjfqg")
+WeaponName = "WandererPlasmaBeam"
+DmgType = 4
+AttackRange = 384.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/@Node3D@17"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("3_u36hl")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("4_c1s51")
+MaxHp = 1500.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("5_l2pyu")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_c1ika")
+
+[node name="ControlRangeVisual" type="Node3D" parent="."]
+script = ExtResource("7_2oiug")
+RingColor = Color(0.35, 0.7, 1, 0.2)

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+WeaponId = "WandererHarvesterClaw"
+DisplayName = "收割光束"
+Damage = 12
+DamageType = 4
+RangeType = 0
+AttackRange = 64
+CooldownTicks = 20
+ProjectileBehavior = 0
+CanTargetGround = true
+CanTargetAir = false
+CanTargetStructure = true
+CanTargetNeutral = true

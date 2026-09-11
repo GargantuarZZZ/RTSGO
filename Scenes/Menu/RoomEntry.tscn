@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://rtxndabaxvhk"]
+
+[ext_resource type="Script" uid="uid://pr4rurgwkg0j" path="res://Scripts/Menu/RoomEntry.cs" id="1_eniid"]
+
+[node name="RoomEntry" type="HBoxContainer"]
+offset_right = 936.0
+offset_bottom = 48.0
+script = ExtResource("1_eniid")
+
+[node name="LblRoomName" type="Label" parent="."]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+text = "房间名"
+
+[node name="LblPlayers" type="Label" parent="."]
+layout_mode = 2
+
+[node name="Ping" type="Label" parent="."]
+layout_mode = 2
+
+[node name="BtnJoin" type="Button" parent="."]
+layout_direction = 2
+layout_mode = 2
+text = "join"
+metadata/tr_key = "room.join"

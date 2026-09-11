@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 800.0
+VisionRange = 350.0
+Costs = Dictionary[int, float]({
+5: 250.0,
+8: 100.0
+})
+BuildTime = 30.0
+CanMove = true
+MoveSpeed = 96
+FootprintTiles = 2.0
+ArmorType = 1
+Tags = Array[String](["Cave", "Biological", "HeavyArmor"])
+SupplyCost = 1
+WeaponIds = Array[String](["CaveScorpionClaw"])
+Role = 3

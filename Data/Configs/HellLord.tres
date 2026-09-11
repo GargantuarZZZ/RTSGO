@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 400.0
+VisionRange = 400.0
+Costs = Dictionary[int, float]({
+0: 300.0,
+8: 300.0
+})
+BuildTime = 20.0
+CanMove = true
+MoveSpeed = 64
+FootprintTiles = 2.5
+Tags = Array[String](["Demon", "Biological"])
+CannotBeHealed = true
+FieldRadius = 10
+FieldAuraEnemyAttackSpeedMultiplier = 0.7
+SupplyCost = 8
+WeaponIds = Array[String](["HellLordBlast"])
+MultiShotTargets = 3
+HeroEnergyMax = 50.0
+HeroEnergyRegenPerSecond = 1.0
+Skill1Cost = 10.0
+Skill1RangeTiles = 10
+Skill1DurationSeconds = 4.0
+Skill1TargetMode = 1
+Skill1Kind = 1
+Skill1Name = "恐惧勾魂 10能"
+Skill1BehaviorId = "DemonCharm"
+Skill2Cost = 15.0
+Skill2DurationSeconds = 20.0
+Skill2Multiplier = 3.0
+Skill2TargetMode = 2
+Skill2Kind = 1
+Skill2Name = "狂热武装 15能"
+Skill2BehaviorId = "DemonBoost"
+IsHero = true
+Role = 10

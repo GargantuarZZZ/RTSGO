@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 100.0
+VisionRange = 0.0
+Costs = Dictionary[int, float]({
+0: 100.0
+})
+BuildTime = 10.0
+CanMove = true
+MoveSpeed = 128
+Tags = Array[String](["Mechanical"])
+SupplyCost = 1
+WeaponIds = Array[String](["WandererHarvesterClaw"])
+HasLeap = true
+LeapCooldownSeconds = 10.0
+LeapRangeTiles = 2
+LeapTechId = "WandererTech_Leap"
+Role = 2

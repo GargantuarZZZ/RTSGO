@@ -1,0 +1,54 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Structure.cs" id="1_0ocnw"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/ProjectileWeapon.cs" id="2_6ckpu"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="3_87l83"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="4_dbl65"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="5_blq0r"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_2s6gs"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/Behaviors/AutoBuildBehavior.cs" id="7_8q0ix"]
+
+[node name="NanoSniper" type="Node3D"]
+script = ExtResource("1_0ocnw")
+TeamID = 1
+StructureName = "NanoSniper"
+RequiredCreep = 3
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="NanoSniperCannon" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+script = ExtResource("2_6ckpu")
+HitFxRadius = 48.0
+HitFxDuration = 0.35
+HitFxColor = Color(0.4, 0.9, 1, 1)
+WeaponName = "NanoSniperCannon"
+Damage = 30.0
+BonusDamageVsArmorType = 1
+BonusDamage = 40.0
+AttackRange = 448.0
+Cooldown = 2.0
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/NanoSniperCannon"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("3_87l83")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("4_dbl65")
+MaxHp = 400.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("5_blq0r")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_2s6gs")
+
+[node name="AutoBuild" type="Node" parent="."]
+script = ExtResource("7_8q0ix")
+BuildTime = 8.0

@@ -1,0 +1,108 @@
+[gd_resource type="Resource" script_class="RaceConfig" load_steps=3 format=3]
+
+[ext_resource type="Script" uid="uid://ggpnodg7xyut" path="res://Scripts/Data/Configs/RaceConfig.cs" id="1"]
+[ext_resource type="Script" uid="uid://c7llurdu6glbx" path="res://Scripts/Data/Configs/StartingEntityConfig.cs" id="2"]
+[ext_resource type="Script" uid="uid://ckybmajpqah2h" path="res://Scripts/Data/ResourceStartConfig.cs" id="3"]
+
+[sub_resource type="Resource" id="r_meat"]
+script = ExtResource("3")
+Type = 5
+Amount = 200
+
+[sub_resource type="Resource" id="r_gold"]
+script = ExtResource("3")
+Type = 0
+Amount = 100
+
+[sub_resource type="Resource" id="se_fortress"]
+script = ExtResource("2")
+Kind = 1
+EntityId = "FortressCore"
+TeamMode = 0
+Offset = Vector2(0, 0)
+
+[sub_resource type="Resource" id="se_eng1"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "Engineer"
+TeamMode = 0
+Offset = Vector2(-150, -150)
+
+[sub_resource type="Resource" id="se_eng2"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "Engineer"
+TeamMode = 0
+Offset = Vector2(150, -150)
+
+[sub_resource type="Resource" id="se_eng3"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "Engineer"
+TeamMode = 0
+Offset = Vector2(-150, 150)
+
+[sub_resource type="Resource" id="se_eng4"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "Engineer"
+TeamMode = 0
+Offset = Vector2(150, 150)
+
+[sub_resource type="Resource" id="se_mine1"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "MetalMine"
+TeamMode = 1
+Offset = Vector2(400, -300)
+
+[sub_resource type="Resource" id="se_mine2"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "MetalMine"
+TeamMode = 1
+Offset = Vector2(400, 0)
+
+[sub_resource type="Resource" id="se_mine3"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "MetalMine"
+TeamMode = 1
+Offset = Vector2(400, 300)
+
+[sub_resource type="Resource" id="se_fruit"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "WildFruit"
+TeamMode = 1
+Offset = Vector2(400, 600)
+
+[resource]
+script = ExtResource("1")
+RaceId = "Terran"
+DisplayName = "泰伦"
+Description = "防御型阵地战文明：全员可架设，弹药管理，工事推进。"
+Offense = 3
+Defense = 5
+Economy = 3
+Support = 3
+Technology = 3
+Difficulty = 3
+RoleSummary = "防御,均衡"
+StartingResources = Array[Resource]([SubResource("r_meat"), SubResource("r_gold")])
+StartingEntities = Array[Resource]([SubResource("se_fortress"), SubResource("se_eng1"), SubResource("se_eng2"), SubResource("se_eng3"), SubResource("se_eng4"), SubResource("se_mine1"), SubResource("se_mine2"), SubResource("se_mine3"), SubResource("se_fruit")])
+AvailableUnitIds = Array[String](["Engineer", "Marine", "HeavyInfantry", "CommandVehicle", "Artillery", "Liberator", "Fighter", "MissileVehicle"])
+AvailableStructureIds = Array[String](["FortressCore", "FrontlineCamp", "FieldCamp", "ArmorFactory", "Airfield", "Armory", "AlgaeFactory"])
+AvailableTechIds = Array[String](["TerranTech_Jammer", "TerranTech_Buckshot", "TerranTech_Entrench", "TerranTech_FastDeploy", "TerranTech_AmmoRecovery", "TerranTech_Gunpowder", "TerranTech_Ray", "TerranTech_LongRange"])
+VisibleResourceTypes = Array[int]([0, 5])
+MaxSupplyCap = 200
+SupplyCapMode = 1
+CoreUnitIds = Array[String](["Marine", "Artillery", "Liberator"])
+AiBuildOrderIds = Array[String](["AlgaeFactory", "FieldCamp", "FrontlineCamp", "ArmorFactory", "Airfield", "Armory"])
+AiBuildTargetCounts = { "AlgaeFactory": 3 }
+AiTechOrderIds = Array[String](["TerranTech_Entrench", "TerranTech_FastDeploy", "TerranTech_Buckshot", "TerranTech_AmmoRecovery", "TerranTech_Gunpowder", "TerranTech_Ray", "TerranTech_LongRange", "TerranTech_Jammer"])
+AiUnitMixIds = Array[String](["Marine", "Marine", "HeavyInfantry", "MissileVehicle", "Artillery", "Fighter", "Liberator"])
+AiWorkerTarget = 10
+AiWorkerUnitId = "Engineer"
+AiArmyTarget = 16
+AiExpansionBaseIds = Array[String](["FortressCore"])

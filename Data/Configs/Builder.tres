@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 200.0
+VisionRange = 0.0
+Costs = Dictionary[int, float]({
+0: 150.0,
+8: 50.0
+})
+BuildTime = 15.0
+CanMove = true
+MoveSpeed = 64
+FootprintTiles = 2.0
+Tags = Array[String](["Mechanical", "Worker"])
+AutoSubmitHarvest = true
+BuildRangeTiles = 5
+HarvestRangeTiles = 5
+SupplyCost = 2
+CanHarvest = true
+HarvestAmountPerCycle = 10.0
+HarvestCycleTicks = 20
+CarryCapacity = 50.0
+HarvestableResources = Array[int]([0, 8])
+CanHeal = true
+HealRangeTiles = 5
+HealPerSecond = 20.0
+CanBuild = true
+BuildableStructureIds = Array[String](["Blueprint_Builder", "Blueprint_Hunter", "Blueprint_Harvester", "Blueprint_Shepherd", "Blueprint_Tank", "Blueprint_PlasmaCannon"])
+BuildPowerPercent = 100
+IsWorker = true
+Role = 1

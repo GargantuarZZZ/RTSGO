@@ -1,0 +1,46 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Unit.cs" id="1_ckrih"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/ProjectileWeapon.cs" id="2_lwvsc"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="3_kwajf"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="4_5bf8k"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="5_o0bb5"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_rkefq"]
+
+[node name="MissileVehicle" type="Node3D"]
+script = ExtResource("1_ckrih")
+TeamID = 1
+UnitName = "MissileVehicle"
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="MissileVolley" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+script = ExtResource("2_lwvsc")
+WeaponName = "MissileVolley"
+Damage = 150.0
+AttackRange = 832.0
+Cooldown = 10.0
+FirePoint = NodePath("FirePoint")
+CanTargetAir = true
+HasAreaDamage = true
+AreaRadius = 96.0
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/MissileVolley"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("3_kwajf")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("4_5bf8k")
+MaxHp = 250.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("5_o0bb5")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_rkefq")

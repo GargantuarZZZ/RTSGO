@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>SimulationDeterminismTest</AssemblyName>
+    <RootNamespace>SimulationDeterminismTest</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="FixMath.NET" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Stubs 提供真实工程里由 Godot 提供的类型（SimManager / Godot.Resource / Godot.Vector2I …）。
+         它们在本目录下，由 SDK 默认 glob 自动包含，不需要显式 Include。
+         注意：**不要**再写 <Compile Remove="Stubs\**" />——那会让这些必需类型消失。
+         真实工程通过 RTSarcade.csproj 的默认 glob 只编译 Scripts/**，不会走到这里。 -->
+    <Compile Include="..\..\Scripts\Simulation\**\*.cs" LinkBase="Simulation" />
+    <Compile Include="..\..\Scripts\Core\FormationSolver.cs" Link="Core\FormationSolver.cs" />
+    <Compile Include="..\..\Scripts\Data\Enums\GameEnums.cs" Link="Data\GameEnums.cs" />
+    <Compile Include="..\..\Scripts\Data\Enums\ResourceType.cs" Link="Data\ResourceType.cs" />
+    <!-- 地图数据格式与触发器模型：表达式/触发器测试需要它们。
+         这些文件必须保持"只依赖上面 Stubs 里已有的 Godot 最小子集"。 -->
+    <Compile Include="..\..\Scripts\Data\Maps\**\*.cs" LinkBase="Data\Maps" />
+    <Compile Include="..\..\Scripts\Data\Triggers\**\*.cs" LinkBase="Data\Triggers" />
+    <!-- 程序化生成器：只依赖 RtsMapData + SimRandom，故意不依赖 MapLoader（那个要 TileMapLayer）。 -->
+    <Compile Include="..\..\Scripts\MapEditing\MapGenerator.cs" Link="MapEditing\MapGenerator.cs" />
+    <!-- 地图校验器 + 加载器：校验必须走与游戏相同的 SimGrid 构造路径，
+         所以把 MapLoader 一起编进来（TileMapLayer 由 Stubs 提供最小替身）。 -->
+    <Compile Include="..\..\Scripts\MapEditing\MapValidator.cs" Link="MapEditing\MapValidator.cs" />
+    <Compile Include="..\..\Scripts\World\MapLoader.cs" Link="World\MapLoader.cs" />
+    <!-- 运行时地图：触发器测试要经过与游戏相同的 RtsMapData -> MapRuntime 构建路径。 -->
+    <Compile Include="..\..\Scripts\World\MapRuntime.cs" Link="World\MapRuntime.cs" />
+    <!-- 教程数据与运行时：目标推进、完成条件、确定性哈希都需要可无头测试。
+         TutorialRegistry/TutorialDefinitions 只依赖 RtsMapData + MapDataOps，无 Godot 场景依赖。 -->
+    <Compile Include="..\..\Scripts\Tutorial\TutorialRuntime.cs" Link="Tutorial\TutorialRuntime.cs" />
+    <Compile Include="..\..\Scripts\Tutorial\TutorialDefinitions.cs" Link="Tutorial\TutorialDefinitions.cs" />
+  </ItemGroup>
+</Project>

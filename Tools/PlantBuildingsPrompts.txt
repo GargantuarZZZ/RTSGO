@@ -1,0 +1,11 @@
+a massive ancient life tree, thick trunk with layered bark, large leafy canopy, moss-covered roots, warm brown and green color palette
+a smaller branch life tree, young trunk with a leafy crown and exposed roots, warm brown and green color palette
+a small plant node structure, a round wooden bulb with leaf sprouts on short roots, brown and green color palette
+a plant production pit, a hollow stump-like pit lined with layered leaves, green and brown color palette
+a plant nest structure, a woven twig nest with sprouting leaves, brown and green color palette
+a plant flower field structure, a bed of large flat flowers around a wooden center, green, yellow and brown color palette
+a plant fortress nest, a large bark fortress with branch towers and moss, deep brown and green color palette
+a plant sunlight turret, a wooden cannon-like flower with a wide petal muzzle, green and brown color palette
+a plant life spring, a wooden basin fountain with a large leaf spout, green and brown color palette
+a plant tree wall segment, a thick hedge of interlocked branches and leaves, green and brown color palette
+a plant earth core, a rounded root-bound core with vines, brown, green and gray color palette

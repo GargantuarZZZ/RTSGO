@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="StructureConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://c0oxwdisfkj8y" path="res://Scripts/Data/Configs/StructureConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 1000.0
+VisionRange = 500.0
+Costs = Dictionary[int, float]({
+0: 300.0,
+8: 200.0
+})
+BuildTime = 20.0
+GridWidth = 4
+GridHeight = 4
+RequiresCreep = true
+AutoBuild = true
+PassiveHpRegenPerSecond = 2.0
+RequiredCreepType = 3
+CreepSpreadRadius = 10.0
+CreepSpreadTime = 1.0
+GeneratedCreepType = 3
+IsDropOffPoint = true
+AcceptableResourceTypes = Array[int]([0, 8])
+IsProductionBuilding = true
+ProductionQueueSize = 5
+TrainableUnitIds = Array[String](["SCV"])

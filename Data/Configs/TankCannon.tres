@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+WeaponId = "TankCannon"
+DisplayName = "战车炮"
+Damage = 30
+DamageType = 2
+RangeType = 1
+AttackRange = 512
+CooldownTicks = 30
+ProjectileBehavior = 1
+ProjectileSpeed = 480
+HitRadius = 22
+HasAreaDamage = true
+AreaRadius = 64
+CanTargetGround = true
+CanTargetAir = false
+CanTargetStructure = true
+CanTargetNeutral = true

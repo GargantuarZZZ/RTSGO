@@ -1,0 +1,67 @@
+[gd_resource type="Resource" script_class="RaceConfig" load_steps=7 format=3]
+[ext_resource type="Script" uid="uid://ggpnodg7xyut" path="res://Scripts/Data/Configs/RaceConfig.cs" id="1"]
+[ext_resource type="Script" uid="uid://c7llurdu6glbx" path="res://Scripts/Data/Configs/StartingEntityConfig.cs" id="2"]
+[ext_resource type="Script" uid="uid://ckybmajpqah2h" path="res://Scripts/Data/ResourceStartConfig.cs" id="3"]
+[sub_resource type="Resource" id="r_start"]
+script = ExtResource("3")
+Type = 0
+Amount = 200
+[sub_resource type="Resource" id="se_shepherd"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "Shepherd"
+TeamMode = 0
+Offset = Vector2(0, 0)
+[sub_resource type="Resource" id="se_b1"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "Builder"
+Offset = Vector2(-150, -150)
+[sub_resource type="Resource" id="se_b2"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "Builder"
+Offset = Vector2(150, 150)
+[sub_resource type="Resource" id="se_ore1"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "IronOre"
+TeamMode = 1
+Offset = Vector2(400, -300)
+[sub_resource type="Resource" id="se_ore2"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "IronOre"
+TeamMode = 1
+Offset = Vector2(400, 0)
+[sub_resource type="Resource" id="se_gas"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "GasSpring"
+TeamMode = 1
+Offset = Vector2(400, 300)
+[resource]
+script = ExtResource("1")
+RaceId = "Wanderer"
+DisplayName = "多足机械"
+Offense = 5
+Defense = 3
+Economy = 4
+Support = 2
+Technology = 4
+Difficulty = 5
+StartingResources = Array[Resource]([SubResource("r_start")])
+StartingEntities = Array[Resource]([SubResource("se_shepherd"), SubResource("se_b1"), SubResource("se_b2"), SubResource("se_ore1"), SubResource("se_ore2"), SubResource("se_gas")])
+AvailableUnitIds = Array[String](["Builder", "Hunter", "Harvester", "Shepherd", "Tank", "PlasmaCannon"])
+AvailableStructureIds = Array[String](["Blueprint_Builder", "Blueprint_Hunter", "Blueprint_Harvester", "Blueprint_Shepherd", "Blueprint_Tank", "Blueprint_PlasmaCannon"])
+AvailableTechIds = Array[String](["WandererTech_Leap", "WandererTech_AutoHarvest", "WandererTech_DefKinetic", "WandererTech_DefThermal", "WandererTech_DefBeam", "WandererTech_DefEM", "WandererTech_Pigeon", "WandererTech_Link"])
+VisibleResourceTypes = Array[int]([0, 8, 9])
+MaxSupplyCap = 200
+SupplyCapMode = 2
+AiBuildOrderIds = Array[String](["Blueprint_Builder", "Blueprint_Harvester", "Blueprint_Shepherd", "Blueprint_Hunter", "Blueprint_Tank", "Blueprint_PlasmaCannon"])
+AiBuildTargetCounts = { "Blueprint_Builder": 6, "Blueprint_Harvester": 3, "Blueprint_Shepherd": 4, "Blueprint_Hunter": 6, "Blueprint_Tank": 4, "Blueprint_PlasmaCannon": 3 }
+AiTechOrderIds = Array[String](["WandererTech_AutoHarvest", "WandererTech_Leap", "WandererTech_Link", "WandererTech_DefKinetic", "WandererTech_DefThermal", "WandererTech_DefBeam", "WandererTech_DefEM", "WandererTech_Pigeon"])
+AiWorkerTarget = 6
+AiWorkerUnitId = "Builder"
+AiArmyTarget = 12
+AiExpansionBaseIds = Array[String](["Blueprint_Harvester", "Blueprint_Shepherd"])

@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Unit.cs" id="1_gs4or"]
+[ext_resource type="Script" path="res://Scripts/Units/Weapons/Weapons/Rifle.cs" id="2_bhr7p"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="3_sh067"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="4_yy2ui"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="5_tgqh7"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="6_i07cm"]
+
+[node name="DemonDog" type="Node3D"]
+script = ExtResource("1_gs4or")
+TeamID = 1
+UnitName = "DemonDog"
+VisionRange = 320.0
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="DemonDogBite" type="Node3D" parent="Visuals/WeaponMount" node_paths=PackedStringArray("FirePoint")]
+script = ExtResource("2_bhr7p")
+WeaponName = "DemonDogBite"
+Damage = 4.0
+AttackRange = 64.0
+Cooldown = 0.5
+FirePoint = NodePath("FirePoint")
+
+[node name="FirePoint" type="Marker3D" parent="Visuals/WeaponMount/DemonDogBite"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("3_sh067")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("4_yy2ui")
+MaxHp = 50.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("5_tgqh7")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("6_i07cm")

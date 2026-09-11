@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 250.0
+VisionRange = 400.0
+Costs = Dictionary[int, float]({
+})
+BuildTime = 1.0
+CanMove = true
+MoveSpeed = 58
+FootprintTiles = 2.0
+IsAir = true
+FlyHeight = 330.0
+Tags = Array[String](["Demon", "HeavyArmor", "Air"])
+CannotBeHealed = true
+LifespanSeconds = 120.0
+SupplyCost = 0
+WeaponIds = Array[String](["DragonBreath"])
+Role = 3

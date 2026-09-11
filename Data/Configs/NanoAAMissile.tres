@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "NanoAAMissile"
+DisplayName = "防空飞弹"
+Damage = 20.0
+DamageType = 0
+RangeType = 1
+AttackRange = 448.0
+CooldownTicks = 20
+ProjectileBehavior = 1
+ProjectileSpeed = 900
+HitRadius = 18
+HitFxRadius = 52.0
+HitFxDuration = 0.4
+HitFxColor = Color(1, 0.45, 0.2, 1)
+CanTargetGround = false
+CanTargetAir = true
+CanTargetStructure = false
+CanTargetNeutral = false
+HasAreaDamage = true
+AreaRadius = 100
+AreaEdgeDamagePercent = 50

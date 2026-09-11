@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="RaceConfig" load_steps=6 format=3]
+[ext_resource type="Script" uid="uid://ggpnodg7xyut" path="res://Scripts/Data/Configs/RaceConfig.cs" id="1"]
+[ext_resource type="Script" uid="uid://c7llurdu6glbx" path="res://Scripts/Data/Configs/StartingEntityConfig.cs" id="2"]
+[ext_resource type="Script" uid="uid://ckybmajpqah2h" path="res://Scripts/Data/Configs/ResourceStartConfig.cs" id="3"]
+[sub_resource type="Resource" id="p_start"]
+script = ExtResource("3")
+Type = 1
+Amount = 200
+[sub_resource type="Resource" id="pse_tree"]
+script = ExtResource("2")
+Kind = 1
+EntityId = "PlantLifeTree"
+TeamMode = 0
+Offset = Vector2(0, 0)
+[sub_resource type="Resource" id="pse_dog1"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "PlantLeafDog"
+Offset = Vector2(-130, -130)
+[sub_resource type="Resource" id="pse_dog2"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "PlantLeafDog"
+Offset = Vector2(130, 130)
+[resource]
+script = ExtResource("1")
+RaceId = "Plant"
+DisplayName = "植物"
+Offense = 1
+Defense = 4
+Economy = 3
+Support = 2
+Technology = 3
+Difficulty = 1
+CarpetIncomeCellsPerResource = 300
+VisionMode = 1
+StartingResources = Array[Resource]([SubResource("p_start")])
+StartingEntities = Array[Resource]([SubResource("pse_tree"), SubResource("pse_dog1"), SubResource("pse_dog2")])
+AvailableUnitIds = Array[String](["PlantLeafDog", "PlantSpider", "PlantTreeGuard"])
+AvailableStructureIds = Array[String](["PlantLifeTree", "PlantBranchTree", "PlantForestNode", "PlantLeafPit", "PlantSproutNest", "PlantFlowerField", "PlantNestFort", "PlantSunlightTurret", "PlantLifeSpring", "PlantTreeWall", "PlantEarthCore"])
+AvailableTechIds = Array[String](["PlantTech_Photo", "PlantTech_Spread", "PlantTech_Fiber", "PlantTech_Ironwood1", "PlantTech_Ironwood2", "PlantTech_Omni", "PlantTech_Leech", "PlantTech_Web", "PlantTech_Sunflower", "PlantTech_Fission", "PlantTech_DivineBow", "PlantTech_VineTendon"])
+VisibleResourceTypes = Array[int]([1])
+SupplyCapMode = 1
+MaxSupplyCap = 200
+AiBuildOrderIds = Array[String](["PlantLeafPit", "PlantSproutNest", "PlantSunlightTurret", "PlantNestFort", "PlantLifeSpring", "PlantFlowerField", "PlantTreeWall", "PlantBranchTree", "PlantEarthCore"])
+AiBuildTargetCounts = { "PlantSunlightTurret": 2, "PlantTreeWall": 3, "PlantLeafPit": 1, "PlantSproutNest": 1, "PlantNestFort": 1, "PlantFlowerField": 1, "PlantLifeSpring": 1 }
+AiTechOrderIds = Array[String](["PlantTech_Photo", "PlantTech_Spread", "PlantTech_Ironwood1", "PlantTech_Ironwood2", "PlantTech_Leech", "PlantTech_Web", "PlantTech_Omni", "PlantTech_Sunflower", "PlantTech_Fission", "PlantTech_DivineBow", "PlantTech_VineTendon", "PlantTech_Fiber"])
+AiUnitMixIds = Array[String](["PlantLeafDog", "PlantLeafDog", "PlantSpider", "PlantTreeGuard"])
+AiWorkerTarget = 0
+AiWorkerUnitId = ""
+AiArmyTarget = 8
+AiExpansionBaseIds = Array[String](["PlantBranchTree"])

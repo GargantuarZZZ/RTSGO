@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://l64t4mva1apl"]
+
+[ext_resource type="Shader" uid="uid://udqpduc3tvhq" path="res://Scenes/Game/fog_of_war.gdshader" id="1_3ecw0"]
+[ext_resource type="Script" uid="uid://b8wmmyluusg" path="res://Scripts/Core/FogOfWar.cs" id="1_786wv"]
+[ext_resource type="Script" uid="uid://bjjr6oohfnvds" path="res://Scripts/Core/FogPainter.cs" id="2_786wv"]
+[ext_resource type="Texture2D" uid="uid://3imj1wq6xh5w" path="res://ArtRes/imgs/white.png" id="4_ngpgf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ngpgf"]
+shader = ExtResource("1_3ecw0")
+shader_parameter/unknown_color = Color(0, 0, 0, 0.8)
+shader_parameter/fog_color = Color(0, 0, 0, 0.5)
+
+[node name="FogOfWar" type="Node2D" node_paths=PackedStringArray("ExplorVP", "VisionVP", "ExplorPainter", "VisionPainter", "Overlay")]
+script = ExtResource("1_786wv")
+ExplorVP = NodePath("ExplorationViewport")
+VisionVP = NodePath("VisionViewport")
+ExplorPainter = NodePath("ExplorationViewport/ExplorationPainter")
+VisionPainter = NodePath("VisionViewport/VisionPainter")
+Overlay = NodePath("FogOverlay")
+
+[node name="ExplorationViewport" type="SubViewport" parent="."]
+render_target_clear_mode = 1
+
+[node name="ExplorationPainter" type="Node2D" parent="ExplorationViewport"]
+script = ExtResource("2_786wv")
+
+[node name="VisionViewport" type="SubViewport" parent="."]
+transparent_bg = true
+
+[node name="VisionPainter" type="Node2D" parent="VisionViewport"]
+script = ExtResource("2_786wv")

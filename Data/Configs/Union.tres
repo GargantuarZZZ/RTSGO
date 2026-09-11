@@ -1,0 +1,88 @@
+[gd_resource type="Resource" script_class="RaceConfig" load_steps=9 format=3]
+[ext_resource type="Script" uid="uid://ggpnodg7xyut" path="res://Scripts/Data/Configs/RaceConfig.cs" id="1"]
+[ext_resource type="Script" uid="uid://c7llurdu6glbx" path="res://Scripts/Data/Configs/StartingEntityConfig.cs" id="2"]
+[ext_resource type="Script" uid="uid://ckybmajpqah2h" path="res://Scripts/Data/ResourceStartConfig.cs" id="3"]
+[sub_resource type="Resource" id="r_start"]
+script = ExtResource("3")
+Type = 0
+Amount = 200
+
+[sub_resource type="Resource" id="se_command"]
+script = ExtResource("2")
+Kind = 1
+EntityId = "CommandCenter"
+TeamMode = 0
+Offset = Vector2(0, 0)
+
+[sub_resource type="Resource" id="se_scv1"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "SCV"
+Offset = Vector2(-150, -150)
+
+[sub_resource type="Resource" id="se_scv2"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "SCV"
+Offset = Vector2(150, -150)
+
+[sub_resource type="Resource" id="se_scv3"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "SCV"
+Offset = Vector2(-150, 150)
+
+[sub_resource type="Resource" id="se_scv4"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "SCV"
+Offset = Vector2(150, 150)
+
+[sub_resource type="Resource" id="se_ore1"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "IronOre"
+TeamMode = 1
+Offset = Vector2(400, -300)
+
+[sub_resource type="Resource" id="se_ore2"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "IronOre"
+TeamMode = 1
+Offset = Vector2(400, 0)
+
+[sub_resource type="Resource" id="se_gas"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "GasSpring"
+TeamMode = 1
+Offset = Vector2(400, 300)
+
+[resource]
+script = ExtResource("1")
+RaceId = "Union"
+DisplayName = "联合"
+Offense = 3
+Defense = 3
+Economy = 3
+Support = 2
+Technology = 2
+Difficulty = 2
+StartingResources = Array[Resource]([SubResource("r_start")])
+StartingEntities = Array[Resource]([SubResource("se_command"), SubResource("se_scv1"), SubResource("se_scv2"), SubResource("se_scv3"), SubResource("se_scv4"), SubResource("se_ore1"), SubResource("se_ore2"), SubResource("se_gas")])
+AvailableUnitIds = Array[String](["SCV", "RifleMan", "RocketMan", "Medic", "Biped", "Hp", "BattleCruiser"])
+AvailableStructureIds = Array[String](["CommandCenter", "BB", "VF", "SupplyDepot", "Academy", "Starport", "OrbitalControl"])
+AvailableTechIds = Array[String](["UnionTech_Stim", "UnionTech_RegenSteel", "UnionTech_Streamline", "UnionTech_Casting", "UnionTech_Optics"])
+VisibleResourceTypes = Array[int]([0, 8, 4])
+SupplyCapMode = 1
+MaxSupplyCap = 200
+MaxEnergy = 200.0
+AiBuildOrderIds = Array[String](["BB", "VF", "Academy", "Starport", "OrbitalControl"])
+AiBuildTargetCounts = { "BB": 2 }
+AiTechOrderIds = Array[String](["UnionTech_Stim", "UnionTech_Optics", "UnionTech_Streamline", "UnionTech_RegenSteel", "UnionTech_Casting"])
+AiUnitMixIds = Array[String](["RifleMan", "RifleMan", "RocketMan", "Medic", "Biped", "Hp", "BattleCruiser"])
+AiWorkerTarget = 10
+AiWorkerUnitId = "SCV"
+AiArmyTarget = 16
+AiExpansionBaseIds = Array[String](["CommandCenter"])

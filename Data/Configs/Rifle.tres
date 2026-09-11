@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "Rifle"
+DisplayName = "步枪"
+Damage = 5.0
+DamageType = 0
+RangeType = 1
+AttackRange = 320.0
+CooldownTicks = 20
+ProjectileBehavior = 0
+HitFxRadius = 36.0
+HitFxDuration = 0.25
+HitFxColor = Color(1, 0.9, 0.3, 1)
+TracerThickness = 3.5
+TracerDuration = 0.16
+MuzzleFlashRadius = 18.0
+MuzzleFlashDuration = 0.1
+CanTargetGround = true
+CanTargetAir = true
+CanTargetStructure = true
+CanTargetNeutral = true

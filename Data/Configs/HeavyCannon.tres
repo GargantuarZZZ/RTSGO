@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "HeavyCannon"
+DisplayName = "榴弹步枪"
+Damage = 20
+DamageType = 0
+AttackRange = 384
+CooldownTicks = 40
+ProjectileBehavior = 0
+BonusDamage = 20
+BonusDamageVsArmorType = 1
+HasAreaDamage = true
+AreaRadius = 48
+AreaEdgeDamagePercent = 100
+CanTargetGround = true
+CanTargetStructure = true

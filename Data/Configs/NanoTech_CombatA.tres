@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "NanoTech_CombatA"
+DisplayName = "战斗A：要塞化"
+Description = "纳米巨兽要塞化，部署三台加强版火炮与三台加强版防空飞弹（射程+2）。"
+Category = 1
+ExclusiveGroup = "Combat"
+RequiresHarvester = true
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+6: 1500.0
+})
+GrantWeaponIds = Array[String](["NanoBehemothFortressGun", "NanoBehemothFortressAA"])
+GrantWeaponCount = 3
+UnlockSkillIds = Array[String](["Fortress"])

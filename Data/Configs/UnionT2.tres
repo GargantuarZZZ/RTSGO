@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "UnionT2"
+DisplayName = "工厂（T2）"
+Description = "建造工厂后解锁第二时代建筑。"
+Category = 1
+RequiresHarvester = false
+ResearchTimeSeconds = 1.0

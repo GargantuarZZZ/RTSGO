@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+TechId = "CaveTech_FastMag"
+DisplayName = "快速弹匣"
+Description = "巢穴射手攻击速度提升 50%。"
+Category = 1
+RequiresHarvester = false
+ResearchTimeSeconds = 60.0
+Cost = Dictionary[int, float]({
+8: 300.0
+})
+TargetUnitIds = Array[String](["CaveNestShooter"])
+AttackSpeedMultiplier = 1.5

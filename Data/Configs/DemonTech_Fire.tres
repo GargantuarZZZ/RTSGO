@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+TechId = "DemonTech_Fire"
+DisplayName = "烈火"
+Description = "火焰伤害 +1。"
+Category = 1
+RequiresHarvester = false
+TargetTag = "Demon"
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+0: 150.0,
+8: 100.0
+})
+FireDamageBonus = 1

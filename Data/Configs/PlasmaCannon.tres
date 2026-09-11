@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 1500.0
+VisionRange = 1600.0
+Costs = Dictionary[int, float]({
+0: 7000.0,
+8: 1000.0
+})
+BuildTime = 75.0
+CanMove = true
+MoveSpeed = 64
+FootprintTiles = 4.0
+Tags = Array[String](["Mechanical", "HeavyArmor"])
+ControlRangeTiles = 15
+SupplyCost = 10
+WeaponIds = Array[String](["WandererPlasmaBeam", "WandererPlasmaBeam", "WandererPlasmaBeam", "WandererPlasmaBeam", "WandererPlasmaBeam", "WandererPlasmaBeam", "WandererPlasmaBeam", "WandererPlasmaBeam", "WandererPlasmaBeam", "WandererPlasmaBeam", "WandererPlasmaBeam", "WandererPlasmaBeam", "WandererPlasmaBeam", "WandererPlasmaBeam", "WandererPlasmaBeam"])
+MultiShotTargets = 15
+AutoClearCreep = true
+Skill1Kind = 2
+Skill1Name = "电浆炮"
+Skill2Kind = 3
+Skill2Name = "切换自动/手动"
+PlasmaWindupSeconds = 5.0
+PlasmaRecoverySeconds = 3.0
+PlasmaCooldownSeconds = 15.0
+PlasmaAutoTargetRangeTiles = 20
+IsHero = true
+Role = 10

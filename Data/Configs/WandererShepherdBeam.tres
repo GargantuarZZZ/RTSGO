@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+WeaponId = "WandererShepherdBeam"
+DisplayName = "牧羊光束"
+Damage = 2
+DamageType = 4
+RangeType = 1
+AttackRange = 256
+CooldownTicks = 2
+ProjectileBehavior = 0
+CanTargetGround = true
+CanTargetAir = true
+CanTargetStructure = true
+CanTargetNeutral = true

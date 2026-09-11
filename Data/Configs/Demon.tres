@@ -1,0 +1,78 @@
+[gd_resource type="Resource" script_class="RaceConfig" load_steps=9 format=3]
+[ext_resource type="Script" uid="uid://ggpnodg7xyut" path="res://Scripts/Data/Configs/RaceConfig.cs" id="1"]
+[ext_resource type="Script" uid="uid://c7llurdu6glbx" path="res://Scripts/Data/Configs/StartingEntityConfig.cs" id="2"]
+[ext_resource type="Script" uid="uid://ckybmajpqah2h" path="res://Scripts/Data/ResourceStartConfig.cs" id="3"]
+[sub_resource type="Resource" id="r_start"]
+script = ExtResource("3")
+Type = 0
+Amount = 200
+[sub_resource type="Resource" id="se_city"]
+script = ExtResource("2")
+Kind = 1
+EntityId = "HellCity"
+TeamMode = 0
+Offset = Vector2(0, 0)
+[sub_resource type="Resource" id="se_w1"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "DemonWorker"
+Offset = Vector2(-150, -150)
+[sub_resource type="Resource" id="se_w2"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "DemonWorker"
+Offset = Vector2(150, -150)
+[sub_resource type="Resource" id="se_w3"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "DemonWorker"
+Offset = Vector2(-150, 150)
+[sub_resource type="Resource" id="se_w4"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "DemonWorker"
+Offset = Vector2(150, 150)
+[sub_resource type="Resource" id="se_ore1"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "IronOre"
+TeamMode = 1
+Offset = Vector2(400, -300)
+[sub_resource type="Resource" id="se_ore2"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "IronOre"
+TeamMode = 1
+Offset = Vector2(400, 0)
+[sub_resource type="Resource" id="se_gas"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "GasSpring"
+TeamMode = 1
+Offset = Vector2(400, 300)
+[resource]
+script = ExtResource("1")
+RaceId = "Demon"
+DisplayName = "恶魔"
+Offense = 2
+Defense = 4
+Economy = 2
+Support = 2
+Technology = 3
+Difficulty = 4
+StartingResources = Array[Resource]([SubResource("r_start")])
+StartingEntities = Array[Resource]([SubResource("se_city"), SubResource("se_w1"), SubResource("se_w2"), SubResource("se_w3"), SubResource("se_w4"), SubResource("se_ore1"), SubResource("se_ore2"), SubResource("se_gas")])
+AvailableUnitIds = Array[String](["DemonWorker", "DemonDog", "DemonFlyer", "HeavyTank", "FireDragon", "LavaBanner", "FortGuard", "HellLord", "FireTitan"])
+AvailableStructureIds = Array[String](["HellCity", "GreatRift", "HeavyWorkshop", "DragonNest", "ManaTower", "SoulStone", "LavaAltar", "CurseFortress", "DemonTower"])
+AvailableTechIds = Array[String](["DemonTech_Spread", "DemonTech_March", "DemonTech_Blood", "DemonTech_Rift", "DemonTech_Greed", "DemonTech_Fire", "DemonTech_SoulFire", "DemonTech_Feudal"])
+VisibleResourceTypes = Array[int]([0, 8])
+SupplyCapMode = 1
+MaxSupplyCap = 50
+AiBuildOrderIds = Array[String](["GreatRift", "HeavyWorkshop", "DragonNest", "ManaTower", "LavaAltar", "CurseFortress", "DemonTower", "SoulStone"])
+AiBuildTargetCounts = { "GreatRift": 2 }
+AiTechOrderIds = Array[String](["DemonTech_Spread", "DemonTech_March", "DemonTech_Blood", "DemonTech_Fire", "DemonTech_Greed", "DemonTech_Rift", "DemonTech_SoulFire", "DemonTech_Feudal"])
+AiUnitMixIds = Array[String](["DemonDog", "DemonDog", "DemonFlyer", "HeavyTank", "FireDragon", "FortGuard"])
+AiWorkerTarget = 8
+AiWorkerUnitId = "DemonWorker"
+AiArmyTarget = 14
+AiExpansionBaseIds = Array[String](["HellCity"])

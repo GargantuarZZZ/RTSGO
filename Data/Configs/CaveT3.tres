@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+TechId = "CaveT3"
+DisplayName = "洞穴三阶"
+Description = "建成任一 T3 建筑后解锁。"
+Category = 1
+RequiresHarvester = false
+ResearchTimeSeconds = 1.0

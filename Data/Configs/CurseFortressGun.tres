@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "CurseFortressGun"
+DisplayName = "诅咒炮"
+Damage = 8
+DamageType = 2
+AttackRange = 640
+CooldownTicks = 4
+ProjectileBehavior = 0
+CanTargetGround = true
+CanTargetAir = true
+CanTargetStructure = true

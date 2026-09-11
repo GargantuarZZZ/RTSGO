@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+TechId = "WandererTech_Pigeon"
+DisplayName = "信鸽"
+Description = "游猎型获得信鸽：死亡时揭示 20 格视野 3 秒。"
+Category = 2
+RequiresHarvester = false
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+0: 200.0,
+8: 100.0
+})

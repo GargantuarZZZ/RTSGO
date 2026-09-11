@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+TechId = "PlantTech_Sunflower"
+DisplayName = "向日葵"
+Description = "花田能量上限变为200,恢复速度变为每秒1.3"
+ResearchTimeSeconds = 30.0
+RequiredTechIds = Array[String](["PlantTech_Omni"])
+Cost = Dictionary[int, float]({
+1: 200.0
+})

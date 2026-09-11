@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+TechId = "PlantTech_Web"
+DisplayName = "粘液蛛网"
+Description = "蜘蛛命中减速30%"
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+1: 200.0
+})
+TargetUnitIds = Array[String](["PlantSpider"])
+HitSlowMoveMultiplier = 0.7

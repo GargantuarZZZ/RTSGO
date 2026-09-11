@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "UnionTech_Optics"
+DisplayName = "光学瞄具"
+Description = "生物单位射程 +1 格。"
+Category = 1
+RequiresHarvester = false
+RequiredTechIds = Array[String](["UnionT3"])
+TargetTag = "Biological"
+ResearchTimeSeconds = 30.0
+Cost = Dictionary[int, float]({
+0: 300.0,
+8: 300.0
+})
+AttackRangeBonus = 64.0

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "NanoBehemothFortressAA"
+DisplayName = "要塞防空"
+Damage = 20.0
+DamageType = 0
+RangeType = 1
+AttackRange = 576.0
+CooldownTicks = 20
+ProjectileBehavior = 1
+ProjectileSpeed = 900
+HitRadius = 18
+HitFxRadius = 52.0
+HitFxDuration = 0.4
+HitFxColor = Color(0.5, 0.9, 1, 1)
+CanTargetGround = false
+CanTargetAir = true
+CanTargetStructure = false
+CanTargetNeutral = false

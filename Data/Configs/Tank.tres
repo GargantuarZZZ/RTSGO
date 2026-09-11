@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+[resource]
+script = ExtResource("1")
+MaxHp = 1200.0
+VisionRange = 0.0
+Costs = Dictionary[int, float]({
+0: 200.0,
+8: 100.0
+})
+BuildTime = 20.0
+CanMove = true
+MoveSpeed = 64
+FootprintTiles = 2.0
+Tags = Array[String](["Mechanical"])
+SupplyCost = 4
+WeaponIds = Array[String](["WandererTankGun"])
+CreepDefenseBonus = 5.0
+AutoClearCreep = true
+Role = 3

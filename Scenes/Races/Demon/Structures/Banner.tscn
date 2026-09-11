@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Structure.cs" id="1_32ndq"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="2_v3cqs"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="3_oynbx"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="4_61rpv"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="5_6pf0v"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/AuraRangeVisual.cs" id="6_vlcg0"]
+
+[node name="Banner" type="Node3D"]
+script = ExtResource("1_32ndq")
+TeamID = 1
+StructureName = "Banner"
+GridSize = 1
+VisionRange = 200.0
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("2_v3cqs")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("3_oynbx")
+MaxHp = 150.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("4_61rpv")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("5_6pf0v")
+
+[node name="FieldRangeVisual" type="Node3D" parent="."]
+script = ExtResource("6_vlcg0")
+RingColor = Color(0.95, 0.25, 0.2, 0.22)

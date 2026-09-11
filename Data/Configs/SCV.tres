@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 100.0
+VisionRange = 350.0
+Costs = Dictionary[int, float]({
+0: 50.0
+})
+BuildTime = 10.0
+CanMove = true
+MoveSpeed = 77
+SupplyCost = 1
+WeaponIds = Array[String](["ScvGun"])
+Tags = Array[String](["Worker", "Biological"])
+AllowAttackMoveWithoutWeapon = true
+CanHarvest = true
+HarvestAmountPerCycle = 10.0
+HarvestCycleTicks = 20
+CarryCapacity = 50.0
+HarvestableResources = Array[int]([0, 8])
+CanBuild = true
+BuildableStructureIds = Array[String](["CommandCenter", "BB", "VF", "SupplyDepot", "Academy", "Starport", "OrbitalControl"])
+BuildPowerPercent = 100
+IsWorker = true
+CanRepair = true
+RepairPerSecond = 20.0
+RepairCostPerHp = 0.1
+RepairRange = 80.0
+Role = 1

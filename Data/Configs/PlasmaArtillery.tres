@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "PlasmaArtillery"
+DisplayName = "电浆炮"
+Damage = 50
+DamageType = 3
+RangeType = 1
+AttackRange = 1280
+CooldownTicks = 300
+ProjectileBehavior = 3
+ProjectileSpeed = 480
+HitRadius = 24
+CanTargetGround = true
+CanTargetAir = true
+CanTargetStructure = true
+CanTargetNeutral = true
+FootprintScaledDamage = true
+ImpactDamagePerFootprintSq = 50
+ImpactRadiusTiles = 2
+ImpactSlowMoveMultiplier = 0.5
+ImpactSlowAttackMultiplier = 0.5
+ImpactSlowSeconds = 5.0
+LobDurationSeconds = 1.2
+LobHeight = 320.0

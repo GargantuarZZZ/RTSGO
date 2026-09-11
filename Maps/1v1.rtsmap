@@ -1,0 +1,15 @@
+RTSMAP 1
+MapId=1v1
+DisplayName=1v1 断墙小图
+DisplayNameKey=
+Author=scenario-import
+Description=
+Width=120
+Height=120
+MaxPlayers=2
+RecommendedPlayers=2
+ExportOffsetX=0
+ExportOffsetY=0
+TerrainRle=wHAA
+BuildBlockedRle=wHAA
+Spawn=2,42,0,0,0,从场景标记导出

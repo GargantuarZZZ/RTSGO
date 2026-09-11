@@ -1,0 +1,50 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Structure.cs" id="1_mup5e"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="2_7e5y3"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="3_171du"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="4_2x6ew"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="5_8ao8h"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/Behaviors/AutoBuildBehavior.cs" id="6_3ybw2"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/HarvesterMiningFX.cs" id="7_spja0"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/Behaviors/AutoHarvestBehavior.cs" id="8_auto"]
+
+[node name="NanoHarvester" type="Node3D"]
+script = ExtResource("1_mup5e")
+TeamID = 1
+StructureName = "NanoHarvester"
+GridSize = 4
+VisionRange = 400.0
+RequiredCreep = 3
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("2_7e5y3")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("3_171du")
+MaxHp = 600.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("4_2x6ew")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("5_8ao8h")
+
+[node name="AutoBuild" type="Node" parent="."]
+script = ExtResource("6_3ybw2")
+BuildTime = 12.0
+
+[node name="HarvesterMiningFX" type="Node3D" parent="."]
+script = ExtResource("7_spja0")
+
+[node name="AutoHarvest" type="Node" parent="."]
+script = ExtResource("8_auto")
+RadiusTiles = 8
+RatePerSecondPerNode = 5.0

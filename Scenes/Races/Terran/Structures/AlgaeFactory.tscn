@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Units/Structure.cs" id="1_ityxk"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitVisuals.cs" id="2_sjyqa"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitLife.cs" id="3_l7q10"]
+[ext_resource type="Script" path="res://Scripts/Units/Modules/UnitCombat.cs" id="4_pvbpy"]
+[ext_resource type="Script" path="res://Scripts/Units/Actions/UnitActionController.cs" id="5_a2dk2"]
+
+[node name="AlgaeFactory" type="Node3D"]
+script = ExtResource("1_ityxk")
+TeamID = 1
+StructureName = "AlgaeFactory"
+VisionRange = 350.0
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="WeaponMount" type="Node3D" parent="Visuals"]
+
+[node name="Modules" type="Node3D" parent="."]
+
+[node name="UnitVisuals" type="Node" parent="Modules"]
+script = ExtResource("2_sjyqa")
+
+[node name="UnitLife" type="Node" parent="Modules"]
+script = ExtResource("3_l7q10")
+MaxHp = 500.0
+
+[node name="UnitCombat" type="Node" parent="Modules" node_paths=PackedStringArray("WeaponMountPoint")]
+script = ExtResource("4_pvbpy")
+WeaponMountPoint = NodePath("../../Visuals/WeaponMount")
+
+[node name="UnitActionController" type="Node" parent="Modules"]
+script = ExtResource("5_a2dk2")

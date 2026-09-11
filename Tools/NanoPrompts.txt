@@ -1,0 +1,17 @@
+# 纳米（Nano）单位与建筑参考图 prompt v3：机械哥斯拉式设计（金属银灰装甲、机械怪兽剪影）。
+
+a massive mechanical kaiju beast inspired by a giant robot dinosaur, robotic dinosaur-like head with a distinct jaw, angular silver and dark gray armor plates, dorsal fin-like plates along the back, mechanical tail, two shoulder cannon turrets, four massive mechanical legs, sharp edges, readable silhouette
+
+a nanotech turret with angular metallic armor plates, rounded segmented base, one distinct cannon barrel with a clear muzzle, silver and dark gray with red accents, sharp edges
+
+a nanotech sniper turret with angular metallic armor plates, segmented base, one long thin cannon barrel with clear rings, silver and dark gray with red accents, sharp edges
+
+a nanotech anti-air missile turret with angular metallic armor plates, segmented base, a raised missile launcher rack with several distinct missile tubes, silver and dark gray with red accents, sharp edges
+
+a large nanotech harvester building, wide segmented stationary structure with angular armor plates, a central core chamber, several distinct collection arms extending outward with claws, silver and dark gray with red accents, sharp edges
+
+a nanotech support tower, segmented base and mast, distinct core chamber with angular armor panels, antenna, silver and dark gray with red accents, sharp edges
+
+a nanotech smoke tower, segmented angular body with clear vents and canisters, distinct mechanical parts, silver and dark gray with red accents, sharp edges
+
+a nanotech core structure, large segmented sphere with angular armor panels and a distinct central chamber ring, silver and dark gray with red accents, sharp edges
