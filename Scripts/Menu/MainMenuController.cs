@@ -232,6 +232,10 @@ public partial class MainMenuController : Control
 		if (OS.GetEnvironment("HUD_DEBUG") == "1")
 			CallDeferred(nameof(CheckHudLayoutForTest));
 
+		// 无头回归：LOBBY_DEBUG=1 检查大厅控件有没有互相遮挡
+		if (OS.GetEnvironment("LOBBY_DEBUG") == "1")
+			CallDeferred(nameof(CheckLobbyLayoutForTest));
+
 		// 无头回归：SETTINGS_RT=1 检查设置/键位的注册表↔InputMap↔重置 往返一致
 		if (OS.GetEnvironment("SETTINGS_RT") == "1")
 			CallDeferred(nameof(CheckSettingsRoundTripForTest));
@@ -394,6 +398,75 @@ public partial class MainMenuController : Control
 	/// （动作面板 15 个槽位、生产队列、选中信息面板的武器/增益行…）。
 	/// 两边一旦不同步，控件就会被静默裁掉 —— 不报错、就是点不到。
 	/// </summary>
+	/// <summary>
+	/// 无头回归：LOBBY_DEBUG=1 检查大厅里有没有控件互相遮挡。
+	///
+	/// 为什么需要它：观战席位我第一版把坐标写死在 (94,476) 高 96，
+	/// 正好压住地图下拉（y 477..497）和"开始"键（y 510..554）——
+	/// 这种错**肉眼要打开对应页面才看得见**，纯代码审查和单元测试都发现不了。
+	/// 与其靠人眼，不如让布局自己报出来：两两求交，有重叠就报错并给出双方名字。
+	/// </summary>
+	private void CheckLobbyLayoutForTest()
+	{
+		if (PageLobby == null)
+		{
+			GD.PrintErr("[LobbyDbg] PageLobby 为空");
+			return;
+		}
+
+		Callable.From(() =>
+		{
+			var items = new System.Collections.Generic.List<(string Name, Rect2 Rect)>();
+			CollectVisibleControls(PageLobby, items);
+
+			GD.Print($"[LobbyDbg] 大厅可见控件 {items.Count} 个");
+
+			int overlaps = 0;
+			for (int i = 0; i < items.Count; i++)
+			{
+				for (int j = i + 1; j < items.Count; j++)
+				{
+					var a = items[i];
+					var b = items[j];
+					// 父子关系不算遮挡（子控件本来就落在父容器里）
+					if (a.Name.StartsWith(b.Name + "/") || b.Name.StartsWith(a.Name + "/"))
+						continue;
+
+					var inter = a.Rect.Intersection(b.Rect);
+					// 1~2px 的边缘相接不算遮挡（控件边框/描边常见），
+					// 只报真正盖住内容的。
+					if (inter.Size.X <= 2f || inter.Size.Y <= 2f) continue;
+
+					overlaps++;
+					GD.PrintErr($"[LobbyDbg] ✗ 遮挡：'{a.Name}' {a.Rect} 与 '{b.Name}' {b.Rect} " +
+						$"重叠 {inter.Size}");
+				}
+			}
+
+			if (overlaps == 0)
+				GD.Print("[LobbyDbg] 布局自检通过：无控件互相遮挡");
+			else
+				GD.PrintErr($"[LobbyDbg] 发现 {overlaps} 处遮挡");
+		}).CallDeferred();
+	}
+
+	/// <summary>收集可见控件及其在 PageLobby 坐标系下的矩形（递归）。</summary>
+	private static void CollectVisibleControls(Node parent, System.Collections.Generic.List<(string, Rect2)> outList)
+	{
+		foreach (var child in parent.GetChildren())
+		{
+			if (child is not Control c || !c.Visible) continue;
+
+			// 只统计"叶子/有实际内容"的控件：纯容器（VBox/HBox）本身不画东西，
+			// 但它的子控件会单独被收集，所以跳过容器避免把父框也算成一次遮挡。
+			bool isContainer = c is BoxContainer or Container;
+			if (!isContainer)
+				outList.Add((c.GetPath().ToString(), c.GetGlobalRect()));
+
+			CollectVisibleControls(c, outList);
+		}
+	}
+
 	private void CheckHudLayoutForTest()
 	{
 		var scene = GD.Load<PackedScene>("res://Scenes/UI/user_ui.tscn");
@@ -1391,11 +1464,15 @@ public partial class MainMenuController : Control
 			return;
 
 		// 旁观者开关：全图视野、不可操控、可见所有人资源
+		//
+		// 宽度按内容给：原来是 460px 横跨整个面板，实测压住了左侧的"返回"
+		// （Btn_Back y 173..217 vs 本控件 y 196..227，重叠 21px）——
+		// 这类"控件横着长出去压到别人"正是本页反复出问题的地方。
 		_obsCheck = new CheckBox
 		{
 			Text = RTS.Settings.Localization.Tr("observer.check"),
-			Position = new Vector2(94f, 196f),
-			Size = new Vector2(460f, 30f)
+			Position = new Vector2(94f, 340f),   // 让开 Btn_Back 底部（274）与地图下拉（477）
+			CustomMinimumSize = new Vector2(280f, 30f),
 		};
 		_obsCheck.Toggled += OnObserverToggled;
 		PageLobby.AddChild(_obsCheck);
@@ -1409,22 +1486,45 @@ public partial class MainMenuController : Control
 		_btnAddBot.Pressed += AddBotRow;
 		PageLobby.AddChild(_btnAddBot);
 
-		// 观战席位：独立分组显示在玩家列表下方。
-		// 原先只有一个复选框直接 AddChild 到面板上（位置靠硬编码坐标），
-		// 观战者既没有独立席位显示、也看不出有几个人在观战。
+		// ---- 观战席位 ----
+		//
+		// 位置是算出来的，不是拍脑袋定的。Page_Lobby 的现有布局：
+		//   Label          左侧  y 43..90
+		//   Btn_Ready      左侧  y 121..165
+		//   Btn_Back       左侧  y 173..217
+		//   _obsCheck      左侧  y 196..226
+		//   _btnAddBot     左侧  y 432..468
+		//   OptMap         中部  y 477..497   x 400..640
+		//   Btn_Start      左侧  y 510..554   ← 左列底部被它占住
+		//   PlayerList     右侧  y 114..624   x 386..1075
+		//
+		// **左列已经没有空位了**：我第一次把观战面板放在 (94,476) 高 96，
+		// 正好压住 OptMap 与 Btn_Start（y 477..572）—— 这是实测出来的遮挡。
+		//
+		// 所以改放到 PlayerList 右侧的空白区：x 1085..1130（视口宽 1152），
+		// 与 PlayerList（右边界 1075）留 10px 间距，纵向与列表对齐。
+		// 这个位置不与任何现有控件相交（有 CheckLobbyLayoutForTest 兜底验证）。
 		_spectatorPanel = new VBoxContainer
 		{
 			Name = "SpectatorSeats",
-			Position = new Vector2(94f, 476f),
-			Size = new Vector2(460f, 96f)
+			Position = new Vector2(1085f, 114f),
+			CustomMinimumSize = new Vector2(150f, 0f)
 		};
 		PageLobby.AddChild(_spectatorPanel);
 
-		_lblSpectatorHeader = new Label { Text = RTS.Settings.Localization.Tr("spectator.header") };
+		_lblSpectatorHeader = new Label
+		{
+			Text = RTS.Settings.Localization.Tr("spectator.header"),
+			AutowrapMode = TextServer.AutowrapMode.WordSmart
+		};
 		_lblSpectatorHeader.AddThemeColorOverride("font_color", new Color(0.72f, 0.78f, 0.88f));
 		_spectatorPanel.AddChild(_lblSpectatorHeader);
 
-		_lblSpectatorEmpty = new Label { Text = RTS.Settings.Localization.Tr("spectator.none") };
+		_lblSpectatorEmpty = new Label
+		{
+			Text = RTS.Settings.Localization.Tr("spectator.none"),
+			AutowrapMode = TextServer.AutowrapMode.WordSmart
+		};
 		_spectatorPanel.AddChild(_lblSpectatorEmpty);
 
 		// 观战席位容器：每个观战者一个 Label，动态重建

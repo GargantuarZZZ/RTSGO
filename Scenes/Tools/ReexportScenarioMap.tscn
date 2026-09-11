@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://cq1reexportmap01"]
+[gd_scene load_steps=2 format=3 uid="uid://b30yqebaprjue"]
 
 [ext_resource type="Script" path="res://Scripts/Tools/ReexportScenarioMap.cs" id="1_reexport"]
 

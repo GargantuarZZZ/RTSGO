@@ -49,9 +49,9 @@ offset_bottom = 40.0
 [node name="Label" type="Label" parent="Page_Lobby"]
 layout_mode = 0
 offset_left = 94.0
-offset_top = 43.0
+offset_top = 28.0
 offset_right = 250.0
-offset_bottom = 90.0
+offset_bottom = 75.0
 scale = Vector2(3, 3)
 text = "房间等待中"
 metadata/tr_key = "menu.lobby_title"
@@ -59,9 +59,9 @@ metadata/tr_key = "menu.lobby_title"
 [node name="Btn_Ready" type="Button" parent="Page_Lobby"]
 layout_mode = 0
 offset_left = 99.0
-offset_top = 121.0
+offset_top = 178
 offset_right = 288.0
-offset_bottom = 165.0
+offset_bottom = 222
 text = "准备"
 metadata/tr_key = "lobby.ready"
 
@@ -77,9 +77,9 @@ metadata/tr_key = "lobby.start"
 [node name="Btn_Back" type="Button" parent="Page_Lobby"]
 layout_mode = 0
 offset_left = 99.0
-offset_top = 173.0
+offset_top = 230
 offset_right = 288.0
-offset_bottom = 217.0
+offset_bottom = 274
 text = "返回
 "
 metadata/tr_key = "back"
