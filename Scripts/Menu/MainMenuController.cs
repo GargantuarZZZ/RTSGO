@@ -1783,7 +1783,7 @@ public partial class MainMenuController : Control
 	/// <summary>往"观战者"段加一行。</summary>
 	private void AddSpectatorRow(int pid, string name, bool isLocal)
 	{
-		if (!GodotObject.IsInstanceValid(SpectatorList)) return;
+		if (!Alive(SpectatorList)) return;
 
 		var row = new Label
 		{
@@ -1803,38 +1803,58 @@ public partial class MainMenuController : Control
 	/// </summary>
 	private void RefreshSpectatorSeats()
 	{
-		if (!GodotObject.IsInstanceValid(SpectatorList)) return;
+		if (!Alive(SpectatorList)) return;
 
 		int count = 0;
 		foreach (var c in SpectatorList.GetChildren())
-			if (c is Label) count++;
+			if (GodotObject.IsInstanceValid(c) && c is Label) count++;
 
-		// 占位：没有人观战时给一行说明，避免"观战者"标题下空荡荡
-		if (count == 0 && _lblSpectatorEmpty != null)
+		// 占位行：没有人观战时显示一行说明。
+		//
+		// **必须用 IsInstanceValid 判空，不能用 `!= null`**：
+		// Godot 对象被 QueueFree() 之后 C# 引用仍然非 null，
+		// 但访问 GetParent() 会抛 ObjectDisposedException
+		// （实测栈：RefreshSpectatorSeats → Node.GetParent → ObjectDisposedException）。
+		bool placeholderValid = Alive(_lblSpectatorEmpty);
+		var placeholderParent = placeholderValid ? _lblSpectatorEmpty.GetParent() : null;
+		bool placeholderAttached = placeholderValid
+			&& placeholderParent != null
+			&& GodotObject.IsInstanceValid(placeholderParent);
+
+		if (count == 0)
 		{
-			if (_lblSpectatorEmpty.GetParent() == null)
+			if (placeholderValid && !placeholderAttached)
 				SpectatorList.AddChild(_lblSpectatorEmpty);
 		}
-		else if (count > 0 && _lblSpectatorEmpty != null && _lblSpectatorEmpty.GetParent() != null)
+		else if (placeholderAttached)
 		{
-			_lblSpectatorEmpty.GetParent().RemoveChild(_lblSpectatorEmpty);
+			placeholderParent.RemoveChild(_lblSpectatorEmpty);
 		}
 
-		if (GodotObject.IsInstanceValid(SpectatorSectionHeader))
+		if (Alive(SpectatorSectionHeader))
 		{
 			SpectatorSectionHeader.Text = RTS.Settings.Localization.Tr("spectator.header_count", count);
 			StyleSectionHeader(SpectatorSectionHeader);
 		}
-		if (GodotObject.IsInstanceValid(PlayerSectionHeader))
+		if (Alive(PlayerSectionHeader))
 		{
 			PlayerSectionHeader.Text = RTS.Settings.Localization.Tr("spectator.combatants");
 			StyleSectionHeader(PlayerSectionHeader);
 		}
 	}
+	/// <summary>
+	/// 安全的"节点是否还能用"判定。
+	///
+	/// 为什么不直接用 `!= null`：Godot 对象被 QueueFree() 之后，
+	/// C# 侧的引用**仍然非 null**，但访问任何成员都会抛 ObjectDisposedException。
+	/// 这个项目已经踩过两次（列表重建、观战占位行），所以统一走这里。
+	/// </summary>
+	private static bool Alive(GodotObject o) => GodotObject.IsInstanceValid(o);
+
 	/// <summary>按当前容量刷新"加入人机"按钮的可用状态与提示。</summary>
 	private void RefreshBotCapacity()
 	{
-		if (_btnAddBot == null) return;
+		if (!Alive(_btnAddBot)) return;
 
 		bool can = CanAddBot(out string reason);
 		int cap = GetCombatantCapacity();
@@ -1950,7 +1970,7 @@ public partial class MainMenuController : Control
 
 		// 双重保险：给机器人刷新配置时，若旁观者复选框仍勾着，重新锁回本地旁观者状态
 		int myPid = lockstep.LocalPlayerID;
-		if (_obsCheck != null && _obsCheck.ButtonPressed)
+		if (Alive(_obsCheck) && _obsCheck.ButtonPressed)
 		{
 			network.PeerObserverMap[myPid] = true;
 			network.PeerTeamMap[myPid] = 0;
@@ -2053,7 +2073,7 @@ public partial class MainMenuController : Control
 		bool observer = network.PeerObserverMap.GetValueOrDefault(pid, false);
 		// 双重保险：复选框是权威来源——只要还勾着，本地行永远按旁观者渲染，
 		// 即使地图状态被任何路径重置也不会“变回可选”
-		if (pid == lockstep?.LocalPlayerID && _obsCheck != null && _obsCheck.ButtonPressed)
+		if (pid == lockstep?.LocalPlayerID && Alive(_obsCheck) && _obsCheck.ButtonPressed)
 			observer = true;
 
 		// 旁观者：只显示状态，不给任何选择控件（选不了就不会“脱离观察者”）
@@ -2437,12 +2457,24 @@ public partial class MainMenuController : Control
 
 		OptMap.SetBlockSignals(true);
 
-		// 两段各自清空重建（观战者进观战段，其余进参战者段）
+		// 两段各自清空重建（观战者进观战段，其余进参战者段）。
+		//
+		// **必须先 RemoveChild 再 QueueFree**：QueueFree 是延迟的，
+		// 节点要到帧末才真正离开树；只 QueueFree 的话，紧随其后的
+		// RefreshSpectatorSeats 会把这些"已排队但还在树里"的行也算进观战人数。
 		foreach (Node child in PlayerList.GetChildren())
+		{
+			PlayerList.RemoveChild(child);
 			child.QueueFree();
+		}
 		if (GodotObject.IsInstanceValid(SpectatorList))
+		{
 			foreach (Node child in SpectatorList.GetChildren())
+			{
+				SpectatorList.RemoveChild(child);
 				child.QueueFree();
+			}
+		}
 
 		bool allReady = true;
 		bool allSelected = true;
@@ -2557,9 +2589,9 @@ public partial class MainMenuController : Control
 		OptMap.SetBlockSignals(false);
 
 		// P1-1/P1-5：旁观者开关/添加机器人只在单机大厅显示
-		if (_obsCheck != null)
+		if (Alive(_obsCheck))
 			_obsCheck.Visible = offlineLobby;
-		if (_btnAddBot != null)
+		if (Alive(_btnAddBot))
 			_btnAddBot.Visible = offlineLobby;
 
 		// 观战段标题/占位必须在**所有玩家行都插完之后**再刷，
