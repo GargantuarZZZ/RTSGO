@@ -18,26 +18,11 @@ namespace RTS.Core
 		protected bool _spreadPending = false;
 		public bool IsSpreadPending => _spreadPending;
 
-		/// <summary>子类提供“按钮节点名 → 建筑 ID”绑定表（快捷键从 F5 起自动分配）。</summary>
-		protected abstract (string NodeName, string StructId)[] GetBuildBindings();
-
-		/// <summary>
-		/// 种族建造面板的快捷键**起点**。
-		///
-		/// 为什么从 F5 开始而不是 F1：
-		///   F1/F2/F3 已被全局动作占用（选中空闲工人 / 全选作战单位 / 全选工人），
-		///   而本面板的 `_UnhandledInput` 在 UserController **之后**执行 ——
-		///   全局动作会先把 F1 吃掉，面板按 F1 永远不触发（技能和全选同时响应或都不响应）。
-		///   F9/F10/F11 是调试作弊键，也避开。所以可用区是 F4~F8。
-		///
-		/// 超过 5 个建筑的种族（植物 10 个、洞穴 14 个）**拿不到全部快捷键**，
-		/// 只能点按钮 —— 这是当前 UI 的真实上限，不是遗漏。
-		/// 要支持更多，需要给面板做分页或第二排键位（见 ARCHITECTURE 的美术/UI 章节）。
-		/// </summary>
-		protected const Key HotkeyStart = Key.F4;
-
-		/// <summary>本面板实际能分配的快捷键数量（F4~F8）。</summary>
-		public const int MaxHotkeys = 5;
+        /// <summary>建筑 ID 绑定；扩散为 F1，后续建筑从 F2 起。</summary>
+        protected abstract (string NodeName, string StructId)[] GetBuildBindings();
+        protected const Key HotkeyStart = Key.F1;
+        // F9~F11 retain the existing debug controls.
+        public const int MaxHotkeys = 8;
 
 		/// <summary>扩散/技能确认：子类实现（纳米要校验菌毯，植物直接生成节点）。</summary>
 		public abstract bool ConfirmSpreadAt(Vector2 worldPos);
@@ -52,7 +37,7 @@ namespace RTS.Core
 			_spreadButton = GetNodeOrNull<Button>("ButtonRow/BtnSpread");
 			if (_spreadButton != null)
 				_spreadButton.Pressed += ToggleSpreadPending;
-			// 扩散技能占起点键（F4），建筑键依次 F5..F8
+			// 扩散技能占 F1，建筑键依次 F2..F8
 			_hotkeys[0] = (_spreadButton, HotkeyStart);
 			for (int i = 0; i < bindings.Length; i++)
 			{
@@ -89,6 +74,7 @@ namespace RTS.Core
 
 		public override void _UnhandledInput(InputEvent @event)
 		{
+            if (RTS.UI.MatchMenu.BlocksGameInput) return;
 			if (!IsVisibleInTree())
 				return;
 

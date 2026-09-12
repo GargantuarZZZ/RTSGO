@@ -15,6 +15,8 @@ namespace RTS.Core
 					return;
 
 				onStart?.Invoke();
+				if (node is RTS.Units.Unit || node is RTS.Units.Structure && node is not RTS.Units.ResourceStructure)
+					GameAudio.Instance?.PlayAt("blast", node.GlobalPosition);
 
 				var tween = node.CreateTween();
 				if (tween == null)

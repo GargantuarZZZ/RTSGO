@@ -251,7 +251,7 @@ offset_bottom = 648.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_povwl")
 
-[node name="ResourceContainer" type="HBoxContainer" parent="MainControl/TopBar"]
+[node name="ResourceContainer" type="VBoxContainer" parent="MainControl/TopBar"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -283,7 +283,7 @@ grow_horizontal = 0
 grow_vertical = 0
 size_flags_vertical = 8
 
-[node name="MiniMap2" type="PanelContainer" parent="MainControl/BottomPanel/MiniMap"]
+[node name="MiniMap2" type="Control" parent="MainControl/BottomPanel/MiniMap"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

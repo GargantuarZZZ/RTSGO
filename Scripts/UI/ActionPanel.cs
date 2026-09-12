@@ -214,11 +214,16 @@ namespace RTS.Core
 				cdBar.Visible = false;
 			}
 
-			btn.Pressed += () => onTrigger?.Invoke(act.ActionId);
+			btn.Pressed += () =>
+			{
+				GameAudio.Instance?.Play("click");
+				onTrigger?.Invoke(act.ActionId);
+			};
 		}
 
 		public override void _UnhandledInput(InputEvent @event)
 		{
+            if (RTS.UI.MatchMenu.BlocksGameInput) return;
 			if (@event is InputEventKey k && k.Pressed && !k.Echo)
 			{
 				int idx = Array.IndexOf(_hotkeys, k.Keycode);

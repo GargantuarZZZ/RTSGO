@@ -276,6 +276,8 @@ namespace RTS.Network
 
 		public void SendAction(NetAction action)
 		{
+			if (action.ActionId is "Move" or "Attack" or "AttackMove" or "Harvest" or "Stop" or "Hold")
+				RTS.Core.SimEventQueue.EnqueueMain(() => RTS.Core.GameAudio.Instance?.Play("command"));
 			// 模拟线程在 ExecuteOneTick 全程持有 WorldLock：
 			// 主线程发指令也先拿同一把锁，保证 TargetTick 一定落在尚未消费的未来 tick，避免竞态丢指令。
 			var worldLock = RTS.Core.SimManager.Instance?.WorldLock;

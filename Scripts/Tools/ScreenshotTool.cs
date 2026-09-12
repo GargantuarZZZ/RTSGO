@@ -90,6 +90,19 @@ namespace RTS.Tools
 			}
 
 			if (_frame < _waitFrames) return;
+			if (_frame == _waitFrames && OS.GetEnvironment("SHOT_SELECT_FIRST") == "1")
+			{
+				var sim = RTS.Core.SimManager.Instance;
+				var user = GetTree().Root.FindChild("UserController", true, false) as RTS.Core.UserController;
+				if (sim?.World != null && user != null)
+				{
+					lock (sim.WorldLock)
+					foreach (var unit in sim.World.Units.Values)
+						if (!unit.IsDead && unit.TeamID == RTS.Core.Main.Instance.LocalPlayerID)
+						{ user.ForceSelect(sim.FindEntityById(unit.ID)); break; }
+				}
+				return;
+			}
 			_captured = true;
 			Capture();
 		}

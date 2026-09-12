@@ -25,6 +25,7 @@ public partial class RTSCamera : Camera3D
 
 	public override void _Process(double delta)
 	{
+        if (RTS.UI.MatchMenu.BlocksGameInput) return;
 		Vector2 direction = Vector2.Zero;
 
 		// 键盘平移（方向键，走 InputMap 可改键）。
@@ -135,6 +136,7 @@ public partial class RTSCamera : Camera3D
 
 	public override void _UnhandledInput(InputEvent @event)
 	{
+        if (RTS.UI.MatchMenu.BlocksGameInput) return;
 		if (@event is InputEventMouseButton mb && mb.Pressed)
 		{
 			if (mb.ButtonIndex == MouseButton.WheelUp)

@@ -42,6 +42,24 @@ if ($GodotPath) {
     if ($raceExit -ne 0 -or -not ($raceOutput -match "RACE_AI_SMOKE_PASS")) {
         throw "Race AI smoke test failed or timed out."
     }
+    $mapOutput = & $GodotPath --headless --path $repoRoot --quit-after 600 res://Scenes/Test/MinimapLayoutTest.tscn -- --offline 2>&1
+    $mapExit = $LASTEXITCODE
+    $mapOutput | ForEach-Object { Write-Host $_ }
+    if ($mapExit -ne 0 -or -not ($mapOutput -match "MINIMAP_LAYOUT_PASS")) {
+        throw "Minimap layout test failed or timed out."
+    }
+    $audioOutput = & $GodotPath --headless --path $repoRoot --quit-after 600 res://Scenes/Test/AudioSmokeTest.tscn -- --offline 2>&1
+    $audioExit = $LASTEXITCODE
+    $audioOutput | ForEach-Object { Write-Host $_ }
+    if ($audioExit -ne 0 -or -not ($audioOutput -match "AUDIO_SMOKE_PASS")) {
+        throw "Audio state test failed or timed out."
+    }
+    $menuOutput = & $GodotPath --headless --path $repoRoot --quit-after 600 res://Scenes/Test/MenuFlowTest.tscn -- --offline 2>&1
+    $menuExit = $LASTEXITCODE
+    $menuOutput | ForEach-Object { Write-Host $_ }
+    if ($menuExit -ne 0 -or -not ($menuOutput -match "MENU_FLOW_PASS")) {
+        throw "Menu flow test failed or timed out."
+    }
 } else {
     Write-Host "SKIP: Godot runtime smoke test (supply -GodotPath)."
 }

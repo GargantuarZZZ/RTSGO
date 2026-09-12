@@ -459,3 +459,28 @@ slot_13,Ability slot 13
 slot_14,Ability slot 14
 slot_15,Ability slot 15
 spectator.combatants,Combatants
+menu.tagline,Seven factions · Real-time strategy · Open warfare
+observer.short,Observer mode
+hud.commands,COMMAND
+hud.selection,UNIT INTEL
+hud.production,PRODUCTION QUEUE
+match.menu,Match menu
+match.resume,Resume game
+match.pause,Pause match
+match.unpause,Unpause match
+match.surrender,Surrender
+match.return,Return to main menu
+match.confirm,Confirm
+match.surrender_confirm,Surrender this match?
+match.return_confirm,Leave this match?
+match.online_pause,Local pause unavailable online
+race_slot_1,Faction panel skill 1
+race_slot_2,Faction panel skill 2
+race_slot_3,Faction panel skill 3
+race_slot_4,Faction panel skill 4
+race_slot_5,Faction panel skill 5
+race_slot_6,Faction panel skill 6
+race_slot_7,Faction panel skill 7
+race_slot_8,Faction panel skill 8
+keybind_secondary_hint,Secondary binding: click to set, right-click to clear
+keybind_cleared,Binding cleared

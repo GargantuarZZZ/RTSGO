@@ -459,3 +459,28 @@ slot_13,技能槽 13
 slot_14,技能槽 14
 slot_15,技能槽 15
 spectator.combatants,参战者
+menu.tagline,七大种族 · 即时战略 · 自由对抗
+observer.short,旁观者模式
+hud.commands,指令 / COMMAND
+hud.selection,单位详情 / INTEL
+hud.production,生产队列 / QUEUE
+match.menu,对局菜单
+match.resume,继续游戏
+match.pause,暂停对局
+match.unpause,解除暂停
+match.surrender,投降
+match.return,返回主菜单
+match.confirm,确认
+match.surrender_confirm,确认投降？
+match.return_confirm,退出当前对局？
+match.online_pause,联机对局不支持本地暂停
+race_slot_1,种族面板技能 1
+race_slot_2,种族面板技能 2
+race_slot_3,种族面板技能 3
+race_slot_4,种族面板技能 4
+race_slot_5,种族面板技能 5
+race_slot_6,种族面板技能 6
+race_slot_7,种族面板技能 7
+race_slot_8,种族面板技能 8
+keybind_secondary_hint,次要键位：左键点击设置，右键清除
+keybind_cleared,已清除该绑定

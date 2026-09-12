@@ -33,6 +33,7 @@ namespace RTS.Core
 
 		public override void _Process(double delta)
 		{
+			RefreshHudVisibility();
 			RefreshGameTime(delta);
 			// 旁观者：全图视野（FogOfWar.RevealAll 已开）、不可操控、
 			// 显示所有队伍的资源和人口
@@ -114,6 +115,7 @@ namespace RTS.Core
 		{
 			BuildChatPanel();
 			BuildGameTimeLabel();
+			BuildHudDesign();
 		}
 
 		private void BuildGameTimeLabel()
@@ -344,11 +346,11 @@ namespace RTS.Core
 
 			LabelSettings highVisSettings = new LabelSettings
 			{
-				FontSize = 20,
-				FontColor = new Color(1, 1, 0),
-				OutlineSize = 2,
+				FontSize = 16,
+				FontColor = new Color("dcebe8"),
+				OutlineSize = 0,
 				OutlineColor = Colors.Black,
-				ShadowSize = 2,
+				ShadowSize = 0,
 				ShadowColor = new Color(0, 0, 0, 0.5f)
 			};
 
@@ -356,6 +358,7 @@ namespace RTS.Core
 			{
 				Label label = new Label
 				{
+					VerticalAlignment = VerticalAlignment.Center,
 					LabelSettings = highVisSettings
 				};
 				label.AddThemeConstantOverride("margin_right", 15);
@@ -366,6 +369,7 @@ namespace RTS.Core
 
 			_supplyLabel = new Label
 			{
+				VerticalAlignment = VerticalAlignment.Center,
 				LabelSettings = highVisSettings
 			};
 			_supplyLabel.AddThemeConstantOverride("margin_right", 15);

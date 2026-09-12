@@ -46,9 +46,10 @@ namespace RTS.UI
 
 			// 实体层追加在 FogOverlay 之后：地形(下) -> 迷雾 -> 实体/相机框(上)
 			_entityLayer = new MinimapEntityLayer { Name = "EntityLayer" };
-			_entityLayer.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
 			_entityLayer.Setup(this);
 			AddChild(_entityLayer);
+			_entityLayer.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+			ClipContents = true;
 
 			CallDeferred(MethodName.InitMapBounds);
 		}

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public partial class MainMenuController : Control
 {
+	public static bool ReturningFromMatch;
 	public const string GameVersion = "0.2.0";
 	// 手动构建标记：每次改代码后由 Codex 递增，用于两台机器对比是否同一份包
 	public const string BuildTag = "20260811-200";
@@ -33,7 +34,7 @@ public partial class MainMenuController : Control
 	[Export] public Button BtnReady;
 	[Export] public Button BtnStart;
 	[Export] public Button BtnBack;
-	[Export] public VBoxContainer PlayerListContainer;
+	[Export] public MarginContainer PlayerListContainer;
 	// ---- 统一大厅列表（一个可滚动列表里分开"参战者 / 观战者"两段）----
 	//
 	// 原来是"单个 VBox + 绝对像素偏移（386..1075）"：宽窗口下全部挤在左上角，
@@ -213,10 +214,12 @@ public partial class MainMenuController : Control
 		SetupDropdowns();
 		SwitchPage(MenuPage.Main);
 		UpdateVersionLabel();
+		ApplyMenuDesign();
 
 		// --offline / --single / --no-steam：跳过菜单，直接进入单机对战。
-		if (NetworkManager.Instance != null && NetworkManager.IsOfflineLaunchRequested())
+		if (!ReturningFromMatch && NetworkManager.Instance != null && NetworkManager.IsOfflineLaunchRequested())
 			CallDeferred(nameof(StartOfflineGameDirect));
+		ReturningFromMatch = false;
 
 		// 无头回归：AUTO_BOTS=N 走真实大厅机器人路径（pid 100+）自动加机器人，
 		// AUTO_BOT_RACES=Union,Demon,... 按顺序指定种族；AUTO_START=1 自动开局。
@@ -653,35 +656,106 @@ public partial class MainMenuController : Control
 
 		// 3. 改键 → 重置 → 必须回到默认，且 ApplyKeybinds 不能抛
 		string probe = "game_stop";
-		var original = RTS.Settings.GameSettings.Keybinds[probe];
 		try
 		{
-			RTS.Settings.GameSettings.Keybinds[probe] = Key.J;
+			// 走新的"绑定"接口（不再直接改 Keybinds 投影）
+			RTS.Settings.GameSettings.SetBinding(probe, RTS.Settings.BindingSlot.Primary, 0,
+				RTS.Settings.InputBinding.Key(Key.J));
 			RTS.Settings.GameSettings.ApplyKeybinds();
 			bool applied = InputMap.HasAction(probe) && InputMap.ActionGetEvents(probe).Count > 0;
 
 			int changed = RTS.Settings.GameSettings.ResetAllKeybinds();
-			var restored = RTS.Settings.GameSettings.Keybinds[probe];
-			bool backToDefault = restored == RTS.Settings.InputActions.Get(probe).Default;
+			var restored = RTS.Settings.GameSettings.GetBinding(probe, RTS.Settings.BindingSlot.Primary, 0);
+			bool backToDefault = restored.AsKey == RTS.Settings.InputActions.Get(probe).Default;
 
 			GD.Print($"[SettingsRT] 改键后 InputMap 生效={applied} 恢复默认={backToDefault} " +
-				$"（重置了 {changed} 项，原值 {original} → {restored}）");
+				$"（重置了 {changed} 项）");
 
 			if (!applied) GD.PrintErr("[SettingsRT] 改键后 InputMap 里没有事件，按键不会生效。");
-			if (!backToDefault) GD.PrintErr($"[SettingsRT] 恢复默认失败：{restored} ≠ 默认值。");
+			if (!backToDefault) GD.PrintErr($"[SettingsRT] 恢复默认失败：{restored.AsKey} ≠ 默认值。");
 		}
 		catch (System.Exception e)
 		{
 			GD.PrintErr($"[SettingsRT] 改键/重置抛异常：{e.Message}");
 		}
 
-		// 4. 磁盘往返：写出去再用 ConfigFile 读回来。
-		//    这一步不能只用 GameSettings.Load()（它有 _loaded 短路），
-		//    所以直接读文件，验证"写进去的键位能读回来"。
+		// 3b. 修饰键组合：Ctrl+H 必须与裸 H 区分，且不与"驻守(H)"冲突
 		try
 		{
-			RTS.Settings.GameSettings.Keybinds["game_stop"] = Key.J;
-			RTS.Settings.GameSettings.Keybinds["game_hold"] = Key.L;
+			var ctrlH = RTS.Settings.InputBinding.Key(Key.H, RTS.Settings.BindingSlot.Primary, ctrl: true);
+			var plainH = RTS.Settings.InputBinding.Key(Key.H);
+			bool distinct = !ctrlH.SameAs(plainH);
+			bool ctrlHConflict = RTS.Settings.InputActions.Conflicts(
+				RTS.Settings.InputActions.Get("game_vote_rematch"),
+				RTS.Settings.InputActions.Get("game_hold"));
+			string text = RTS.Settings.GameSettings.BindingToText(ctrlH);
+
+			GD.Print($"[SettingsRT] 修饰键：签名区分={distinct} 与裸键冲突={ctrlHConflict} 文本='{text}'");
+			if (!distinct) GD.PrintErr("[SettingsRT] Ctrl+H 与 H 签名相同，修饰键没生效。");
+			if (ctrlHConflict) GD.PrintErr("[SettingsRT] Ctrl+H 被误判为与 H 冲突。");
+			if (!text.Contains("Ctrl+")) GD.PrintErr($"[SettingsRT] 绑定文本缺修饰键前缀：'{text}'");
+		}
+		catch (System.Exception e)
+		{
+			GD.PrintErr($"[SettingsRT] 修饰键检查抛异常：{e.Message}");
+		}
+
+		// 3c. 鼠标绑定（含侧键）：必须落到 InputMap 的 InputEventMouseButton
+		try
+		{
+			string mAction = "game_attack_move";
+			var savedM = new System.Collections.Generic.List<RTS.Settings.InputBinding>(
+				RTS.Settings.GameSettings.BindingsOf(mAction));
+
+			RTS.Settings.GameSettings.SetBinding(mAction, RTS.Settings.BindingSlot.Secondary, 0,
+				RTS.Settings.InputBinding.Mouse(MouseButton.Xbutton1, RTS.Settings.BindingSlot.Secondary));
+			RTS.Settings.GameSettings.ApplyKeybinds();
+
+			bool hasMouse = false;
+			foreach (var ev in InputMap.ActionGetEvents(mAction))
+				if (ev is InputEventMouseButton mb && mb.ButtonIndex == MouseButton.Xbutton1)
+					hasMouse = true;
+
+			string mt = RTS.Settings.GameSettings.BindingToText(
+				RTS.Settings.GameSettings.GetBinding(mAction, RTS.Settings.BindingSlot.Secondary, 0));
+
+			GD.Print($"[SettingsRT] 鼠标侧键：InputMap 生效={hasMouse} 文本='{mt}'");
+			if (!hasMouse) GD.PrintErr("[SettingsRT] 鼠标侧键没落到 InputMap，绑定不会生效。");
+
+			RTS.Settings.GameSettings.SetBindings(mAction, savedM);
+			RTS.Settings.GameSettings.ApplyKeybinds();
+		}
+		catch (System.Exception e)
+		{
+			GD.PrintErr($"[SettingsRT] 鼠标绑定检查抛异常：{e.Message}");
+		}
+
+		// 3d. 次要键位：聊天默认应有 T 与 Enter 两条
+		try
+		{
+			int kb = 0;
+			foreach (var x in RTS.Settings.GameSettings.BindingsOf("game_chat"))
+				if (!x.IsEmpty) kb++;
+			GD.Print($"[SettingsRT] 次要键位：game_chat 绑定数={kb}（默认应为 2：T + Enter）");
+			if (kb < 2) GD.PrintErr("[SettingsRT] 次要键位没生效，chat 只绑了一条。");
+		}
+		catch (System.Exception e)
+		{
+			GD.PrintErr($"[SettingsRT] 次要键位检查抛异常：{e.Message}");
+		}
+
+		// 4. 磁盘往返：写出去再用 ConfigFile 读回来。
+		//    这一步不能只用 GameSettings.Load()（它有 _loaded 短路），
+		//    所以直接读文件，验证"写进去的绑定能读回来"。
+		//
+		//    注意要连**次要键与修饰键**一起验：只验主键的话，
+		//    "次要键位重启后丢失"这类问题查不出来。
+		try
+		{
+			RTS.Settings.GameSettings.SetBinding("game_stop", RTS.Settings.BindingSlot.Primary, 0,
+				RTS.Settings.InputBinding.Key(Key.J));
+			RTS.Settings.GameSettings.SetBinding("game_hold", RTS.Settings.BindingSlot.Secondary, 0,
+				RTS.Settings.InputBinding.Mouse(MouseButton.Xbutton1, RTS.Settings.BindingSlot.Secondary));
 			RTS.Settings.GameSettings.Save();
 
 			var cfg = new ConfigFile();
@@ -691,13 +765,24 @@ public partial class MainMenuController : Control
 			}
 			else
 			{
-				long stopKey = cfg.GetValue("keys", "game_stop", -1L).AsInt64();
-				long holdKey = cfg.GetValue("keys", "game_hold", -1L).AsInt64();
-				bool ok = stopKey == (long)Key.J && holdKey == (long)Key.L;
-				GD.Print($"[SettingsRT] 磁盘往返：game_stop={stopKey}({(Key)stopKey}) " +
-					$"game_hold={holdKey}({(Key)holdKey}) {(ok ? "OK" : "★ 不一致")}");
+				var stopRaw = cfg.GetValue("keys", "game_stop", new string[0]).AsStringArray();
+				var holdRaw = cfg.GetValue("keys", "game_hold", new string[0]).AsStringArray();
+
+				// 反序列化后比对，确认"写出去的结构"能还原成等价绑定
+				var stopB = stopRaw.Length > 0
+					? RTS.Settings.GameSettings.ParseBinding(stopRaw[0]) : RTS.Settings.InputBinding.None;
+				RTS.Settings.InputBinding holdB = RTS.Settings.InputBinding.None;
+				foreach (string s in holdRaw)
+				{
+					var b = RTS.Settings.GameSettings.ParseBinding(s);
+					if (b.Device == RTS.Settings.BindingDevice.Mouse) { holdB = b; break; }
+				}
+
+				bool ok = stopB.AsKey == Key.J && holdB.AsMouse == MouseButton.Xbutton1;
+				GD.Print($"[SettingsRT] 磁盘往返：game_stop={RTS.Settings.GameSettings.BindingToText(stopB)} " +
+					$"game_hold(次)={RTS.Settings.GameSettings.BindingToText(holdB)} {(ok ? "OK" : "★ 不一致")}");
 				if (!ok)
-					GD.PrintErr("[SettingsRT] 键位写盘后读回不一致 —— 玩家改的键重启会失效。");
+					GD.PrintErr("[SettingsRT] 绑定写盘后读回不一致 —— 次要键/鼠标绑定重启会失效。");
 			}
 		}
 		catch (System.Exception e)
@@ -770,8 +855,14 @@ public partial class MainMenuController : Control
 	/// <summary>无头回归：打印设置菜单的布局尺寸（检查是否超出窗口）。</summary>
 	private void OpenSettingsForTest()
 	{
-		var menu = new RTS.UI.SettingsMenu { Name = "SettingsMenu" };
-		AddChild(menu);
+		RTS.UI.SettingsMenu.Open(this);
+		var menu = RTS.UI.SettingsMenu.Instance;
+
+		// SETTINGS_PAGE=keybinds 时直接翻到键位页：主/次键位与鼠标绑定的
+		// 显示只有在这一页才看得到，不然截图拍到的是语言页。
+		string wantPage = OS.GetEnvironment("SETTINGS_PAGE");
+		if (!string.IsNullOrEmpty(wantPage))
+			Callable.From(() => menu.ShowPageForTest(wantPage)).CallDeferred();
 
 		// 等一帧布局算完再量
 		Callable.From(() =>
@@ -1348,7 +1439,7 @@ public partial class MainMenuController : Control
 
 	private void OpenSettings()
 	{
-		AddChild(new RTS.UI.SettingsMenu { Name = "SettingsMenu" });
+		RTS.UI.SettingsMenu.Open(this);
 	}
 
 		private void RefreshMenuTexts()
@@ -1376,6 +1467,11 @@ public partial class MainMenuController : Control
 				BtnBack.Text = RTS.Settings.Localization.Tr("back");
 			if (BtnReady != null)
 				BtnReady.Text = RTS.Settings.Localization.Tr(_isLocalReady ? "lobby.unready" : "lobby.ready");
+			if (_menuCaption != null)
+			{
+				_menuCaption.Text = RTS.Settings.Localization.Tr("menu.tagline");
+				LayoutMenuDesign();
+			}
 		}
 
 		// 下拉框文案刷新（不重置选中项）。
@@ -2332,7 +2428,7 @@ public partial class MainMenuController : Control
 			return;
 		// 列表容器：优先用新的统一列表；拿不到就退回旧的单容器（兼容旧场景）
 		if (!GodotObject.IsInstanceValid(PlayerList))
-			PlayerList = PlayerListContainer;
+			PlayerList = PlayerListContainer?.GetNodeOrNull<VBoxContainer>("LobbyListColumn/PlayerListScroll/PlayerList");
 		if (!GodotObject.IsInstanceValid(PlayerList))
 			return;
 

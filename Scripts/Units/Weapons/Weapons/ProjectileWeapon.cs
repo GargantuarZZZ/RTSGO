@@ -102,6 +102,7 @@ namespace RTS.Units
 			{
 				if (!GodotObject.IsInstanceValid(this))
 					return;
+				if (ShootSound == null) RTS.Core.GameAudio.Instance?.PlayWeapon(this, GetFirePointWorld());
 				if (ShootSound != null)
 				{
 					ShootSound.PitchScale = (float)GD.RandRange(0.95f, 1.05f);
@@ -124,6 +125,7 @@ namespace RTS.Units
 				}
 
 				Vector3 muzzleWorld = GetFirePointWorld();
+				if (ShootSound == null) RTS.Core.GameAudio.Instance?.PlayWeapon(this, muzzleWorld);
 				RTS.Core.HitFx.SpawnMuzzleFlash(GetTree().Root, muzzleWorld, 18f, 0.1f, HitFxColor);
 				RTS.Core.HitFx.SpawnTracer(GetTree().Root, muzzleWorld, gp, 3f, 0.18f, HitFxColor);
 				RTS.Core.HitFx.Spawn(GetTree().Root, gp, HitFxRadius, HitFxDuration, HitFxColor, HasAreaDamage ? AreaRadius : 0f);

@@ -77,6 +77,7 @@ namespace RTS.Units
 
 		private void SpawnAttackVisualsMain(Vector3 muzzleWorld, Vector3 targetPoint)
 		{
+			if (ShootSound == null) RTS.Core.GameAudio.Instance?.PlayWeapon(this, muzzleWorld);
 			// 电磁炮普通攻击：亮蓝曲线光束 + 命中爆闪（每条线一次调用）
 			// 用 WeaponName 判断：多把同名武器被 Godot 自动改名（@Node3D@xxx），Name 不可靠
 			if (WeaponName == "WandererPlasmaBeam")

@@ -55,9 +55,9 @@ namespace RTS.Core
 			RTS.Core.Events.GameEventBus.ActionTriggered += OnUITriggered;
 
 			// 右下角帧率小字（画面 FPS / 逻辑 TPS）——场景挂载中禁止直接 AddChild 到 root，延迟一帧
-			Callable.From(() => GetTree().Root.AddChild(new RTS.UI.FpsOverlay { Name = "FpsOverlay" })).CallDeferred();
+			Callable.From(() => GetParent().AddChild(new RTS.UI.FpsOverlay { Name = "FpsOverlay" })).CallDeferred();
 			// P1-4 协商/投票 HUD（Ctrl+H 发起重开投票，N/M 表决）
-			Callable.From(() => GetTree().Root.AddChild(new RTS.UI.VoteUI { Name = "VoteUI" })).CallDeferred();
+			Callable.From(() => GetParent().AddChild(new RTS.UI.VoteUI { Name = "VoteUI" })).CallDeferred();
 		}
 
 		public override void _ExitTree()
@@ -68,6 +68,7 @@ namespace RTS.Core
 
 		public override void _Process(double delta)
 		{
+            if (RTS.UI.MatchMenu.BlocksGameInput) return;
 			// 旁观者：不可操控（相机由 RTSCamera 独立控制）
 			if (RTS.Network.NetworkManager.Instance?.LocalIsObserver == true)
 				return;
@@ -81,7 +82,7 @@ namespace RTS.Core
 
 			// P2-5：P/K/T 改走 InputMap 动作（可在设置菜单改键）
 			if (!chatOpen &&
-				Input.IsActionJustPressed("game_pause") && RTS.Core.SimManager.Instance is { } sim)
+				RTS.UI.MatchMenu.CanPause && Input.IsActionJustPressed("game_pause") && RTS.Core.SimManager.Instance is { } sim)
 			{
 				bool next = !sim.IsPaused;
 				sim.SetPaused(next);
@@ -91,7 +92,8 @@ namespace RTS.Core
 				Input.IsActionJustPressed("game_surrender") &&
 				RTS.Network.LockstepManager.Instance is { } lockstep)
 			{
-				lockstep.SendAction(NetAction.GroundCommand("Surrender", lockstep.LocalPlayerID, Vector2.Zero));
+				if (RTS.UI.MatchMenu.CanPause) SimManager.Instance?.SetPaused(false);
+                lockstep.SendAction(NetAction.GroundCommand("Surrender", lockstep.LocalPlayerID, Vector2.Zero));
 				GD.Print("[Surrender] 已发送投降指令");
 			}
 			// P1-5：T 打开/关闭聊天输入框（发送由聊天面板的 Enter 处理）
@@ -100,11 +102,7 @@ namespace RTS.Core
 				(GetTree().Root.FindChild("UserUI", true, false) as RTS.Core.UserUI)?.ToggleChatInput();
 			}
 
-			// 一键选中所有闲置工人（矿挖完挂机时按 F1 快速拉出来重新派活）
-			// 注意：F1/F2/F3 与编队、镜头回中都放在 _UnhandledInput 里处理，
-			// 不放这里轮询 —— _Process 的轮询**绕过 UI 的输入消费**，
-			// 会导致"种族建造面板开着时按 F1 同时触发面板技能和全选农民"。
-			// 放在 _UnhandledInput 才能让先消费的 UI 把它吃掉。
+            // Selection shortcuts are unbound by default; F1 onward belongs to faction skills.
 
 			// 中键地图信号：**改成 Ctrl+中键**。
 			// 中键本身让给"拖拽平移镜头"（RTS 标准手感：中键拖屏），
@@ -146,7 +144,9 @@ namespace RTS.Core
 		}
 
 		public override void _UnhandledInput(InputEvent @event)
-		{			// P1-1：时间加速通用快捷键（1/2/3/4，任何地图/单机/旁观者都可用；
+		{
+            if (RTS.UI.MatchMenu.BlocksGameInput) return;
+			// P1-1：时间加速通用快捷键（1/2/3/4，任何地图/单机/旁观者都可用；
 			// 联机时 SimulationSpeed 内部强制 1x，不会破坏锁步）
 			if (@event is InputEventKey speedKey && speedKey.Pressed && !speedKey.Echo &&
 				!RTS.Core.UserUI.ChatOpen)

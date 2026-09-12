@@ -4,29 +4,37 @@ using RTS.Settings;
 
 namespace RTS.UI
 {
-	// =========================================================
-	// 设置菜单：语言 / 键位 / 声音 / 画面
-	//
-	// 代码构建 UI（不手写 .tscn），与项目其它面板保持一致。
-	//
-	// ---- 这次重做的原因 ----
-	// 旧版键位区只列 `GameSettings.Keybinds` 的 4 条（P/K/T/F1），而实际
-	// 游戏里几十个键写死在 ActionPanel / UserController / RaceBuildPanelUI 里，
-	// 玩家既看不到也改不了 —— 更糟的是这些写死的键**会把 A/S/T/F1 抢走**。
-	//
-	// 现在键位区由 `InputActions` 注册表驱动：
-	//   · 按组显示（镜头 / 选择与编队 / 单位指令 / 对局与社交 / 面板技能槽）
-	//   · 面板技能槽标为"固定"，让玩家知道这些键被谁占着（不再隐形）
-	//   · 改键时**实时检测冲突**并提示谁占了
-	//   · 一键恢复默认
-	// =========================================================
-
+    // Independent modal layer with fixed navigation/footer and one scrollable content page.
 	public partial class SettingsMenu : Control
 	{
-		private OptionButton _languageOption;
+		public static SettingsMenu Instance { get; private set; }
+        public static bool IsOpen => GodotObject.IsInstanceValid(Instance) && !Instance.IsQueuedForDeletion();
+        private readonly Dictionary<Button, string> _translatedButtons = new();
+        public static void Open(Node parent)
+        {
+            if (IsOpen) return;
+            var layer = new CanvasLayer { Name = "SettingsOverlay", Layer = 200 };
+            parent.AddChild(layer);
+            var menu = new SettingsMenu { Name = "SettingsMenu" };
+            menu.TreeExited += () => layer.QueueFree();
+            layer.AddChild(menu);
+        }
+        public override void _ExitTree() { if (Instance == this) Instance = null; }
+        private Button TextButton(string key)
+        {
+            var button = new Button { Text = Localization.Tr(key), CustomMinimumSize = new Vector2(140, 40) };
+            _translatedButtons[button] = key;
+            return button;
+        }
+        private OptionButton _languageOption;
 		private readonly Dictionary<string, Button> _keyButtons = new();
+		// 次要键位按钮：key = (动作, 次要槽下标)。目前每个动作只有一个次要槽。
+		private readonly Dictionary<(string, int), Button> _secondaryButtons = new();
 		private readonly Dictionary<string, Label> _keyWarnLabels = new();
 		private string _awaitingAction = "";
+		// 改键时正在等的槽位/下标（支持给"次要键"改键，而不是只能改主键）
+		private BindingSlot _awaitingSlot = BindingSlot.Primary;
+		private int _awaitingIndex = 0;
 		private readonly List<Label> _labels = new();
 		private CheckBox _fullscreenBox;
 		private Button _resetKeysButton;
@@ -34,52 +42,64 @@ namespace RTS.UI
 
 		public override void _Ready()
 		{
-			SetAnchorsPreset(LayoutPreset.FullRect);
+			Instance = this;
+            Theme = HudTheme.Create();
+            Theme.DefaultFontSize = 16;
+            SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
 			BuildUI();
 			RefreshTexts();
 		}
 
 		private void BuildUI()
 		{
-			var dim = new ColorRect
-			{
-				Color = new Color(0f, 0f, 0f, 0.6f)
-			};
-			dim.SetAnchorsPreset(LayoutPreset.FullRect);
-			AddChild(dim);
-
-			// ---- 居中 + 限高 + 可滚动的面板 ----
-			//
-			// 设置项从 4 条键位涨到 32 条以后，内容高度轻松超过 700px；
-			// 而窗口默认只有 648px。如果直接把 VBox 放进居中的 PanelContainer，
-			// 底部"保存/返回"会被挤出屏幕**且点不到**（不是滚动，是真的裁掉）。
-			// 所以外层套一个限高的 ScrollContainer：
-			//   面板高度 = min(内容高度, 90% 窗口高)，超出部分整体滚动。
-			var outerScroll = new ScrollContainer();
-			outerScroll.SetAnchorsPreset(LayoutPreset.FullRect);
-			outerScroll.HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled;
-			AddChild(outerScroll);
-
-			var center = new CenterContainer
-			{
-				SizeFlagsHorizontal = SizeFlags.ExpandFill,
-				SizeFlagsVertical = SizeFlags.ExpandFill,
-			};
-			outerScroll.AddChild(center);
-
-			var panel = new PanelContainer { CustomMinimumSize = new Vector2(620, 0) };
-			center.AddChild(panel);
-
-			var margin = new MarginContainer();
-			margin.AddThemeConstantOverride("margin_left", 24);
-			margin.AddThemeConstantOverride("margin_right", 24);
-			margin.AddThemeConstantOverride("margin_top", 16);
-			margin.AddThemeConstantOverride("margin_bottom", 16);
-			panel.AddChild(margin);
-
-			var vbox = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
-			margin.AddChild(vbox);
-
+            var dim = new ColorRect { Color = new Color("08151cf5") };
+            AddChild(dim);
+            dim.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+            var margin = new MarginContainer();
+            AddChild(margin);
+            margin.SetAnchorsAndOffsetsPreset(LayoutPreset.FullRect);
+            foreach (string side in new[] { "left", "right", "top", "bottom" }) margin.AddThemeConstantOverride("margin_" + side, 32);
+            var layout = new VBoxContainer();
+            layout.AddThemeConstantOverride("separation", 20);
+            margin.AddChild(layout);
+            var title = MakeLabel("settings");
+            title.AddThemeFontSizeOverride("font_size", 32);
+            layout.AddChild(title);
+            var body = new HBoxContainer { SizeFlagsVertical = SizeFlags.ExpandFill };
+            body.AddThemeConstantOverride("separation", 24);
+            layout.AddChild(body);
+            var nav = new VBoxContainer { CustomMinimumSize = new Vector2(200, 0) };
+            nav.AddThemeConstantOverride("separation", 8);
+            body.AddChild(nav);
+            var panel = new PanelContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
+            panel.AddThemeStyleboxOverride("panel", HudTheme.Surface("10212aff", "304952", 20));
+            body.AddChild(panel);
+            var outerScroll = new ScrollContainer { HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
+            panel.AddChild(outerScroll);
+            var pages = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
+            outerScroll.AddChild(pages);
+            var group = new ButtonGroup();
+            VBoxContainer Page(string key)
+            {
+                var page = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill, Visible = pages.GetChildCount() == 0 };
+                page.AddThemeConstantOverride("separation", 16);
+                pages.AddChild(page);
+                var tab = TextButton(key);
+                tab.SetMeta("settings_page_key", key);   // 供 ShowPageForTest 定位
+                tab.ToggleMode = true;
+                tab.ButtonGroup = group;
+                tab.ButtonPressed = page.Visible;
+                tab.Pressed += () => {
+                    tab.ButtonPressed = true;
+                    _awaitingAction = "";
+                    RefreshKeyTexts();
+                    foreach (Control item in pages.GetChildren()) item.Visible = item == page;
+                    outerScroll.ScrollVertical = 0;
+                };
+                nav.AddChild(tab);
+                return page;
+            }
+            var vbox = Page("language");
 			// ---- 语言 ----
 			vbox.AddChild(MakeLabel("language"));
 			_languageOption = new OptionButton();
@@ -98,6 +118,7 @@ namespace RTS.UI
 			vbox.AddChild(new HSeparator());
 
 			// ---- 声音 ----
+            vbox = Page("audio");
 			vbox.AddChild(MakeLabel("audio"));
 			vbox.AddChild(MakeVolumeSlider("master_volume", () => RTS.Settings.GameSettings.MasterVolume,
 				v => RTS.Settings.GameSettings.MasterVolume = v));
@@ -109,6 +130,7 @@ namespace RTS.UI
 			vbox.AddChild(new HSeparator());
 
 			// ---- 画面 ----
+            vbox = Page("video");
 			vbox.AddChild(MakeLabel("video"));
 			var fullscreen = new CheckBox
 			{
@@ -125,20 +147,17 @@ namespace RTS.UI
 
 			vbox.AddChild(new HSeparator());
 
-			// ---- 键位（可滚动：动作多了以后不会把面板撑爆）----
+			// ---- 键位 ----
+            vbox = Page("keybinds");
 			vbox.AddChild(MakeLabel("keybinds"));
 
-			var keyHint = new Label
-			{
-				Text = RTS.Settings.Localization.Tr("keybind_hint"),
-				AutowrapMode = TextServer.AutowrapMode.WordSmart,
-			};
+			var keyHint = MakeLabel("keybind_hint");
+            keyHint.AutowrapMode = TextServer.AutowrapMode.WordSmart;
 			keyHint.AddThemeFontSizeOverride("font_size", 11);
 			keyHint.AddThemeColorOverride("font_color", new Color(0.7f, 0.7f, 0.7f));
 			vbox.AddChild(keyHint);
 
-			// 键位区不再自己滚：外层已经整体可滚，
-			// 这里用自然高度，让"有多少键位就有多长"，避免双重滚动条互相打架。
+            // Only the content area scrolls; navigation and footer stay fixed.
 			var keyBox = new VBoxContainer { SizeFlagsHorizontal = SizeFlags.ExpandFill };
 			keyBox.AddThemeConstantOverride("separation", 4);
 			vbox.AddChild(keyBox);
@@ -164,13 +183,13 @@ namespace RTS.UI
 
 			// ---- 底部按钮 ----
 			var buttons = new HBoxContainer();
-			var save = new Button { Text = RTS.Settings.Localization.Tr("save") };
+			var save = TextButton("save");
 			save.Pressed += OnSavePressed;
-			var back = new Button { Text = RTS.Settings.Localization.Tr("back") };
+			var back = TextButton("back");
 			back.Pressed += () => QueueFree();
 			buttons.AddChild(save);
 			buttons.AddChild(back);
-			vbox.AddChild(buttons);
+			layout.AddChild(buttons);
 		}
 
 		/// <summary>渲染一组动作的键位行。</summary>
@@ -194,23 +213,23 @@ namespace RTS.UI
 				nameLabel.CustomMinimumSize = new Vector2(190, 0);
 				row.AddChild(nameLabel);
 
-				var btn = new Button
-				{
-					Text = RTS.Settings.GameSettings.KeyToText(RTS.Settings.GameSettings.Keybinds[def.Action]),
-					CustomMinimumSize = new Vector2(120, 0),
-					Disabled = !def.Rebindable,
-					// 不可改的键（面板技能槽）用 tooltip 说明为什么，避免玩家以为是 bug
-					TooltipText = def.Rebindable
-						? RTS.Settings.Localization.Tr("keybind_click_to_change")
-						: RTS.Settings.Localization.Tr("keybind_fixed"),
-				};
-				string action = def.Action;
-				if (def.Rebindable)
-					btn.Pressed += () => BeginRebind(action, btn);
+				// ---- 主键 ----
+				var btn = MakeBindButton(def.Action, BindingSlot.Primary, 0, def);
 				row.AddChild(btn);
 				_keyButtons[def.Action] = btn;
 
-				var warn = new Label();
+				// ---- 次要键 ----
+				// 只有可改键的动作才给次要槽：面板技能槽按"位置=按键"排布，
+				// 给它们加次要键会破坏空间记忆。
+				if (RTS.Settings.InputActions.SupportsSecondary(def))
+				{
+					var secBtn = MakeBindButton(def.Action, BindingSlot.Secondary, 0, def);
+					secBtn.TooltipText = RTS.Settings.Localization.Tr("keybind_secondary_hint");
+					row.AddChild(secBtn);
+					_secondaryButtons[(def.Action, 0)] = secBtn;
+				}
+
+				var warn = new Label { SizeFlagsHorizontal = SizeFlags.ExpandFill, AutowrapMode = TextServer.AutowrapMode.WordSmart };
 				warn.AddThemeFontSizeOverride("font_size", 11);
 				warn.AddThemeColorOverride("font_color", new Color(1f, 0.7f, 0.4f));
 				row.AddChild(warn);
@@ -218,6 +237,68 @@ namespace RTS.UI
 
 				parent.AddChild(row);
 			}
+		}
+
+		/// <summary>
+		/// 造一个绑定按钮。槽位决定它绑 Primary 还是 Secondary，
+		/// 按钮文本走 BindingToText（含 Ctrl/Shift 前缀与"鼠标侧键4"）。
+		/// </summary>
+		private Button MakeBindButton(string action, BindingSlot slot, int index, InputActionDef def)
+		{
+			var binding = RTS.Settings.GameSettings.GetBinding(action, slot, index);
+
+			var btn = new Button
+			{
+				Text = RTS.Settings.GameSettings.BindingToText(binding),
+				CustomMinimumSize = new Vector2(slot == BindingSlot.Primary ? 120 : 110, 0),
+				Disabled = !def.Rebindable,
+				// 不可改的键（面板技能槽）用 tooltip 说明为什么，避免玩家以为是 bug
+				TooltipText = def.Rebindable
+					? RTS.Settings.Localization.Tr("keybind_click_to_change")
+					: RTS.Settings.Localization.Tr("keybind_fixed"),
+				// 次要槽允许右键清除；主键不允许（主键是必需的）
+				FocusMode = Control.FocusModeEnum.None,
+			};
+
+			if (def.Rebindable)
+			{
+				btn.Pressed += () => BeginRebind(action, btn, slot, index);
+				if (slot == BindingSlot.Secondary)
+				{
+					btn.GuiInput += (ev) =>
+					{
+						if (ev is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Right)
+						{
+							RTS.Settings.GameSettings.SetBinding(action, slot, index, InputBinding.None);
+							RTS.Settings.GameSettings.ApplyKeybinds();
+							RefreshKeyTexts();
+							SetStatus(RTS.Settings.Localization.Tr("keybind_cleared"), false);
+						}
+					};
+				}
+			}
+			return btn;
+		}
+
+		/// <summary>
+		/// 截图/无头用：翻到指定页面（页面 key 如 "keybinds"）。
+		/// 做法是找到导航栏里对应那个按钮并按一下 —— 复用真实切换路径，
+		/// 而不是另写一套"直接设 Visible"，否则测的不是玩家看到的那个行为。
+		/// </summary>
+		public void ShowPageForTest(string pageKey)
+		{
+			var tabs = GetTree().Root.FindChildren("*", "Button", true, false);
+			foreach (var n in tabs)
+			{
+				if (n is not Button b) continue;
+				if (b.GetMeta("settings_page_key").AsString() == pageKey)
+				{
+					b.ButtonPressed = true;
+					b.EmitSignal(BaseButton.SignalName.Pressed);
+					return;
+				}
+			}
+			GD.PrintErr($"[Settings] 找不到页面 '{pageKey}' 的导航按钮");
 		}
 
 		private Label MakeLabel(string key)
@@ -262,7 +343,8 @@ namespace RTS.UI
 
 		private void RefreshTexts()
 		{
-			foreach (var label in _labels)
+			foreach (var item in _translatedButtons) item.Key.Text = Localization.Tr(item.Value);
+            foreach (var label in _labels)
 			{
 				if (!label.HasMeta("tr_key")) continue;
 				string key = (string)label.GetMeta("tr_key");
@@ -285,12 +367,20 @@ namespace RTS.UI
 				var def = RTS.Settings.InputActions.Get(kv.Key);
 				if (def == null) continue;
 
-				string text = RTS.Settings.GameSettings.KeyToText(RTS.Settings.GameSettings.Keybinds[kv.Key]);
+				var primary = RTS.Settings.GameSettings.GetBinding(kv.Key, BindingSlot.Primary, 0);
+				string text = RTS.Settings.GameSettings.BindingToText(primary);
 				// 与默认值不同就加个星号，方便一眼看出自己改过哪些
-				if (def.Rebindable && RTS.Settings.GameSettings.Keybinds[kv.Key] != def.Default)
+				if (def.Rebindable && !primary.SameAs(InputBinding.Key(def.Default, BindingSlot.Primary, ctrl: def.DefaultCtrl)))
 					text += " *";
 				kv.Value.Text = text;
 			}
+
+			foreach (var kv in _secondaryButtons)
+			{
+				var b = RTS.Settings.GameSettings.GetBinding(kv.Key.Item1, BindingSlot.Secondary, kv.Key.Item2);
+				kv.Value.Text = RTS.Settings.GameSettings.BindingToText(b);
+			}
+
 			RefreshConflictWarnings();
 		}
 
@@ -300,20 +390,27 @@ namespace RTS.UI
 			foreach (var kv in _keyWarnLabels)
 				kv.Value.Text = "";
 
-			foreach (var kv in _keyButtons)
+			// 逐条绑定检查（主键与次要键都要看），按签名比对，
+			// 所以 H 与 Ctrl+H 这类不同组合不会被误报。
+			foreach (var kv in _keyWarnLabels)
 			{
 				var def = RTS.Settings.InputActions.Get(kv.Key);
 				if (def == null || !def.Rebindable) continue;
 
-				Key myKey = RTS.Settings.GameSettings.Keybinds[kv.Key];
-				if (myKey == Key.None) continue;
-
-				var others = RTS.Settings.InputActions.ActionsUsing(
-					RTS.Settings.GameSettings.Keybinds, myKey, kv.Key);
-				if (others.Count == 0) continue;
-
 				var names = new List<string>();
-				foreach (string a in others) names.Add(ShortName(a));
+				foreach (var b in RTS.Settings.GameSettings.BindingsOf(kv.Key))
+				{
+					if (b.IsEmpty) continue;
+					var others = RTS.Settings.InputActions.ActionsUsing(
+						RTS.Settings.GameSettings.Bindings, b, kv.Key);
+					foreach (string a in others)
+					{
+						string n = ShortName(a);
+						if (!names.Contains(n)) names.Add(n);
+					}
+				}
+
+				if (names.Count == 0) continue;
 				if (_keyWarnLabels.TryGetValue(kv.Key, out var warn))
 					warn.Text = RTS.Settings.Localization.Tr("keybind_conflict") + " " + string.Join("/", names);
 			}
@@ -328,17 +425,23 @@ namespace RTS.UI
 				: action;
 		}
 
-		private void BeginRebind(string action, Button button)
+		private void BeginRebind(string action, Button button, BindingSlot slot, int index)
 		{
 			_awaitingAction = action;
+			_awaitingSlot = slot;
+			_awaitingIndex = index;
 			button.Text = RTS.Settings.Localization.Tr("press_key");
 			SetStatus(RTS.Settings.Localization.Tr("keybind_waiting"), false);
 		}
 
-		public override void _UnhandledInput(InputEvent @event)
+		public override void _Input(InputEvent @event)
 		{
 			if (_awaitingAction.Length == 0)
-				return;
+            {
+                if (@event is InputEventKey esc && esc.Pressed && !esc.Echo && esc.Keycode == Key.Escape)
+                { QueueFree(); GetViewport().SetInputAsHandled(); }
+                return;
+            }
 
 			// Esc 取消改键（否则玩家想取消都没有退路）
 			if (@event is InputEventKey cancel && cancel.Pressed && !cancel.Echo &&
@@ -351,22 +454,40 @@ namespace RTS.UI
 				return;
 			}
 
-			if (@event is not InputEventKey key || !key.Pressed || key.Echo)
-				return;
-
-			// 修饰键本身不作为绑定目标（玩家按 Ctrl 是想组合，不是想绑 Ctrl）
-			if (key.PhysicalKeycode is Key.Ctrl or Key.Shift or Key.Alt or Key.Meta)
-				return;
+			// ---- 捕获一个绑定：键盘 或 鼠标（含侧键）----
+			//
+			// 修饰键（Ctrl/Shift/Alt）不再被忽略：它们**参与**组合，
+			// 例如 Ctrl+H 是"重开投票"。这里把按下状态读出来存进绑定。
+			InputBinding captured;
+			if (@event is InputEventKey key)
+			{
+				if (!key.Pressed || key.Echo) return;
+				// 只按修饰键本身不作为绑定目标（玩家按 Ctrl 是想组合，不是想绑 Ctrl）
+				if (key.PhysicalKeycode is Key.Ctrl or Key.Shift or Key.Alt or Key.Meta)
+					return;
+				captured = InputBinding.Key(key.PhysicalKeycode, _awaitingSlot,
+					key.CtrlPressed, key.ShiftPressed, key.AltPressed, key.MetaPressed);
+			}
+			else if (@event is InputEventMouseButton mb)
+			{
+				if (!mb.Pressed) return;
+				// 左键用于点按钮本身，不当作绑定目标（否则点一下就把按钮绑成左键）
+				if (mb.ButtonIndex == MouseButton.Left) return;
+				captured = InputBinding.Mouse(mb.ButtonIndex, _awaitingSlot,
+					mb.CtrlPressed, mb.ShiftPressed, mb.AltPressed, mb.MetaPressed);
+			}
+			else return;
 
 			string action = _awaitingAction;
 			_awaitingAction = "";
 
 			// 冲突只提示、不阻止：玩家可能有自己的理由共用按键
 			// （例如把"停止"和"驻守"放同一个键上分场景用）。
+			// 按"签名"比对，所以 H 与 Ctrl+H 不会互相误报。
 			var others = RTS.Settings.InputActions.ActionsUsing(
-				RTS.Settings.GameSettings.Keybinds, key.PhysicalKeycode, action);
+				RTS.Settings.GameSettings.Bindings, captured, action);
 
-			RTS.Settings.GameSettings.Keybinds[action] = key.PhysicalKeycode;
+			RTS.Settings.GameSettings.SetBinding(action, _awaitingSlot, _awaitingIndex, captured);
 			RTS.Settings.GameSettings.ApplyKeybinds();
 
 			if (others.Count > 0)
@@ -384,6 +505,8 @@ namespace RTS.UI
 			RefreshKeyTexts();
 			GetViewport().SetInputAsHandled();
 		}
+
+        public override void _UnhandledInput(InputEvent @event) => GetViewport().SetInputAsHandled();
 
 		private void OnResetKeysPressed()
 		{
