@@ -114,6 +114,7 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 text = "参战者"
+metadata/tr_key = "spectator.combatants"
 
 [node name="PlayerListScroll" type="ScrollContainer" parent="Page_Lobby/PlayerListContainer/LobbyListColumn"]
 layout_mode = 2
@@ -128,6 +129,7 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_horizontal = 3
 text = "观战者"
+metadata/tr_key = "spectator.header"
 
 [node name="SpectatorList" type="VBoxContainer" parent="Page_Lobby/PlayerListContainer/LobbyListColumn"]
 layout_mode = 2

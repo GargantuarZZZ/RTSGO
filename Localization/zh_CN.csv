@@ -510,3 +510,13 @@ tutorial.Basics_tutorial_basics.attack.title,第 8 步：交战
 tutorial.Basics_tutorial_basics.attack.detail,"框选全部部队（或按 F2 全选作战单位），右键点击东侧中立塔。\n需要边移动边交战，使用攻击移动：按 A，再左键点击目标位置。"
 tutorial.Basics_tutorial_basics.attack.done,目标已摧毁。基础操作完成。
 tutorial.Basics_tutorial_basics.select_move.done,标准指令方式：左键选择，右键下令。
+main_menu_tutorial,教程
+main_menu_map_editor,地图编辑器
+tutorial_panel.title,教程
+tutorial_panel.hint,先从「基础操作」学会怎么玩，再进「进阶」了解你想玩的阵营：机制、单位档案与科技树。
+tutorial_panel.back,返回主菜单
+tutorial_panel.start,开始这个教程
+tutorial_panel.objectives,🅐 实操流程
+tutorial_panel.codex,🅑 资料：机制 / 单位 / 建筑 / 科技
+tutorial_panel.codex_hint,数值直接读游戏配置，所以永远和实战一致。点左边条目看内容；这些资料不影响教程进度，随时可以翻。
+tutorial_panel.body,正文

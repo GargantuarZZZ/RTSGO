@@ -126,7 +126,7 @@ public partial class MainMenuController : Control
 			// 返回主菜单时地图列表会自动重扫 res://Maps/。
 			_editorButton = new Button
 			{
-				Text = "地图编辑器",
+				Text = RTS.Settings.Localization.Tr("main_menu_map_editor"),
 				Position = new Vector2(99f, 371f),
 				Size = new Vector2(189f, 44f)
 			};
@@ -138,7 +138,7 @@ public partial class MainMenuController : Control
 			// 阵营一多就会把主菜单挤爆，也不是"面板"该有的组织方式。
 			_tutorialButton = new Button
 			{
-				Text = "教程",
+				Text = RTS.Settings.Localization.Tr("main_menu_tutorial"),
 				Position = new Vector2(99f, 421f),
 				Size = new Vector2(189f, 44f)
 			};
@@ -1055,13 +1055,13 @@ public partial class MainMenuController : Control
 		root.AddThemeConstantOverride("separation", 10);
 		margin.AddChild(root);
 
-		var title = new Label { Text = "教程" };
+		var title = new Label { Text = RTS.Settings.Localization.Tr("tutorial_panel.title") };
 		title.AddThemeFontSizeOverride("font_size", 26);
 		root.AddChild(title);
 
 		var hint = new Label
 		{
-			Text = "先从「基础操作」学会怎么玩，再进「进阶」了解你想玩的阵营：机制、单位档案与科技树。",
+			Text = RTS.Settings.Localization.Tr("tutorial_panel.hint"),
 			AutowrapMode = TextServer.AutowrapMode.WordSmart,
 		};
 		hint.AddThemeColorOverride("font_color", new Color(0.75f, 0.75f, 0.75f));
@@ -1124,7 +1124,7 @@ public partial class MainMenuController : Control
 		root.AddChild(new HSeparator());
 		var backBtn = new Button
 		{
-			Text = "返回主菜单",
+			Text = RTS.Settings.Localization.Tr("tutorial_panel.back"),
 			CustomMinimumSize = new Vector2(200, 0),
 			SizeFlagsHorizontal = SizeFlags.ShrinkBegin,
 		};
@@ -1216,7 +1216,7 @@ public partial class MainMenuController : Control
 
 		var startBtn = new Button
 		{
-			Text = "开始这个教程",
+			Text = RTS.Settings.Localization.Tr("tutorial_panel.start"),
 			CustomMinimumSize = new Vector2(200, 36),
 			SizeFlagsHorizontal = SizeFlags.ShrinkBegin,
 		};
@@ -1226,7 +1226,7 @@ public partial class MainMenuController : Control
 
 		// ---- 实操目标预览 ----
 		_tutorialDetail.AddChild(new HSeparator());
-		var objHeader = new Label { Text = "🅐 实操流程" };
+		var objHeader = new Label { Text = RTS.Settings.Localization.Tr("tutorial_panel.objectives") };
 		objHeader.AddThemeFontSizeOverride("font_size", 16);
 		_tutorialDetail.AddChild(objHeader);
 
@@ -1258,14 +1258,13 @@ public partial class MainMenuController : Control
 
 		// ---- 理论资料（可浏览的图鉴）----
 		_tutorialDetail.AddChild(new HSeparator());
-		var pageHeader = new Label { Text = "🅑 资料：机制 / 单位 / 建筑 / 科技" };
+		var pageHeader = new Label { Text = RTS.Settings.Localization.Tr("tutorial_panel.codex") };
 		pageHeader.AddThemeFontSizeOverride("font_size", 16);
 		_tutorialDetail.AddChild(pageHeader);
 
 		var pageHint = new Label
 		{
-			Text = "数值直接读游戏配置，所以永远和实战一致。点左边条目看内容；" +
-				"这些资料不影响教程进度，随时可以翻。",
+			Text = RTS.Settings.Localization.Tr("tutorial_panel.codex_hint"),
 			AutowrapMode = TextServer.AutowrapMode.WordSmart,
 		};
 		pageHint.AddThemeFontSizeOverride("font_size", 12);
@@ -1308,7 +1307,7 @@ public partial class MainMenuController : Control
 			}
 		}
 
-		var currentLabel = new Label { Text = "正文" };
+		var currentLabel = new Label { Text = RTS.Settings.Localization.Tr("tutorial_panel.body") };
 		currentLabel.AddThemeFontSizeOverride("font_size", 13);
 		currentLabel.AddThemeColorOverride("font_color", new Color(0.7f, 0.85f, 1f));
 		_tutorialDetail.AddChild(currentLabel);

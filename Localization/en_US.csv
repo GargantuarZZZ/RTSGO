@@ -510,3 +510,13 @@ tutorial.Basics_tutorial_basics.attack.title,Step 8: Engage
 tutorial.Basics_tutorial_basics.attack.detail,"Box-select your army (or press F2 to select all combat units) and right-click the neutral tower to the east.\nTo advance while engaging, use Attack-Move: press A, then left-click the destination."
 tutorial.Basics_tutorial_basics.attack.done,Target destroyed. Basics complete.
 tutorial.Basics_tutorial_basics.select_move.done,"Standard command scheme: left-click to select, right-click to order."
+main_menu_tutorial,Tutorial
+main_menu_map_editor,Map Editor
+tutorial_panel.title,Tutorials
+tutorial_panel.hint,Start with Basics to learn the controls, then open Advanced for your faction: mechanics, unit profiles, and the tech tree.
+tutorial_panel.back,Back to Main Menu
+tutorial_panel.start,Start This Tutorial
+tutorial_panel.objectives,🅐 Objectives
+tutorial_panel.codex,🅑 Reference: Mechanics / Units / Structures / Tech
+tutorial_panel.codex_hint,Values are read directly from game configs, so they always match live gameplay. Click an entry on the left. Reference pages do not affect tutorial progress.
+tutorial_panel.body,Body
