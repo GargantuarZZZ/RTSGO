@@ -484,3 +484,29 @@ race_slot_7,Faction panel skill 7
 race_slot_8,Faction panel skill 8
 keybind_secondary_hint,Secondary binding: click to set, right-click to clear
 keybind_cleared,Binding cleared
+tutorial.Basics_tutorial_basics.name,Basics
+tutorial.Basics_tutorial_basics.intro,"Core operations: select, move, gather, build, train, research, engage."
+tutorial.Basics_tutorial_basics.select_move.title,Step 1: Select and Move
+tutorial.Basics_tutorial_basics.select_move.detail,"Drag with the left mouse button to box-select SCVs, then right-click the ground to issue a move order.\nRight-click targeting: ground = move, enemy unit = attack, resource node = gather."
+tutorial.Basics_tutorial_basics.camera.title,Step 2: Camera Control
+tutorial.Basics_tutorial_basics.camera.detail,"Scroll wheel zooms. Four ways to pan: arrow keys, cursor at screen edge, middle-mouse drag, or click the minimap.\nThis step is informational; click Next to continue."
+tutorial.Basics_tutorial_basics.camera.done,Camera control complete. Next: economy.
+tutorial.Basics_tutorial_basics.harvest.title,Step 3: Gather Resources
+tutorial.Basics_tutorial_basics.harvest.detail,"Select an SCV and right-click a mineral node. It gathers automatically and returns cargo to the Command Center.\nMinerals are the primary resource; Gas (from geysers) is required for advanced units and tech."
+tutorial.Basics_tutorial_basics.harvest.done,Resources are deposited automatically.
+tutorial.Basics_tutorial_basics.build_supply.title,Step 4: Build a Supply Depot (Supply)
+tutorial.Basics_tutorial_basics.build_supply.detail,"Production stops when supply is capped. Select an SCV, open Build, and place a Supply Depot on open ground near your base.\nA placed structure starts as a translucent blueprint; the SCV constructs it automatically and it completes at full health."
+tutorial.Basics_tutorial_basics.build_supply.done,A Supply Depot provides 10 supply. Add more when capped.
+tutorial.Basics_tutorial_basics.build_barracks.title,Step 5: Build a Barracks
+tutorial.Basics_tutorial_basics.build_barracks.detail,Place a Barracks (BB) the same way. It is required to train ground units.
+tutorial.Basics_tutorial_basics.build_barracks.done,Barracks complete. Production available.
+tutorial.Basics_tutorial_basics.train.title,Step 6: Train Units
+tutorial.Basics_tutorial_basics.train.detail,"Select the Barracks and click Train Rifleman in the action panel. New units appear at the rally point.\nWith the Barracks selected, right-click the ground to set its rally point."
+tutorial.Basics_tutorial_basics.train.done,Units trained. Add Supply Depots when capped.
+tutorial.Basics_tutorial_basics.tech.title,Step 7: Research Technology
+tutorial.Basics_tutorial_basics.tech.detail,"Build an Academy (requires a Barracks), select it, and research a technology.\nTech permanently upgrades your forces and is the primary source of combat advantage."
+tutorial.Basics_tutorial_basics.tech.done,Technology researched.
+tutorial.Basics_tutorial_basics.attack.title,Step 8: Engage
+tutorial.Basics_tutorial_basics.attack.detail,"Box-select your army (or press F2 to select all combat units) and right-click the neutral tower to the east.\nTo advance while engaging, use Attack-Move: press A, then left-click the destination."
+tutorial.Basics_tutorial_basics.attack.done,Target destroyed. Basics complete.
+tutorial.Basics_tutorial_basics.select_move.done,"Standard command scheme: left-click to select, right-click to order."

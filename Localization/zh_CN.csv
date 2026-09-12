@@ -484,3 +484,29 @@ race_slot_7,种族面板技能 7
 race_slot_8,种族面板技能 8
 keybind_secondary_hint,次要键位：左键点击设置，右键清除
 keybind_cleared,已清除该绑定
+tutorial.Basics_tutorial_basics.name,基础操作
+tutorial.Basics_tutorial_basics.intro,"核心操作：选择、移动、采集、建造、生产、研究、交战。"
+tutorial.Basics_tutorial_basics.select_move.title,第 1 步：选择与移动
+tutorial.Basics_tutorial_basics.select_move.detail,"左键拖拽框选 SCV，右键点击地面下达移动指令。\n右键目标规则：空地=移动，敌方单位=攻击，资源点=采集。"
+tutorial.Basics_tutorial_basics.camera.title,第 2 步：视角控制
+tutorial.Basics_tutorial_basics.camera.detail,"滚轮缩放视角。平移视角的四种方式：方向键、光标移至屏幕边缘、按住中键拖拽、点击小地图。\n本步骤为讲解，无需操作，点击「下一步」继续。"
+tutorial.Basics_tutorial_basics.camera.done,视角控制完成。下一步：经济。
+tutorial.Basics_tutorial_basics.harvest.title,第 3 步：采集资源
+tutorial.Basics_tutorial_basics.harvest.detail,"选中 SCV，右键点击铁矿。SCV 自动采集并运回指挥中心。\n金属为主资源；瓦斯（气泉）用于高级单位与科技。"
+tutorial.Basics_tutorial_basics.harvest.done,资源自动入库，无需手动回收。
+tutorial.Basics_tutorial_basics.build_supply.title,第 4 步：建造补给站（人口）
+tutorial.Basics_tutorial_basics.build_supply.detail,"人口达到上限后无法继续生产。选中 SCV，点击「建造」并选择补给站，放置于基地附近空地。\n建筑放下后为半透明蓝图，SCV 自动前往施工；生命值满格即为完工。"
+tutorial.Basics_tutorial_basics.build_supply.done,补给站提供 10 人口。人口不足时继续补充。
+tutorial.Basics_tutorial_basics.build_barracks.title,第 5 步：建造兵营
+tutorial.Basics_tutorial_basics.build_barracks.detail,使用相同方式放置兵营（BB）。兵营是生产地面部队的前置建筑。
+tutorial.Basics_tutorial_basics.build_barracks.done,兵营完工，可开始生产。
+tutorial.Basics_tutorial_basics.train.title,第 6 步：生产部队
+tutorial.Basics_tutorial_basics.train.detail,"选中兵营，在动作面板点击「训练 步枪兵」。新单位在兵营旁集结点出现。\n选中兵营后右键点击地面可设置集结点。"
+tutorial.Basics_tutorial_basics.train.done,部队已生产。人口不足时优先补充补给站。
+tutorial.Basics_tutorial_basics.tech.title,第 7 步：研究科技
+tutorial.Basics_tutorial_basics.tech.detail,"建造学院（Academy，需兵营作为前置），选中学院并研究一项科技。\n科技永久强化部队，是形成战力差距的主要手段。"
+tutorial.Basics_tutorial_basics.tech.done,科技研究完成。
+tutorial.Basics_tutorial_basics.attack.title,第 8 步：交战
+tutorial.Basics_tutorial_basics.attack.detail,"框选全部部队（或按 F2 全选作战单位），右键点击东侧中立塔。\n需要边移动边交战，使用攻击移动：按 A，再左键点击目标位置。"
+tutorial.Basics_tutorial_basics.attack.done,目标已摧毁。基础操作完成。
+tutorial.Basics_tutorial_basics.select_move.done,标准指令方式：左键选择，右键下令。

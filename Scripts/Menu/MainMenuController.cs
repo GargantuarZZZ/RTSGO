@@ -280,6 +280,12 @@ public partial class MainMenuController : Control
 		RTS.Data.Configs.ConfigDatabase.LoadAll();
 		RTS.Tutorial.TutorialCodex.HydrateAll(RTS.Tutorial.TutorialRegistry.All);
 
+		// 教程文案本地化：面板构建前先注入翻译函数并应用到每个定义。
+		// （运行时的同一件事在 StartTutorial 里做，两处都要，因为玩家可能先看图鉴。）
+		RTS.Tutorial.TutorialDefinition.Translator = key =>
+			RTS.Settings.Localization.Has(key) ? RTS.Settings.Localization.Tr(key) : null;
+		foreach (var td in RTS.Tutorial.TutorialRegistry.All) td.ApplyLocalization();
+
 		DumpProductionChains();
 
 		foreach (var def in RTS.Tutorial.TutorialRegistry.All)
@@ -1089,6 +1095,12 @@ public partial class MainMenuController : Control
 		// HydrateAll 幂等，重复进面板不会重复挂。
 		RTS.Tutorial.TutorialCodex.HydrateAll(RTS.Tutorial.TutorialRegistry.All);
 
+		// 教程文案本地化：面板构建前先注入翻译函数并应用到每个定义。
+		// （运行时的同一件事在 StartTutorial 里做，两处都要，因为玩家可能先看图鉴。）
+		RTS.Tutorial.TutorialDefinition.Translator = key =>
+			RTS.Settings.Localization.Has(key) ? RTS.Settings.Localization.Tr(key) : null;
+		foreach (var td in RTS.Tutorial.TutorialRegistry.All) td.ApplyLocalization();
+
 		// Hydrated = 已挂上图鉴的教程（图鉴要等 ConfigDatabase 就绪）
 		AppendTutorialGroup(list, "基础", BasicsOnly());
 		AppendTutorialGroup(list, "进阶（按阵营）", RTS.Tutorial.TutorialRegistry.Advanced());
@@ -1150,7 +1162,7 @@ public partial class MainMenuController : Control
 		{
 			var btn = new Button
 			{
-				Text = $"{def.DisplayName}　({def.ObjectiveCount} 目标 · {def.PageCount} 资料页)",
+				Text = $"{def.DisplayNameResolved}　({def.ObjectiveCount} 目标 · {def.PageCount} 资料页)",
 				Alignment = HorizontalAlignment.Left,
 				SizeFlagsHorizontal = SizeFlags.ExpandFill,
 			};
@@ -1179,7 +1191,7 @@ public partial class MainMenuController : Control
 		_tutorialPageTree = null;
 		_tutorialPageBody = null;
 
-		var title = new Label { Text = def.DisplayName };
+		var title = new Label { Text = def.DisplayNameResolved };
 		title.AddThemeFontSizeOverride("font_size", 22);
 		_tutorialDetail.AddChild(title);
 
@@ -2667,6 +2679,16 @@ public partial class MainMenuController : Control
 		}
 
 		RTS.Core.SimManager.PendingTutorial = def;
+
+		// 教程文案本地化：把翻译函数注入运行时。
+		//
+		// 为什么用注入而不是让 TutorialRuntime 直接调 Localization：
+		// TutorialRuntime.cs 被无头测试项目源文件包含编译，那里没有 Godot 程序集，
+		// 直接引用会编译不过。所以由游戏侧把函数塞进去。
+		// 找不到 key 时返回 null，运行时保持中文字面量作为回退。
+		RTS.Tutorial.TutorialDefinition.Translator = key =>
+			RTS.Settings.Localization.Has(key) ? RTS.Settings.Localization.Tr(key) : null;
+		def.ApplyLocalization();
 
 		// 种族跟随教程定义，保证起始单位与教程文本一致
 		NetworkManager.Instance.StartOfflineGameDirect(def.RaceId, def.PlayerTeam,

@@ -24,7 +24,7 @@ namespace RTS.Tutorial
 	/// <summary>一个教程目标。</summary>
 	public sealed class TutorialObjective
 	{
-		/// <summary>稳定 ID（用于诊断与本地化 key：tutorial.<tid>.<oid>）。</summary>
+		/// <summary>稳定 ID（用于诊断与本地化 key：tutorial.&lt;tid&gt;.&lt;oid&gt;）。</summary>
 		public string Id = "";
 
 		/// <summary>目标标题（一句话说明要做什么）。</summary>
@@ -32,6 +32,24 @@ namespace RTS.Tutorial
 
 		/// <summary>详细说明（为什么这么做 / 具体怎么操作）。</summary>
 		public string Detail = "";
+
+		/// <summary>
+		/// 本地化后的显示文案（由教程运行时按 key 查表填入）。
+		///
+		/// 为什么不在定义里直接写 key：`TutorialDefinitions` 被无头测试项目
+		/// 源文件包含编译，**不能引用 Godot 的 Localization**。
+		/// 所以定义里保留中文原文当回退，查表在运行时做，结果放这里。
+		/// 查不到时这里等于 Title/Detail，行为与以前一致。
+		/// </summary>
+		public string LocalizedTitle = "";
+		public string LocalizedDetail = "";
+		public string LocalizedCompleteText = "";
+
+		/// <summary>取最终用于显示的标题（本地化优先）。</summary>
+		public string DisplayTitle => string.IsNullOrEmpty(LocalizedTitle) ? Title : LocalizedTitle;
+		public string DisplayDetail => string.IsNullOrEmpty(LocalizedDetail) ? Detail : LocalizedDetail;
+		public string DisplayCompleteText =>
+			string.IsNullOrEmpty(LocalizedCompleteText) ? CompleteText : LocalizedCompleteText;
 
 		/// <summary>完成条件表达式；为空表示"靠触发器/代码手动推进"。</summary>
 		public string CompleteWhen = "";
@@ -91,6 +109,42 @@ namespace RTS.Tutorial
 		public string RaceId = "";
 		public string DisplayName = "";
 		public string Intro = "";
+
+		// ---- 本地化结果（运行时查表填入；空则回退上面的原文）----
+		public string LocalizedDisplayName = "";
+		public string LocalizedIntro = "";
+		public string DisplayNameResolved =>
+			string.IsNullOrEmpty(LocalizedDisplayName) ? DisplayName : LocalizedDisplayName;
+		public string IntroResolved =>
+			string.IsNullOrEmpty(LocalizedIntro) ? Intro : LocalizedIntro;
+
+		/// <summary>
+		/// 翻译函数：key → 文案；找不到返回 null（由调用方决定回退策略）。
+		///
+		/// **必须由游戏侧注入**，不能在这里直接调 Godot 的 Localization：
+		/// 本文件被 `Tools/SimulationDeterminismTest` 源文件包含编译，
+		/// 那里没有 Godot 程序集，直接引用会编译不过。
+		/// </summary>
+		public static Func<string, string> Translator;
+
+		/// <summary>把当前语言的文案查表填进各字段（找不到就保持原文）。</summary>
+		public void ApplyLocalization()
+		{
+			if (Translator == null) return;
+			string tid = $"{Tier}_{Id}";
+
+			LocalizedDisplayName = Translator($"tutorial.{tid}.name") ?? "";
+			LocalizedIntro = Translator($"tutorial.{tid}.intro") ?? "";
+
+			foreach (var o in Objectives)
+			{
+				if (o == null) continue;
+				string b = $"tutorial.{tid}.{o.Id}";
+				o.LocalizedTitle = Translator(b + ".title") ?? "";
+				o.LocalizedDetail = Translator(b + ".detail") ?? "";
+				o.LocalizedCompleteText = Translator(b + ".done") ?? "";
+			}
+		}
 
 		/// <summary>分层（面板分组用）。默认进阶，保持既有教程的行为不变。</summary>
 		public TutorialTier Tier = TutorialTier.Advanced;
@@ -328,11 +382,11 @@ namespace RTS.Tutorial
 			return new TutorialSnapshot(
 				Active,
 				_def.Id,
-				_def.DisplayName,
+				_def.DisplayNameResolved,
 				ObjectiveIndex,
 				_def.ObjectiveCount,
-				obj?.Title ?? (Active ? "" : "教程完成"),
-				obj?.Detail ?? "",
+				obj?.DisplayTitle ?? (Active ? "" : "教程完成"),
+				obj?.DisplayDetail ?? "",
 				BuildProgressText(host),
 				banner,
 				obj?.FocusGridX ?? -1,
