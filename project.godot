@@ -22,6 +22,7 @@ SimManager="*res://Scripts/Core/SimManager.cs"
 NetworkManager="*res://Scripts/Network/NetworkManager.cs"
 LockstepManager="*res://Scripts/Network/LockstepManager.cs"
 SceneEnvironment="*res://Scripts/Core/SceneEnvironment.cs"
+HardcodedZhAudit="*res://Scripts/Tools/HardcodedZhAudit.cs"
 GameAudio="*res://Scripts/Core/GameAudio.cs"
 
 [display]

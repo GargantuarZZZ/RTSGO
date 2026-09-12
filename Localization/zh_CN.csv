@@ -520,3 +520,20 @@ tutorial_panel.objectives,🅐 实操流程
 tutorial_panel.codex,🅑 资料：机制 / 单位 / 建筑 / 科技
 tutorial_panel.codex_hint,数值直接读游戏配置，所以永远和实战一致。点左边条目看内容；这些资料不影响教程进度，随时可以翻。
 tutorial_panel.body,正文
+tutorial.Advanced_tutorial_union.name,联盟 · 基础运营
+tutorial.Advanced_tutorial_union.intro,你是联盟指挥官。先用 SCV 建立经济，再出兵拆掉敌方塔楼。
+tutorial.Advanced_tutorial_union.gather.title,采集金属
+tutorial.Advanced_tutorial_union.gather.detail,选中 SCV，右键点击金矿下达采集指令。金属自动运回指挥中心。
+tutorial.Advanced_tutorial_union.gather.done,金属是联盟的主要资源。
+tutorial.Advanced_tutorial_union.more_scv.title,训练 SCV
+tutorial.Advanced_tutorial_union.more_scv.detail,选中指挥中心，在动作面板点击「训练 SCV」，将工人补充至 6 个。
+tutorial.Advanced_tutorial_union.more_scv.done,工人数量决定经济速度。注意人口上限，不足时建造补给站。
+tutorial.Advanced_tutorial_union.barracks.title,建造兵营
+tutorial.Advanced_tutorial_union.barracks.detail,选中 SCV，点击建造按钮放置兵营（BB）。兵营是生产部队的前置建筑。
+tutorial.Advanced_tutorial_union.barracks.done,兵营完工，可开始生产。
+tutorial.Advanced_tutorial_union.army.title,训练步枪兵
+tutorial.Advanced_tutorial_union.army.detail,选中兵营，训练 4 个步枪兵。
+tutorial.Advanced_tutorial_union.army.done,步枪兵可同时攻击地面与空中目标。
+tutorial.Advanced_tutorial_union.destroy.title,摧毁敌方塔楼
+tutorial.Advanced_tutorial_union.destroy.detail,选中全部部队，右键攻击东侧中立塔。
+tutorial.Advanced_tutorial_union.destroy.done,目标摧毁。联盟教程完成。

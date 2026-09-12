@@ -520,3 +520,20 @@ tutorial_panel.objectives,🅐 Objectives
 tutorial_panel.codex,🅑 Reference: Mechanics / Units / Structures / Tech
 tutorial_panel.codex_hint,Values are read directly from game configs, so they always match live gameplay. Click an entry on the left. Reference pages do not affect tutorial progress.
 tutorial_panel.body,Body
+tutorial.Advanced_tutorial_union.name,Union - Core Economy
+tutorial.Advanced_tutorial_union.intro,You command the Union. Establish an economy with SCVs, then raise an army and destroy the enemy tower.
+tutorial.Advanced_tutorial_union.gather.title,Gather Minerals
+tutorial.Advanced_tutorial_union.gather.detail,Select an SCV and right-click a mineral node to gather. Cargo returns to the Command Center automatically.
+tutorial.Advanced_tutorial_union.gather.done,Minerals are the Union's primary resource.
+tutorial.Advanced_tutorial_union.more_scv.title,Train SCVs
+tutorial.Advanced_tutorial_union.more_scv.detail,Select the Command Center and click Train SCV in the action panel. Build up to 6 workers.
+tutorial.Advanced_tutorial_union.more_scv.done,Worker count determines economy speed. Watch the supply cap and add Supply Depots.
+tutorial.Advanced_tutorial_union.barracks.title,Build a Barracks
+tutorial.Advanced_tutorial_union.barracks.detail,Select an SCV and use Build to place a Barracks (BB). It is required to train units.
+tutorial.Advanced_tutorial_union.barracks.done,Barracks complete. Production available.
+tutorial.Advanced_tutorial_union.army.title,Train Riflemen
+tutorial.Advanced_tutorial_union.army.detail,Select the Barracks and train 4 Riflemen.
+tutorial.Advanced_tutorial_union.army.done,Riflemen engage both ground and air targets.
+tutorial.Advanced_tutorial_union.destroy.title,Destroy the Enemy Tower
+tutorial.Advanced_tutorial_union.destroy.detail,Select your entire army and right-click the neutral tower to the east.
+tutorial.Advanced_tutorial_union.destroy.done,Target destroyed. Union tutorial complete.
