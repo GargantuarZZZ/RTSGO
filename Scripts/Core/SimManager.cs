@@ -2408,6 +2408,24 @@ namespace RTS.Core
 						s.SkillCooldownMask = 0;
 					}
 				}
+
+				// 巫师族"储能"技能充能（火雨/水墙）：照搬洞穴地壳裂解器那套
+				// （SeismicCharges/SeismicChargeTimer）——同形态需求项目里已验证过。
+				// 只在未满时累加，满则停表，避免计时器无限增长。
+				if (s.SkillChargeMask != 0)
+				{
+					var scfg = RTS.Data.Configs.ConfigDatabase.GetStructure(s.StructureTypeId);
+					int maxCh = scfg?.SkillMaxCharges ?? 0;
+					if (maxCh > 1 && s.SkillCharges < maxCh)
+					{
+						s.SkillChargeTimer += World.FixedDelta;
+						if (s.SkillChargeTimer >= (FP)scfg.SkillChargeSeconds)
+						{
+							s.SkillChargeTimer = FP.Zero;
+							s.SkillCharges++;
+						}
+					}
+				}
 			}
 
 			// 沙虫：一次遍历处理火车式跟随 + 节段减速（头按存活节数 -15%/节）
@@ -3732,8 +3750,21 @@ namespace RTS.Core
 			if (player?.PlayerData == null)
 				return;
 
-			// 充能型技能（火雨/水墙）：有充能直接放，没充能走冷却
+			// 充能型技能（火雨/水墙）：**有充能才能放**，放一次扣一次。
+			// 与冷却型互斥：充能型的"再使用间隔"由充能自然产生，不再另记冷却。
 			bool chargeBased = cfg.SkillMaxCharges > 1;
+			if (chargeBased)
+			{
+				// 首次使用时把充能拉满（省去"刚建好先干等 15 秒"的别扭）
+				if (simStruct.SkillChargeMask != bit)
+				{
+					simStruct.SkillChargeMask = bit;
+					simStruct.SkillCharges = cfg.SkillMaxCharges;
+					simStruct.SkillChargeTimer = FP.Zero;
+				}
+				if (simStruct.SkillCharges <= 0)
+					return;   // 没充能：按钮可点但不产生效果（不扣能量）
+			}
 
 			if (!player.PlayerData.TryConsumeResources(ResourceType.Energy, cfg.SkillEnergyCost))
 				return;
@@ -3779,6 +3810,10 @@ namespace RTS.Core
 					ApplyWizardAreaEffect(netAct.ActionId, simStruct, cfg, xFP, yFP, radius);
 					break;
 			}
+
+			// 充能型：扣一次充能
+			if (chargeBased && simStruct.SkillCharges > 0)
+				simStruct.SkillCharges--;
 
 			// 记冷却：共享一个计时器，掩码记录是哪个技能在冷却。
 			// 充能型技能不占冷却（靠充能恢复），其余按 SkillCooldownSeconds 走。

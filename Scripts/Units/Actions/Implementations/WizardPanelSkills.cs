@@ -1,5 +1,6 @@
 using Godot;
 using RTS.Data.Configs;
+using RTS.Simulation;
 
 namespace RTS.Actions.Implementation
 {
@@ -19,6 +20,30 @@ namespace RTS.Actions.Implementation
 	public abstract partial class WizardSkillAction : EnergyCostAbilityAction
 	{
 		protected override float GetEnergyCost(StructureConfig cfg) => cfg.SkillEnergyCost;
+
+		/// <summary>本技能对应的 PanelSkillMode 位（子类声明）。</summary>
+		protected abstract long SkillBit { get; }
+
+		/// <summary>
+		/// 充能型技能（火雨/水墙）：充能用完时按钮置灰，避免"点了没反应"。
+		///
+		/// 真正的扣费与效果在 SimManager 里结算；这里只做**可用性显示**，
+		/// 两边读同一份模拟状态（SimStructure.SkillCharges），不会不同步。
+		/// </summary>
+		public override bool CanExecute()
+		{
+			if (!base.CanExecute())
+				return false;
+
+			var cfg = ConfigDatabase.GetStructure(_unit?.DisplayName ?? "");
+			if (cfg == null || cfg.SkillMaxCharges <= 1)
+				return true;
+
+			if (_unit?.LogicEntity is SimStructure st)
+				return st.SkillChargeMask != SkillBit || st.SkillCharges > 0;
+
+			return true;
+		}
 	}
 
 	/// <summary>召唤石魔像：视野内选点召唤，存在时间有限（配置里有寿限）。</summary>
@@ -26,6 +51,7 @@ namespace RTS.Actions.Implementation
 	public partial class SummonStoneGolemAction : WizardSkillAction
 	{
 		[Export] public string DisplayNameText = "召唤石魔像";
+		protected override long SkillBit => 256;
 		protected override string ActionId => "SummonStoneGolem";
 	}
 
@@ -34,6 +60,7 @@ namespace RTS.Actions.Implementation
 	public partial class SummonEarthGolemAction : WizardSkillAction
 	{
 		[Export] public string DisplayNameText = "召唤土魔像";
+		protected override long SkillBit => 512;
 		protected override string ActionId => "SummonEarthGolem";
 	}
 
@@ -45,6 +72,7 @@ namespace RTS.Actions.Implementation
 	public partial class TeleportFieldAction : WizardSkillAction
 	{
 		[Export] public string DisplayNameText = "传送阵";
+		protected override long SkillBit => 1024;
 		protected override string ActionId => "TeleportField";
 	}
 
@@ -53,6 +81,7 @@ namespace RTS.Actions.Implementation
 	public partial class TimeFreezeAction : WizardSkillAction
 	{
 		[Export] public string DisplayNameText = "空间冻结";
+		protected override long SkillBit => 2048;
 		protected override string ActionId => "TimeFreeze";
 	}
 
@@ -61,6 +90,7 @@ namespace RTS.Actions.Implementation
 	public partial class FireRainAction : WizardSkillAction
 	{
 		[Export] public string DisplayNameText = "火雨";
+		protected override long SkillBit => 4096;
 		protected override string ActionId => "FireRain";
 	}
 
@@ -69,6 +99,7 @@ namespace RTS.Actions.Implementation
 	public partial class WaterWallAction : WizardSkillAction
 	{
 		[Export] public string DisplayNameText = "水墙";
+		protected override long SkillBit => 8192;
 		protected override string ActionId => "WaterWall";
 	}
 
@@ -77,6 +108,7 @@ namespace RTS.Actions.Implementation
 	public partial class InspireMelodyAction : WizardSkillAction
 	{
 		[Export] public string DisplayNameText = "振奋旋律";
+		protected override long SkillBit => 16384;
 		protected override string ActionId => "InspireMelody";
 	}
 
@@ -85,6 +117,7 @@ namespace RTS.Actions.Implementation
 	public partial class SolemnMelodyAction : WizardSkillAction
 	{
 		[Export] public string DisplayNameText = "庄严旋律";
+		protected override long SkillBit => 32768;
 		protected override string ActionId => "SolemnMelody";
 	}
 }

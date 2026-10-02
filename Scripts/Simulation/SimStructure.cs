@@ -74,8 +74,17 @@ namespace RTS.Simulation
 		public FP SkillCooldown = FP.Zero;
 		/// <summary>正在冷却的技能位（PanelSkillMode 的位）。0 = 无。</summary>
 		public long SkillCooldownMask = 0;
-		/// <summary>已积累的充能次数（火雨/水墙这类"储能"技能用）。</summary>
+		/// <summary>
+		/// 已积累的充能次数（火雨/水墙这类"储能"技能用）。
+		///
+		/// 与 SkillCooldownMask 同一思路：一个建筑同一时刻只会有一个技能在充能，
+		/// 所以用"掩码标记是哪个技能"而不是给每个技能各加一个计数器。
+		/// </summary>
 		public int SkillCharges = 0;
+		/// <summary>充能对应的技能位；0 = 当前没有技能在充能。</summary>
+		public long SkillChargeMask = 0;
+		/// <summary>充能累计计时（到 SkillChargeSeconds 加一次，然后清零继续）。</summary>
+		public FP SkillChargeTimer = FP.Zero;
 
 		public SimStructure(int id, int teamId, FPVector2 centerPos, SimVector2I gridPos, int gridSize)
 			: this(id, teamId, centerPos, gridPos, gridSize, gridSize)
@@ -121,6 +130,8 @@ namespace RTS.Simulation
 			hash ^= (long)(SkillCooldown * (FP)1000m);
 			hash ^= SkillCooldownMask;
 			hash ^= SkillCharges * 2654435761;
+			hash ^= SkillChargeMask;
+			hash ^= (long)(SkillChargeTimer * (FP)1000m);
 			hash ^= IsAir ? 1 : 0;
 			hash ^= (long)(LifespanTimer * (FP)1000m);
 			hash ^= (long)(AutoProduceIntervalCurrent * (FP)1000m);
