@@ -3750,6 +3750,23 @@ namespace RTS.Core
 			if (player?.PlayerData == null)
 				return;
 
+			// ---- 二选一解锁校验 ----
+			//
+			// 表格要求四座 T3 建筑各自"二选一"：石魔像/土魔像、传送阵/空间冻结、
+			// 火雨/水墙、振奋/庄严。用 TechConfig.ExclusiveGroup 表达互斥，
+			// 这里做**模拟侧硬校验** —— 不能让"没研究科技"的玩家放出来。
+			//
+			// 放在模拟侧而不是只靠 UI 置灰：UI 是表现层，锁步下不能作为规则边界；
+			// 两端必须得出同样结论，所以判定放进这里。
+			{
+				string needTech = null;
+				if (cfg.SkillRequiredTechIds != null &&
+					cfg.SkillRequiredTechIds.TryGetValue(netAct.ActionId, out var t0))
+					needTech = t0;
+				if (!string.IsNullOrEmpty(needTech) && !TeamHasTech(simStruct.TeamID, needTech))
+					return;
+			}
+
 			// 充能型技能（火雨/水墙）：**有充能才能放**，放一次扣一次。
 			// 与冷却型互斥：充能型的"再使用间隔"由充能自然产生，不再另记冷却。
 			bool chargeBased = cfg.SkillMaxCharges > 1;

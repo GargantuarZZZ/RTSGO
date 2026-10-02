@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://o1h4mmwmj44b" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "WizUnlockTimeFreeze"
+DisplayName = "空间冻结"
+Description = "解锁在空间实验室施放空间冻结。"
+Category = 0
+ResearchTimeSeconds = 30.0
+RequiredTechIds = Array[String](["WizT2"])
+ExclusiveGroup = "WIZ_SPACE"

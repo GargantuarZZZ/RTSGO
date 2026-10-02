@@ -320,6 +320,17 @@ namespace RTS.Data.Configs
 		// 召唤生成的单位 ID（石魔像/土魔像用）。
 		[Export] public string SkillSummonUnitId { get; set; } = "";
 
+		// ---- 面板技能的二选一解锁 ----
+		//
+		// 四座 T3 建筑各自两个技能是**互斥**的（表格要求"二选一"）。
+		// 用"技能名=所需科技 ID"的映射表达，而不是给每个技能加一个字段：
+		// 建筑数量还会增长，字段式会让配置模式越来越臃肿。
+		//
+		// 形如 {"FireRain":"WizUnlockFireRain","WaterWall":"WizUnlockWaterWall"}。
+		// 没列在表里的技能不需要解锁科技（始终可用）。
+		// 互斥本身由 TechConfig.ExclusiveGroup 保证：同组科技只能研究一个。
+		[Export] public Godot.Collections.Dictionary<string, string> SkillRequiredTechIds { get; set; } = new();
+
 		// 洞穴面板技能：波类效果半径（格）/ 持续时间 / 倍率（共振波=受伤倍率，地震波=减速比例）
 		[Export(PropertyHint.Range, "1,99,1")]
 		public int WaveRadiusTiles { get; set; } = 6;
