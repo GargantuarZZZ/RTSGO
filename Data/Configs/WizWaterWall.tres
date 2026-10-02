@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="StructureConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://c0oxwdisfkj8y" path="res://Scripts/Data/Configs/StructureConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 200.0
+VisionRange = 200.0
+BuildTime = 0.0
+# 持续 10 秒（表格）；Structure.cs 会把它设成 SimStructure.LifespanTimer，
+# SimWorld.Tick 每帧递减、归零即销毁。
+LifespanSeconds = 10.0
+GridWidth = 3
+GridHeight = 3
+# ---- 临时建筑 ----
+#
+# 水墙是巫师"元素熔炉"的面板技能产物，不是玩家建造的建筑：
+#   · LifespanSeconds 由 Structure.cs 转到 SimStructure.LifespanTimer，
+#     SimWorld.Tick 每帧递减、归零即销毁 —— 到期自动消失，无需额外逻辑。
+#   · BlocksMovement 让它真正阻挡地面单位（这正是"临时建筑"比
+#     "往寻路网格塞动态障碍"干净的地方：建筑阻挡是既有管线）。
+BlocksMovement = true
+BlocksBuildingPlacement = true
+# 不提供人口、不生产、不可研究 —— 它只是一个墙
+SupplyProvided = 0

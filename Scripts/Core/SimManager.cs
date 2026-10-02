@@ -3652,6 +3652,15 @@ namespace RTS.Core
 				}
 
 				case "WaterWall":
+					// 水墙 = **临时建筑**（见 WizWaterWall.tres）：
+					// 格子按 3×3 对齐落点，LifespanSeconds 交给 Structure.cs →
+					// SimStructure.LifespanTimer → SimWorld.Tick 自动到期销毁。
+					// 用建筑而不是"往寻路网格塞动态障碍"：建筑阻挡是既有管线，
+					// 到期销毁、哈希、两端同步都已经是对的。
+					EntitySpawner.Instance?.SpawnEntity("WizWaterWall", simStruct.TeamID,
+						new FPVector2(xFP, yFP));
+					break;
+
 				case "TimeFreeze":
 				case "TeleportField":
 				case "InspireMelody":
@@ -3751,14 +3760,6 @@ namespace RTS.Core
 							u.Position = center;
 						break;
 
-					case "WaterWall":
-						// 真正的"阻挡地面单位"必须写进寻路阻挡网格（SimPathfinder），
-						// 那是另一处改动；这里先用强力减速表达"难以通过"。
-						if (u.TeamID != caster.TeamID && !u.IsAir)
-							u.Buffs?.AddBuff("WizWaterWall", 1, duration,
-								FP.One, FP.One, FP.Zero,
-								(FP)0.3m, FP.Zero, FP.Zero, caster.ID);
-						break;
 				}
 			}
 		}
