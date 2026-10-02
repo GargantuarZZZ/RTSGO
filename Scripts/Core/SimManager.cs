@@ -1139,6 +1139,110 @@ namespace RTS.Core
 			_pendingGarrison.Clear();
 		}
 
+		/// <summary>
+		/// AI 指挥系统 - 基地车坐地 / 收起。
+		///
+		/// 这是项目里**第一处"单位 → 建筑"转换**，做法照抄驻扎（_pendingGarrison）：
+		///   1. 在落点生成目标实体（坐地=基地建筑，收起=基地车单位）
+		///   2. World.Units.Remove + UnregisterEntityNode
+		///   3. 视觉节点释放延迟到主线程（模拟线程禁止碰 Godot）
+		///
+		/// 两形态共用血量：转换时把当前血量传给新实体，否则会出现
+		/// "坐地回满血"这种可被利用的漏洞（表格明确要求共用血量）。
+		///
+		/// 为什么不做成原地改类型：SimUnit 与 SimStructure 的字段/哈希/阻挡语义
+		/// 完全不同，原地改需要把两套状态混在一个对象里，风险和收益不成比例。
+		/// 生成新实体+移除旧实体复用了各自已验证的管线。
+		/// </summary>
+		private void HandleAIDeploy(NetAction netAct)
+		{
+			IEntity executor = GetExecutor(netAct);
+			if (executor == null)
+				return;
+
+			// ---- 建筑侧：收起（指挥基地 → 基地车）----
+			if (executor.LogicEntity is SimStructure core && !core.IsDead)
+			{
+				var coreCfg = RTS.Data.Configs.ConfigDatabase.GetStructure(core.StructureTypeId);
+				// 只有配了"可收起"标记（位 65536）的建筑才响应
+				if (coreCfg == null || (coreCfg.PanelSkillMode & 65536) == 0)
+					return;
+
+				int team2 = core.TeamID;
+				FP hp2 = core.Hp;
+				int coreId = core.ID;
+
+				var carNode = EntitySpawner.Instance?.SpawnEntity("AIBaseCar", team2,
+					new FPVector2(core.Position.X, core.Position.Y));
+				if (carNode?.LogicEntity != null)
+				{
+					carNode.LogicEntity.Hp = hp2;      // 两形态共用血量
+					if (carNode.LogicEntity is SimUnit su2)
+						su2.DeployState = 2;           // 收起状态：可移动、不生产
+				}
+
+				World.Structures.Remove(coreId);
+				UnregisterEntityNode(coreId);
+				RetireNode(executor);
+				return;
+			}
+
+			if (executor.LogicEntity is not SimUnit car || car.IsDead)
+				return;
+
+			var carCfg = RTS.Data.Configs.ConfigDatabase.GetUnit(car.UnitTypeId);
+			if (carCfg == null || !carCfg.CanDeploy)
+				return;
+			if (car.IsDeployBusy)
+				return; // 转换中，忽略重复指令
+
+			bool wantDeploy = !car.IsDeployed;
+
+			// 两形态各自对应哪个实体，由配置里的两个 ID 决定
+			string targetId = wantDeploy ? carCfg.DeployStructureId : carCfg.DeployUnitId;
+			if (string.IsNullOrEmpty(targetId))
+				return;
+
+			FP hp = car.Hp;
+			FP x = car.Position.X, y = car.Position.Y;
+			int team = car.TeamID;
+			int carId = car.ID;
+			IEntity oldNode = executor;
+
+			var newNode = EntitySpawner.Instance?.SpawnEntity(targetId, team, new FPVector2(x, y));
+
+			// 把血量搬到新实体上（表格要求两形态共用血量）。
+			// 不搬的话"坐地"会回满血，成为可反复利用的漏洞。
+			var spawned = newNode?.LogicEntity;
+			if (spawned != null)
+			{
+				spawned.Hp = hp;
+				// 坐地生成的建筑直接可用（不需要再施工）
+				if (spawned is SimStructure st)
+					st.CurrentState = SimStructure.StructureState.Active;
+			}
+
+			World.Units.Remove(carId);
+			UnregisterEntityNode(carId);
+			RetireNode(executor);
+		}
+
+		/// <summary>
+		/// 形态转换后把旧实体的视觉节点退场。
+		/// 必须延迟到主线程：模拟线程禁止碰 Godot 节点。
+		/// </summary>
+		private void RetireNode(IEntity oldEntity)
+		{
+			if (oldEntity is Godot.Node n && GodotObject.IsInstanceValid(n))
+			{
+				RTS.Core.SimEventQueue.EnqueueMain(() =>
+				{
+					if (GodotObject.IsInstanceValid(n))
+						n.QueueFree();
+				});
+			}
+		}
+
 		private static bool TeamHasTech(int teamId, string techId)
 		{
 			return RTS.World.Game.GetPlayerByTeam(teamId)?.PlayerData?.HasTech(techId) == true;
@@ -2938,6 +3042,13 @@ namespace RTS.Core
 				if (netAct.ActionId == "PlantOmni")
 				{
 					HandlePlantOmni(netAct);
+					continue;
+				}
+
+				// AI 指挥系统：基地车坐地 / 收起（单位 ⇄ 建筑 转换）
+				if (netAct.ActionId == "AIDeploy")
+				{
+					HandleAIDeploy(netAct);
 					continue;
 				}
 

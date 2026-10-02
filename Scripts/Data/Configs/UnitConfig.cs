@@ -354,6 +354,16 @@ namespace RTS.Data.Configs
 
 		// 可架设：停止 1 秒后进入架设状态
 		[Export] public bool CanDeploy { get; set; } = false;
+
+		// ---- 单位 ⇄ 建筑 互相转换（AI 指挥系统的基地车坐地/收起）----
+		//
+		// 项目里此前**没有**单位与建筑互转的机制，这是第一处。
+		// 用两个 ID 描述两个形态，而不是在代码里写死类型判断：
+		//   DeployStructureId：坐地后变成哪个建筑
+		//   DeployUnitId：收起后变回哪个单位
+		// 两者都为空表示该单位不支持形态转换（普通架设类单位走 SimUnit.DeployState）。
+		[Export] public string DeployStructureId { get; set; } = "";
+		[Export] public string DeployUnitId { get; set; } = "";
 		[Export(PropertyHint.Range, "0.1,10,0.1")]
 		public float DeployTimeSeconds { get; set; } = 1f;
 		// 架设后最大生命倍率（大兵/重装 = 2）

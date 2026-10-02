@@ -279,7 +279,21 @@ namespace RTS.Core
 					Layer = ActionLayer.Ability,
 					BlockingLayers = ActionLayer.Ability | ActionLayer.Movement
 				});
-			}
+			
+			// AI 指挥系统：基地车形态转换（单位 ⇄ 建筑）。
+			// 与泰伦的"架设"不是同一件事：架设是单位内部改状态，
+			// 这个是**换成另一个实体**（SimManager.HandleAIDeploy）。
+			if (cfg.CanDeploy && !string.IsNullOrEmpty(cfg.DeployStructureId))
+			{
+				AddAction(brain, new RTS.Actions.Implementation.AIDeployAction
+				{
+					Name = "AIDeploy",
+					DisplayNameText = "坐地/收起",
+					SlotIndex = 8,
+					Layer = ActionLayer.Ability,
+					BlockingLayers = ActionLayer.Ability | ActionLayer.Movement
+				});
+			}}
 
 			// 泰伦重装：切换弹种
 			if (cfg.CanSwitchAmmoMode)
@@ -883,6 +897,19 @@ namespace RTS.Core
 				{
 					Name = "PlantForestSpread",
 					SlotIndex = 11,
+					Layer = ActionLayer.Ability,
+					BlockingLayers = ActionLayer.Ability
+				});
+			}
+
+			// AI 指挥系统：指挥基地"收起"变回基地车（位 65536）
+			if ((cfg.PanelSkillMode & 65536) != 0)
+			{
+				AddAction(brain, new RTS.Actions.Implementation.AIDeployAction
+				{
+					Name = "AIDeploy",
+					DisplayNameText = "收起",
+					SlotIndex = 8,
 					Layer = ActionLayer.Ability,
 					BlockingLayers = ActionLayer.Ability
 				});

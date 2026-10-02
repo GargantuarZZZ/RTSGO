@@ -88,3 +88,22 @@ namespace RTS.Actions.Implementation
 		protected override string ActionId => "SolemnMelody";
 	}
 }
+
+namespace RTS.Actions.Implementation
+{
+	/// <summary>
+	/// AI 指挥系统 - 基地车坐地/收起。
+	///
+	/// 与泰伦的 DeployAction 不同：架设是**单位内部改状态**（SimUnit.DeployState），
+	/// 这个是**换成另一个实体**（坐地=建筑，收起=基地车），
+	/// 真正的转换在 SimManager.HandleAIDeploy 里做。
+	/// 放在这个文件是因为同属"面板技能形态"，且都只依赖同一个基类。
+	/// </summary>
+	[GlobalClass]
+	public partial class AIDeployAction : AliveUnitAbilityAction
+	{
+		[Export] public string DisplayNameText = "坐地/收起";
+		protected override string ActionId => "AIDeploy";
+		protected override ActionLayer Blocking => ActionLayer.Ability | ActionLayer.Movement;
+	}
+}

@@ -16,5 +16,6 @@ SupplyProvided = 20
 CanSetRallyPoint = true
 TrainableUnitIds = Array[String](["AIBaseCar"])
 ProductionQueueSize = 3
+PanelSkillMode = 65536
 BlocksMovement = true
 BlocksBuildingPlacement = true
