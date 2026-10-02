@@ -305,7 +305,7 @@ public partial class MainMenuController : Control
 	/// </summary>
 	private void DumpProductionChains()
 	{
-		string[] races = { "Union", "Terran", "Demon", "Nano", "Plant", "Cave", "Wanderer", "Wizard" };
+		string[] races = { "Union", "Terran", "Demon", "Nano", "Plant", "Cave", "Wanderer", "Wizard", "AICommand" };
 		foreach (string raceId in races)
 		{
 			var rc = RTS.Data.Configs.ConfigDatabase.GetRace(raceId);

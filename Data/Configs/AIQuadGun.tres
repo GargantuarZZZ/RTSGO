@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "AIQuadGun"
+DisplayName = "四轴机枪"
+Damage = 4
+DamageType = 0
+RangeType = 1
+AttackRange = 256
+CooldownTicks = 25
+ProjectileBehavior = 2
+ProjectileSpeed = 420
+HitRadius = 16
+CanTargetGround = true
+CanTargetAir = false
+CanTargetStructure = true
+CanTargetNeutral = true
+HitFxRadius = 20.0
+HitFxDuration = 0.2
+HitFxColor = Color(1, 0.85, 0.4, 1)

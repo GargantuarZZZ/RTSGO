@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 1200.0
+VisionRange = 500.0
+Costs = Dictionary[int, float]({7: 400.0})
+BuildTime = 45.0
+CanMove = true
+MoveSpeed = 51
+FootprintTiles = 3.0
+Tags = Array[String](["AICommand", "Mechanical", "Heavy"])
+SupplyCost = 0
+SupplyProvided = 20
+CanBuild = true
+BuildRangeTiles = 6
+BuildableStructureIds = Array[String](["AICore", "AIGoldStation", "AIRelay", "AILightFactory", "AIAirFactory", "AIHeavyAirfield", "AISkyNetCore"])
+CanDeploy = true
+DeployTimeSeconds = 4.0
+IsWorker = false
+Role = 1

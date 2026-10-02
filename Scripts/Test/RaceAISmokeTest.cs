@@ -17,7 +17,7 @@ public partial class RaceAISmokeTest : Node
 {
 	private SimManager _sim;
 	private EntitySpawner _spawner;
-	private readonly string[] _races = { "Union", "Terran", "Demon", "Nano", "Plant", "Cave", "Wanderer", "Wizard" };
+	private readonly string[] _races = { "Union", "Terran", "Demon", "Nano", "Plant", "Cave", "Wanderer", "Wizard", "AICommand" };
 	private readonly Dictionary<int, Player> _players = new();
 	private const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
 	private object Call(string name, params object[] args) => typeof(SimManager).GetMethod(name, Private).Invoke(_sim, args);

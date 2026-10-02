@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 40.0
+VisionRange = 300.0
+Costs = Dictionary[int, float]({7: 55.0})
+BuildTime = 18.0
+CanMove = true
+MoveSpeed = 134
+FootprintTiles = 1.0
+IsAir = true
+FlyHeight = 140.0
+Tags = Array[String](["AICommand", "Mechanical", "Light", "Air"])
+SupplyCost = 1
+IsSummoned = true
+LifespanSeconds = 60.0
+Kamikaze = true
+NoControlNeeded = true
+WeaponIds = Array[String](["AIKamikazeBlast"])
+Role = 2

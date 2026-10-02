@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://o1h4mmwmj44b" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "AITechSwarmAero"
+DisplayName = "集群气动学说"
+Description = "5 格内有至少 5 个友方飞行单位时，移速 +20%。"
+Category = 0
+ResearchTimeSeconds = 45.0
+FieldMoveSpeedBonus = 0.2
+FieldRadiusBonus = 5.0

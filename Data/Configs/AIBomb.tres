@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "AIBomb"
+DisplayName = "航空炸弹"
+Damage = 60
+DamageType = 1
+RangeType = 1
+AttackRange = 192
+CooldownTicks = 4
+HasAreaDamage = true
+AreaRadius = 128
+AreaEdgeDamagePercent = 60
+BonusDamage = 30
+BonusDamageVsArmorType = 4
+CanTargetGround = true
+CanTargetAir = false
+CanTargetStructure = true
+CanTargetNeutral = true
+HitFxRadius = 128.0
+HitFxDuration = 0.5
+HitFxColor = Color(1, 0.45, 0.15, 1)

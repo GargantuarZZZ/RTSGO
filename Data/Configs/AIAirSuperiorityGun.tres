@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "AIAirSuperiorityGun"
+DisplayName = "空优机炮"
+Damage = 32
+DamageType = 0
+RangeType = 1
+AttackRange = 448
+CooldownTicks = 17
+ProjectileBehavior = 1
+ProjectileSpeed = 600
+HitRadius = 24
+CanTargetGround = false
+CanTargetAir = true
+CanTargetStructure = false
+CanTargetNeutral = true
+HitFxRadius = 32.0
+HitFxDuration = 0.25
+HitFxColor = Color(0.7, 0.9, 1, 1)

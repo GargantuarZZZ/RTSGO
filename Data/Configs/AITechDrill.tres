@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://o1h4mmwmj44b" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "AITechDrill"
+DisplayName = "采集钻"
+Description = "自动采金站产出 +25%。"
+Category = 0
+ResearchTimeSeconds = 35.0
+HarvesterIncomeMultiplier = 1.25

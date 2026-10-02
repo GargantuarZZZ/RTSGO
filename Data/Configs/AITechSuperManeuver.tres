@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://o1h4mmwmj44b" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "AITechSuperManeuver"
+DisplayName = "超机动"
+Description = "战术空优机获得被动：免疫下一次受到的伤害，cd 15 秒。"
+Category = 0
+ResearchTimeSeconds = 60.0
+TargetUnitIds = Array[String](["AIAirSuperiority"])
+SkillCooldownSeconds = 15.0

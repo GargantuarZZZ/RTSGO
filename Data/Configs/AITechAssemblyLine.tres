@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://o1h4mmwmj44b" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "AITechAssemblyLine"
+DisplayName = "流水线"
+Description = "轻型无人机厂生产速度为基准的 150%。"
+Category = 0
+ResearchTimeSeconds = 30.0
+ProductionTimeMultiplier = 0.667

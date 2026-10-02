@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 300.0
+VisionRange = 500.0
+Costs = Dictionary[int, float]({7: 280.0})
+BuildTime = 26.0
+CanMove = true
+MoveSpeed = 141
+FootprintTiles = 2.0
+IsAir = true
+FlyHeight = 160.0
+Tags = Array[String](["AICommand", "Mechanical", "Heavy", "Air"])
+SupplyCost = 5
+MultiShotTargets = 4
+WeaponIds = Array[String](["AIInterceptorMissile"])
+Role = 2

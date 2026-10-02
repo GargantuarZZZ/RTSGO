@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 1100.0
+VisionRange = 700.0
+Costs = Dictionary[int, float]({7: 1000.0})
+BuildTime = 90.0
+CanMove = true
+MoveSpeed = 102
+FootprintTiles = 4.0
+IsAir = true
+FlyHeight = 200.0
+Tags = Array[String](["AICommand", "Mechanical", "Heavy", "Giant", "Hero", "Air"])
+SupplyCost = 10
+IsHero = true
+Role = 2

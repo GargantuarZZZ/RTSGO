@@ -541,3 +541,4 @@ match.restart,重新开始
 match.restart_confirm,重新开始当前对局？
 groups.help,数字键或点击：选中编队；双按：镜头定位；Ctrl+数字/点击：覆盖编队；Shift+数字/点击：追加选择。Alt+1～4：单机倍速。
 race.wizard,巫师
+race.aicommand,AI 指挥系统

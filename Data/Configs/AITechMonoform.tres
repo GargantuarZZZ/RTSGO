@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://o1h4mmwmj44b" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "AITechMonoform"
+DisplayName = "一体成型"
+Description = "轻型无人机厂生产速度为基准的 200%，替代流水线。"
+Category = 0
+ResearchTimeSeconds = 30.0
+RequiredTechIds = Array[String](["AIT2"])
+ExclusiveGroup = "AI_LightFactorySpeed"
+ProductionTimeMultiplier = 0.5
