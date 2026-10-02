@@ -280,8 +280,45 @@ namespace RTS.Data.Configs
 		public float ExchangeEnergyCost { get; set; } = 10f;
 
 		// 面板技能位标记：1=雷达 2=轨道炮 4=资源交换 8=共振波 16=地震波 32=制造虫洞
-		[Export(PropertyHint.Flags, "Radar,OrbitalStrike,ResourceExchange,ResonanceWave,SeismicWave,WormholeCreate,OmniLeafDog")]
-		public int PanelSkillMode { get; set; } = 0;
+		//
+		// 用 `long` 而不是 `int`：巫师族一次需要 8 个技能，
+		// 而 int 的 64/128 位已被 OmniLeafDog / PlantForestSpread 占用、位数不够。
+		// 换 long 后可用到第 63 位，低位数语义与原 int 完全兼容。
+		[Export(PropertyHint.Flags, "Radar,OrbitalStrike,ResourceExchange,ResonanceWave,SeismicWave,WormholeCreate,OmniLeafDog,PlantForestSpread,SummonStoneGolem,SummonEarthGolem,TeleportField,TimeFreeze,FireRain,WaterWall,InspireMelody,SolemnMelody")]
+		public long PanelSkillMode { get; set; } = 0;
+
+		// ---- 面板技能通用参数 ----
+		//
+		// 刻意做成**通用字段**而不是给每个技能各加一套：
+		// 这些技能在实现上只有"召唤 / 范围伤害 / 范围控制 / 范围增益"四种形态，
+		// 复用同一组参数即可，新增技能时不必再改配置模式。
+		[Export(PropertyHint.Range, "0,2000,10")]
+		public float SkillEnergyCost { get; set; } = 300f;
+
+		[Export(PropertyHint.Range, "0,300,1")]
+		public float SkillCooldownSeconds { get; set; } = 90f;
+
+		[Export(PropertyHint.Range, "1,20,1")]
+		public int SkillRadiusTiles { get; set; } = 5;
+
+		[Export(PropertyHint.Range, "0.5,60,0.5")]
+		public float SkillDurationSeconds { get; set; } = 10f;
+
+		[Export(PropertyHint.Range, "0,2000,10")]
+		public float SkillDamage { get; set; } = 50f;
+
+		[Export(PropertyHint.Range, "0,3,0.05")]
+		public float SkillMultiplier { get; set; } = 0.2f;
+
+		// 可充能次数（火雨/水墙"储能三次"）。0 或 1 = 不充能。
+		[Export(PropertyHint.Range, "0,10,1")]
+		public int SkillMaxCharges { get; set; } = 0;
+
+		[Export(PropertyHint.Range, "1,120,1")]
+		public float SkillChargeSeconds { get; set; } = 15f;
+
+		// 召唤生成的单位 ID（石魔像/土魔像用）。
+		[Export] public string SkillSummonUnitId { get; set; } = "";
 
 		// 洞穴面板技能：波类效果半径（格）/ 持续时间 / 倍率（共振波=受伤倍率，地震波=减速比例）
 		[Export(PropertyHint.Range, "1,99,1")]

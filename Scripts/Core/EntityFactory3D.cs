@@ -887,6 +887,56 @@ namespace RTS.Core
 					BlockingLayers = ActionLayer.Ability
 				});
 			}
+
+			// 巫师族面板技能（位 256 起），见下面的专用方法
+			AddWizardPanelSkills(brain, cfg);
+		}
+
+		/// <summary>
+		/// 巫师族面板技能：按 PanelSkillMode 的高位生成对应 Action。
+		///
+		/// 单独提出来是因为位段靠后且一次有 8 个，混在主函数里难读。
+		/// 技能真正的效果在 SimManager 里确定性处理 —— 这里只生成按钮。
+		/// </summary>
+		private static void AddWizardPanelSkills(UnitActionController brain, StructureConfig cfg)
+		{
+			var skills = new (long Bit, string Name, int Slot)[]
+			{
+				(256,   "SummonStoneGolem", 0),
+				(512,   "SummonEarthGolem", 1),
+				(1024,  "TeleportField",    2),
+				(2048,  "TimeFreeze",       3),
+				(4096,  "FireRain",         4),
+				(8192,  "WaterWall",        5),
+				(16384, "InspireMelody",    6),
+				(32768, "SolemnMelody",     7),
+			};
+
+			foreach (var s in skills)
+			{
+				if ((cfg.PanelSkillMode & s.Bit) == 0) continue;
+
+				UnitAction action = s.Name switch
+				{
+					"SummonStoneGolem" => new SummonStoneGolemAction(),
+					"SummonEarthGolem" => new SummonEarthGolemAction(),
+					"TeleportField" => new TeleportFieldAction(),
+					"TimeFreeze" => new TimeFreezeAction(),
+					"FireRain" => new FireRainAction(),
+					"WaterWall" => new WaterWallAction(),
+					"InspireMelody" => new InspireMelodyAction(),
+					"SolemnMelody" => new SolemnMelodyAction(),
+					_ => null,
+				};
+				if (action == null) continue;
+
+				action.Name = s.Name;
+				action.SlotIndex = s.Slot;
+				AddAction(brain, action);
+
+				if (System.Environment.GetEnvironmentVariable("WIZ_DEBUG") == "1")
+					GD.Print($"[WizSkill] {cfg.ResourcePath.GetFile()} 生成技能 {s.Name} (位 {s.Bit}, 槽 {s.Slot})");
+			}
 		}
 
 		private static void AddStructureActions(UnitActionController brain)

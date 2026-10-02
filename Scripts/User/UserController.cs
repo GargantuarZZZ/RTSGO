@@ -146,9 +146,9 @@ namespace RTS.Core
 		public override void _UnhandledInput(InputEvent @event)
 		{
             if (RTS.UI.MatchMenu.BlocksGameInput) return;
-			// P1-1：时间加速通用快捷键（1/2/3/4，任何地图/单机/旁观者都可用；
+			// Alt+1/2/3/4 调整倍速，裸数字保留给编队；
 			// 联机时 SimulationSpeed 内部强制 1x，不会破坏锁步）
-			if (@event is InputEventKey speedKey && speedKey.Pressed && !speedKey.Echo &&
+			if (@event is InputEventKey speedKey && speedKey.Pressed && !speedKey.Echo && speedKey.AltPressed && !speedKey.CtrlPressed && !speedKey.ShiftPressed &&
 				!RTS.Core.UserUI.ChatOpen)
 			{
 				int speed = speedKey.Keycode switch
@@ -598,64 +598,6 @@ namespace RTS.Core
 		// 轮询会在按住时每帧重复触发，还得自己写去抖；
 		// 事件天然"一次按下一次触发"，也不会绕过 UI 的输入消费。
 		// =========================================================
-		private readonly List<int>[] _controlGroups = new List<int>[RTS.Settings.InputActions.ControlGroupCount];
-
-		/// <summary>处理编队按键事件。</summary>
-		private bool HandleControlGroupEvent(InputEvent @event)
-		{
-			if (@event is not InputEventKey key || !key.Pressed || key.Echo)
-				return false;
-
-			int index = RTS.Settings.InputActions.ControlGroupIndex(key.PhysicalKeycode);
-			if (index < 0)
-				return false;
-
-			if (Input.IsKeyPressed(Key.Ctrl))
-				StoreControlGroup(index);
-			else
-				RecallControlGroup(index);
-			return true;
-		}
-
-		private void StoreControlGroup(int index)
-		{
-			var ids = new List<int>();
-			foreach (var e in _selectedEntities)
-				if (e?.LogicEntity != null) ids.Add(e.LogicEntity.ID);
-			_controlGroups[index] = ids;
-			GD.Print($"[Group] 编队 {index + 1} ← {ids.Count} 个单位");
-		}
-
-		private void RecallControlGroup(int index)
-		{
-			var ids = _controlGroups[index];
-			if (ids == null || ids.Count == 0)
-				return;
-
-			var sim = RTS.Core.SimManager.Instance;
-			if (sim == null)
-				return;
-
-			// 每次取回都重新解析：单位死了/换场景了就自动剔除
-			var alive = new List<IEntity>();
-			foreach (int id in ids)
-			{
-				var node = sim.FindEntityById(id);
-				if (node != null && !node.IsDeadOrNull())
-					alive.Add(node);
-			}
-
-			if (alive.Count == 0)
-			{
-				GD.Print($"[Group] 编队 {index + 1} 已无存活单位");
-				_controlGroups[index] = null;
-				return;
-			}
-
-			UpdateSelection(alive);
-			GD.Print($"[Group] 编队 {index + 1} → {alive.Count} 个单位");
-		}
-
 		/// <summary>全选：workersOnly=false 选作战单位，true 只选工人。</summary>
 		private void SelectAllOfKind(bool workersOnly)
 		{
@@ -1133,6 +1075,36 @@ namespace RTS.Core
 				_pendingHeroSkill = id;
 				_pendingHeroSkillGround = true;
 				return;
+			}
+
+			// ---- 巫师族面板技能（位 256 起，全部是"点地面选区域"）----
+			//
+			// 统一走 _pendingHeroSkill 通道：点一下按钮进入待选目标，
+			// 再左键点地面才真正发指令。8 个技能行为一致，所以用表驱动而不是写 8 段 if。
+			{
+				var wizSkills = new (string Id, long Bit)[]
+				{
+					("SummonStoneGolem", 256),
+					("SummonEarthGolem", 512),
+					("TeleportField",    1024),
+					("TimeFreeze",       2048),
+					("FireRain",         4096),
+					("WaterWall",        8192),
+					("InspireMelody",    16384),
+					("SolemnMelody",     32768),
+				};
+
+				foreach (var ws in wizSkills)
+				{
+					if (id != ws.Id) continue;
+					if (_selectedEntities[0] is not Structure wizStruct) break;
+					if (RTS.Data.Configs.ConfigDatabase.GetStructure(wizStruct.StructureName) is not { } wizCfg) break;
+					if ((wizCfg.PanelSkillMode & ws.Bit) == 0) break;
+
+					_pendingHeroSkill = id;
+					_pendingHeroSkillGround = true;
+					return;
+				}
 			}
 
 			// 沙虫：潜地（自施）/ 吞噬（敌方单位）

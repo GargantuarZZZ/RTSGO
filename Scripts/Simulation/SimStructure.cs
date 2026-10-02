@@ -65,6 +65,18 @@ namespace RTS.Simulation
 		// 地动仪：被动雷达脉冲计时（纯表现层）
 		public FP RadarPulseTimer = FP.Zero;
 
+		// ---- 巫师族面板技能状态 ----
+		//
+		// 放在 SimStructure 上而不是 Godot 侧：冷却必须参与确定性，
+		// 否则两端/回放会出现"一边能放、一边不能放"。
+		// 技能标识用位标记（与 PanelSkillMode 一致），这样一个字段够用、
+		// 不必为 8 个技能各加一个字段，也天然能表达"共享冷却"。
+		public FP SkillCooldown = FP.Zero;
+		/// <summary>正在冷却的技能位（PanelSkillMode 的位）。0 = 无。</summary>
+		public long SkillCooldownMask = 0;
+		/// <summary>已积累的充能次数（火雨/水墙这类"储能"技能用）。</summary>
+		public int SkillCharges = 0;
+
 		public SimStructure(int id, int teamId, FPVector2 centerPos, SimVector2I gridPos, int gridSize)
 			: this(id, teamId, centerPos, gridPos, gridSize, gridSize)
 		{
@@ -104,6 +116,11 @@ namespace RTS.Simulation
 			hash ^= (long)(SeismicChargeTimer * (FP)1000m);
 			hash ^= (long)(WormholeCooldown * (FP)1000m);
 			hash ^= (long)(RadarPulseTimer * (FP)1000m);
+			// 巫师技能状态必须入哈希：冷却/充能决定"这一步能不能放"，
+			// 不入哈希会导致两端状态判定分歧。
+			hash ^= (long)(SkillCooldown * (FP)1000m);
+			hash ^= SkillCooldownMask;
+			hash ^= SkillCharges * 2654435761;
 			hash ^= IsAir ? 1 : 0;
 			hash ^= (long)(LifespanTimer * (FP)1000m);
 			hash ^= (long)(AutoProduceIntervalCurrent * (FP)1000m);

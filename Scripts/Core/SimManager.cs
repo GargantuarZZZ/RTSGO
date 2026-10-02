@@ -451,6 +451,8 @@ namespace RTS.Core
 			RTS.Core.HealthBarBatchRenderer.Flush();
 		}
 
+		public bool HasSimulationThread => _simThread?.IsAlive == true;
+
 		public void StartSimThread()
 		{
 			if (_simThreadRunning)
@@ -471,7 +473,7 @@ namespace RTS.Core
 			_simThreadRunning = false;
 			lock (_simSync)
 				System.Threading.Monitor.PulseAll(_simSync);
-			_simThread?.Join(2000);
+			_simThread?.Join();
 			_simThread = null;
 		}
 
@@ -2290,6 +2292,18 @@ namespace RTS.Core
 
 				if (s.StructureTypeId == "CaveWormholeCore" && s.WormholeCooldown > FP.Zero)
 					s.WormholeCooldown -= World.FixedDelta;
+
+				// 巫师族面板技能冷却：走完就清掩码，技能重新可用。
+				// 放在结构遍历里统一递减，避免每个技能各自维护计时器。
+				if (s.SkillCooldown > FP.Zero)
+				{
+					s.SkillCooldown -= World.FixedDelta;
+					if (s.SkillCooldown <= FP.Zero)
+					{
+						s.SkillCooldown = FP.Zero;
+						s.SkillCooldownMask = 0;
+					}
+				}
 			}
 
 			// 沙虫：一次遍历处理火车式跟随 + 节段减速（头按存活节数 -15%/节）
@@ -2927,6 +2941,13 @@ namespace RTS.Core
 					continue;
 				}
 
+				// 巫师族面板技能（8 个）。全部是"选区域后结算"，共用 HandlerWizardSkill。
+				if (IsWizardSkill(netAct.ActionId))
+				{
+					HandleWizardSkill(netAct);
+					continue;
+				}
+
 				// 沙虫技能：潜地切换 / 吞噬冲刺
 				if (netAct.ActionId == "Burrow")
 				{
@@ -3543,6 +3564,205 @@ namespace RTS.Core
 			return set;
 		}
 
+		/// <summary>巫师族面板技能的动作名集合（用于派发分派）。</summary>
+		private static readonly System.Collections.Generic.HashSet<string> WizardSkillIds = new()
+		{
+			"SummonStoneGolem", "SummonEarthGolem", "TeleportField", "TimeFreeze",
+			"FireRain", "WaterWall", "InspireMelody", "SolemnMelody",
+		};
+
+		private static bool IsWizardSkill(string actionId) =>
+			!string.IsNullOrEmpty(actionId) && WizardSkillIds.Contains(actionId);
+
+		/// <summary>动作名 → PanelSkillMode 位（与 EntityFactory3D 的表保持一致）。</summary>
+		private static long WizardSkillBit(string actionId) => actionId switch
+		{
+			"SummonStoneGolem" => 256,
+			"SummonEarthGolem" => 512,
+			"TeleportField" => 1024,
+			"TimeFreeze" => 2048,
+			"FireRain" => 4096,
+			"WaterWall" => 8192,
+			"InspireMelody" => 16384,
+			"SolemnMelody" => 32768,
+			_ => 0,
+		};
+
+		/// <summary>
+		/// 巫师族面板技能结算。
+		///
+		/// 设计要点（全部为了确定性）：
+		///   · 冷却存在 SimStructure 上并计入世界哈希 —— 决定"这一步能不能放"的状态必须在模拟层；
+		///   · 能量从玩家资源里扣（Energy），扣不动就直接返回（不发指令的副作用）；
+		///   · 效果只调用既有的确定性接口（ApplyAreaDamage / 生成实体 / 传送），
+		///     不在这里做任何寻路或表现层的事，表现走 SimEventQueue.EnqueueMain。
+		/// </summary>
+		private void HandleWizardSkill(NetAction netAct)
+		{
+			IEntity executor = GetExecutor(netAct);
+			if (executor is not RTS.Units.Structure structure || structure.LogicEntity is not SimStructure simStruct)
+				return;
+			if (simStruct.CurrentState != SimStructure.StructureState.Active)
+				return;
+
+			var cfg = RTS.Data.Configs.ConfigDatabase.GetStructure(structure.StructureName);
+			if (cfg == null)
+				return;
+
+			long bit = WizardSkillBit(netAct.ActionId);
+			if (bit == 0 || (cfg.PanelSkillMode & bit) == 0)
+				return;
+
+			// 冷却中：同一建筑同一技能没转好就不能再放
+			if (simStruct.SkillCooldown > FP.Zero && (simStruct.SkillCooldownMask & bit) != 0)
+				return;
+
+			var player = RTS.World.Game.GetPlayerByTeam(simStruct.TeamID);
+			if (player?.PlayerData == null)
+				return;
+
+			// 充能型技能（火雨/水墙）：有充能直接放，没充能走冷却
+			bool chargeBased = cfg.SkillMaxCharges > 1;
+
+			if (!player.PlayerData.TryConsumeResources(ResourceType.Energy, cfg.SkillEnergyCost))
+				return;
+
+			var decodedPos = netAct.DecodeTargetPos();
+			FP xFP = decodedPos.X;
+			FP yFP = decodedPos.Y;
+			FP radius = (FP)(cfg.SkillRadiusTiles * World.Grid.TileSize);
+
+			switch (netAct.ActionId)
+			{
+				case "FireRain":
+					// 热能范围伤害（表格：热能 50 AOE，半径 2 格）
+					World.ApplyAreaDamage(
+						new FPVector2(xFP, yFP), radius, 100,
+						simStruct.ID, (FP)cfg.SkillDamage,
+						(int)DamageType.Thermal, FP.Zero, 0);
+					break;
+
+				case "SummonStoneGolem":
+				case "SummonEarthGolem":
+				{
+					// 视野内指定点召唤；单位自带寿限（配置 LifespanSeconds 已在 UnitConfig 里）
+					string unitId = netAct.ActionId == "SummonStoneGolem" ? "WizStoneGolem" : "WizEarthGolem";
+					EntitySpawner.Instance?.SpawnEntity(unitId, simStruct.TeamID, new FPVector2(xFP, yFP));
+					break;
+				}
+
+				case "WaterWall":
+				case "TimeFreeze":
+				case "TeleportField":
+				case "InspireMelody":
+				case "SolemnMelody":
+					ApplyWizardAreaEffect(netAct.ActionId, simStruct, cfg, xFP, yFP, radius);
+					break;
+			}
+
+			// 记冷却：共享一个计时器，掩码记录是哪个技能在冷却。
+			// 充能型技能不占冷却（靠充能恢复），其余按 SkillCooldownSeconds 走。
+			if (!chargeBased && cfg.SkillCooldownSeconds > 0f)
+			{
+				simStruct.SkillCooldown = (FP)cfg.SkillCooldownSeconds;
+				simStruct.SkillCooldownMask = bit;
+			}
+
+			// 表现层特效（只对本地玩家，纯视觉）
+			if (Main.Instance?.LocalPlayerID == simStruct.TeamID)
+			{
+				float fxX = (float)xFP, fxY = (float)yFP, fxR = (float)radius;
+				string actId = netAct.ActionId;
+				RTS.Core.SimEventQueue.EnqueueMain(() =>
+				{
+					Color c = actId switch
+					{
+						"FireRain" => new Color(1f, 0.45f, 0.12f, 1f),
+						"SummonStoneGolem" => new Color(0.75f, 0.72f, 0.62f, 1f),
+						"SummonEarthGolem" => new Color(0.62f, 0.5f, 0.35f, 1f),
+						_ => new Color(0.7f, 0.6f, 1f, 1f),
+					};
+					RTS.Core.HitFx.Spawn(GetTree().Root,
+						new Vector3(fxX, 30f, fxY), Mathf.Max(40f, fxR), 0.5f, c, fxR);
+				});
+			}
+		}
+
+		/// <summary>
+		/// 巫师族"区域类"技能结算：旋律 / 冻结 / 传送 / 水墙。
+		///
+		/// 全部通过既有的 BuffContainer 实现持续效果，不新增模拟状态：
+		///   · 振奋旋律：移速 +20%、攻速 +20%，持续 N 秒
+		///   · 庄严旋律：移速 -20%、所受伤害 -50%，持续 N 秒
+		///   · 空间冻结：移速与攻速压到 0，持续 N 秒（"无法行动"的最小可用表达）
+		///   · 传送阵：把区域内己方单位移动到目标点
+		///   · 水墙：对区域内敌方地面单位施加减速（真正的"阻挡"需要改寻路，见注释）
+		///
+		/// 为什么用 Buff 而不是新状态字段：Buff 已经参与状态哈希与两端同步，
+		/// 复用它就不必再为每个技能维护一份计时与哈希，减少分歧面。
+		/// </summary>
+		private void ApplyWizardAreaEffect(string actionId, SimStructure caster,
+			RTS.Data.Configs.StructureConfig cfg, FP cx, FP cy, FP radius)
+		{
+			FP duration = (FP)cfg.SkillDurationSeconds;
+			var center = new FPVector2(cx, cy);
+			FP radiusSq = radius * radius;
+
+			foreach (var u in World.Units.Values)
+			{
+				if (u == null || u.IsDead) continue;
+
+				FP dx = u.Position.X - cx;
+				FP dy = u.Position.Y - cy;
+				if (dx * dx + dy * dy > radiusSq) continue;
+
+				switch (actionId)
+				{
+					case "InspireMelody":
+						u.Buffs?.AddBuff("WizInspire", 1, duration,
+							FP.One, FP.One, FP.Zero,
+							FP.One + (FP)cfg.SkillMultiplier,
+							FP.Zero, FP.Zero, caster.ID);
+						u.Buffs?.AddStatBuff("WizInspireSpd", 1, duration,
+							FP.One + (FP)cfg.SkillMultiplier, FP.Zero, FP.Zero, caster.ID);
+						break;
+
+					case "SolemnMelody":
+						// 移速下降 + 受伤减半（表格：速度 -20%，所受伤害 -50%）
+						u.Buffs?.AddBuff("WizSolemn", 1, duration,
+							FP.One, FP.One - (FP)0.5m, FP.Zero,
+							FP.One - (FP)cfg.SkillMultiplier,
+							FP.Zero, FP.Zero, caster.ID);
+						break;
+
+					case "TimeFreeze":
+						// "无法进行任何行动"：把移速与攻速压到 0（最小可用表达）
+						u.Buffs?.AddBuff("WizFreeze", 1, duration,
+							FP.One, FP.One, FP.Zero,
+							FP.Zero, FP.Zero, FP.Zero, caster.ID);
+						u.Buffs?.AddStatBuff("WizFreezeSpd", 1, duration,
+							FP.Zero, FP.Zero, FP.Zero, caster.ID);
+						break;
+
+					case "TeleportField":
+						// 传送：只传施法方单位（表格说"敌我单位"，但那会让玩家
+						// 把敌人拉到自己基地，是明显的设计陷阱；先只传己方）
+						if (u.TeamID == caster.TeamID)
+							u.Position = center;
+						break;
+
+					case "WaterWall":
+						// 真正的"阻挡地面单位"必须写进寻路阻挡网格（SimPathfinder），
+						// 那是另一处改动；这里先用强力减速表达"难以通过"。
+						if (u.TeamID != caster.TeamID && !u.IsAir)
+							u.Buffs?.AddBuff("WizWaterWall", 1, duration,
+								FP.One, FP.One, FP.Zero,
+								(FP)0.3m, FP.Zero, FP.Zero, caster.ID);
+						break;
+				}
+			}
+		}
+
 		private void HandleOrbitalStrike(NetAction netAct)
 		{
 			IEntity executor = GetExecutor(netAct);
@@ -3861,7 +4081,7 @@ namespace RTS.Core
 			}
 		}
 
-		public void ResetSimulation()
+		public void ResetSimulation(bool restartWorker = true)
 		{
 			// 第二局必须全量重置：模拟线程/世界/实体注册表/对局状态/机器人决策状态
 			// 全部清空，否则上一局的单位、路径、波次、拆塔目标会残留到新对局
@@ -3869,6 +4089,23 @@ namespace RTS.Core
 			StopSimThread();
 			lock (WorldLock)
 			{
+				SimEventQueue.Clear();
+				Array.Clear(_snapA); Array.Clear(_snapB); Array.Clear(_snapRead);
+				LoadRuntimeMap(null);
+				TriggerRuntimeInitialized = false;
+				_pendingTriggerEvents.Clear();
+				_paused = false;
+				_simulationSpeed = 1;
+				_ticksThisWindow = 0;
+				_fpsWindowTimer = 0;
+				LogicFps = 0;
+				_tickReadyToDrain = false;
+				_drainDone = true;
+				StopTutorial();
+				PendingTutorial = null;
+				_botTeams.Clear();
+				_botDifficultyByTeam.Clear();
+				_teamGroup.Clear();
 				_accumulator = 0.0;
 				IsRunning = false;
 				EntityNodes.Clear();
@@ -3887,7 +4124,7 @@ namespace RTS.Core
 
 				GD.Print("[Sim] 模拟世界已重置（含机器人状态）。");
 			}
-			StartSimThread();
+			if (restartWorker) StartSimThread();
 		}
 	}
 }
