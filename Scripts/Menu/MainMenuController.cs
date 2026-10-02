@@ -305,7 +305,7 @@ public partial class MainMenuController : Control
 	/// </summary>
 	private void DumpProductionChains()
 	{
-		string[] races = { "Union", "Terran", "Demon", "Nano", "Plant", "Cave", "Wanderer" };
+		string[] races = { "Union", "Terran", "Demon", "Nano", "Plant", "Cave", "Wanderer", "Wizard" };
 		foreach (string raceId in races)
 		{
 			var rc = RTS.Data.Configs.ConfigDatabase.GetRace(raceId);
@@ -2818,11 +2818,11 @@ public partial class MainMenuController : Control
 
 	private void OnLeaveLobbyPressed()
 	{
-		if (_steamService != null)
-			_steamService.Call("leave_lobby");
-
-		if (NetworkManager.Instance != null)
-			NetworkManager.Instance.UnlockSessionForLobby();
+		NetworkManager.Instance?.LeaveLobby();
+		_botRows.Clear();
+		_nextBotPid = 100;
+		_cachedMembers = new Godot.Collections.Array();
+		_isLocalReady = false;
 
 		SwitchPage(MenuPage.Main);
 	}

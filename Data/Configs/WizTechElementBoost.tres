@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://o1h4mmwmj44b" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "WizTechElementBoost"
+DisplayName = "元素强化"
+Description = "医院法师获得四个强化技能，5 格内友军伤害 +30%，持续 20 秒。"
+Category = 0
+RequiresHarvester = false
+ResearchTimeSeconds = 30.0
+SkillDurationSeconds = 20.0
+SkillCooldownSeconds = 60.0
+FireDamageBonus = 0.3
+FlatDamageBonus = 0.3

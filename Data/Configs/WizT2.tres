@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TechConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://o1h4mmwmj44b" path="res://Scripts/Data/Configs/TechConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+TechId = "WizT2"
+DisplayName = "巫师二阶"
+Description = "建成学校后解锁。"
+Category = 1
+RequiresHarvester = false
+ResearchTimeSeconds = 1.0

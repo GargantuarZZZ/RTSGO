@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "WizElementBolt"
+DisplayName = "元素法球"
+Damage = 20
+DamageType = 1
+RangeType = 1
+AttackRange = 512
+CooldownTicks = 10
+ProjectileBehavior = 2
+ProjectileSpeed = 480
+HitRadius = 24
+CanTargetGround = true
+CanTargetAir = true
+CanTargetStructure = true
+CanTargetNeutral = true
+BonusDamage = 10
+BonusDamageVsArmorType = 2
+HitFxRadius = 40.0
+HitFxDuration = 0.25
+HitFxColor = Color(1, 0.5, 0.2, 1)

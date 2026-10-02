@@ -537,3 +537,7 @@ tutorial.Advanced_tutorial_union.army.done,Riflemen engage both ground and air t
 tutorial.Advanced_tutorial_union.destroy.title,Destroy the Enemy Tower
 tutorial.Advanced_tutorial_union.destroy.detail,Select your entire army and right-click the neutral tower to the east.
 tutorial.Advanced_tutorial_union.destroy.done,Target destroyed. Union tutorial complete.
+match.restart,Restart match
+match.restart_confirm,Restart this match?
+groups.help,Number or click: recall. Double tap: focus camera. Ctrl+number/click: replace group. Shift+number/click: add selection. Alt+1-4: offline speed.
+race.wizard,Wizard

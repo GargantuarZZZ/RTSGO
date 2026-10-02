@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 100.0
+VisionRange = 400.0
+Costs = Dictionary[int, float]({8: 100.0})
+BuildTime = 15.0
+CanMove = true
+MoveSpeed = 96
+FootprintTiles = 1.0
+Tags = Array[String](["Wizard", "Biological", "Worker", "Light"])
+SupplyCost = 1
+CanHarvest = true
+HarvestAmountPerCycle = 10.0
+HarvestCycleTicks = 20
+CarryCapacity = 50.0
+HarvestableResources = Array[int]([0, 1, 8])
+AutoSubmitHarvest = true
+HasAura = true
+FieldRadius = 320.0
+AuraBuffIds = Array[String](["WizApprenticeSupervise"])
+IsWorker = true
+Role = 1

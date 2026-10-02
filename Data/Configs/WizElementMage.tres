@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UnitConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://b5bxvten4dcgk" path="res://Scripts/Data/Configs/UnitConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+MaxHp = 150.0
+VisionRange = 500.0
+Costs = Dictionary[int, float]({0: 25.0, 8: 100.0})
+BuildTime = 20.0
+CanMove = true
+MoveSpeed = 83
+FootprintTiles = 1.0
+IsAir = true
+FlyHeight = 120.0
+Tags = Array[String](["Wizard", "Biological", "Light", "Air"])
+SupplyCost = 10
+WeaponIds = Array[String](["WizElementBolt"])
+Role = 2

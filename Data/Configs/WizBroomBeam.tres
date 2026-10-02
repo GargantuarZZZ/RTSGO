@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "WizBroomBeam"
+DisplayName = "扫帚光束"
+Damage = 10
+DamageType = 3
+RangeType = 1
+AttackRange = 448
+CooldownTicks = 20
+CanTargetGround = true
+CanTargetAir = true
+CanTargetStructure = true
+CanTargetNeutral = true
+HitFxRadius = 24.0
+HitFxDuration = 0.2
+HitFxColor = Color(0.6, 0.9, 1, 1)

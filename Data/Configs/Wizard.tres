@@ -1,0 +1,76 @@
+[gd_resource type="Resource" script_class="RaceConfig" load_steps=9 format=3]
+[ext_resource type="Script" uid="uid://ggpnodg7xyut" path="res://Scripts/Data/Configs/RaceConfig.cs" id="1"]
+[ext_resource type="Script" uid="uid://c7llurdu6glbx" path="res://Scripts/Data/Configs/StartingEntityConfig.cs" id="2"]
+[ext_resource type="Script" uid="uid://ckybmajpqah2h" path="res://Scripts/Data/ResourceStartConfig.cs" id="3"]
+[sub_resource type="Resource" id="r_metal"]
+script = ExtResource("3")
+Type = 0
+Amount = 200
+
+[sub_resource type="Resource" id="se_city"]
+script = ExtResource("2")
+Kind = 1
+EntityId = "WizCity"
+TeamMode = 0
+Offset = Vector2(0, 0)
+
+[sub_resource type="Resource" id="se_p1"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "WizPuppet"
+Offset = Vector2(-150, -150)
+
+[sub_resource type="Resource" id="se_p2"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "WizPuppet"
+Offset = Vector2(150, -150)
+
+[sub_resource type="Resource" id="se_p3"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "WizPuppet"
+Offset = Vector2(-150, 150)
+
+[sub_resource type="Resource" id="se_p4"]
+script = ExtResource("2")
+Kind = 0
+EntityId = "WizPuppet"
+Offset = Vector2(150, 150)
+
+[sub_resource type="Resource" id="se_ore"]
+script = ExtResource("2")
+Kind = 3
+EntityId = "IronOre"
+TeamMode = 1
+Offset = Vector2(300, 0)
+
+[resource]
+script = ExtResource("1")
+RaceId = "Wizard"
+DisplayName = "巫师"
+Description = "以傀儡与魔法单位为核心的阵营。建筑面板能量驱动召唤与范围法术，T3 建筑提供高阶召唤与战场控制。"
+RoleSummary = "召唤与法术"
+WeaknessDescription = "单位普遍低血量，依赖面板法术与召唤物承担正面交战。"
+Offense = 3
+Defense = 2
+Economy = 3
+Support = 4
+Technology = 5
+Difficulty = 4
+StartingResources = Array[Resource]([SubResource("r_metal")])
+StartingEntities = Array[Resource]([SubResource("se_city"), SubResource("se_p1"), SubResource("se_p2"), SubResource("se_p3"), SubResource("se_p4"), SubResource("se_ore")])
+AvailableUnitIds = Array[String](["WizPuppet", "WizHospitalMage", "WizApprentice", "WizBattlePuppet", "WizBroomRider", "WizElementMage", "WizMusician", "WizStoneGolem", "WizEarthGolem"])
+AvailableStructureIds = Array[String](["WizCity", "WizHouse", "WizForest", "WizSchool", "WizMageTower", "WizStoneCircle", "WizSpaceLab", "WizElementForge", "WizConcertHall"])
+AvailableTechIds = Array[String](["WizT2", "WizGolemUnlock", "WizTechPuppetRebirth", "WizTechRocketFist", "WizTechShortTeleport", "WizTechMagicInstrument", "WizTechElementBoost"])
+VisibleResourceTypes = Array[int]([0, 8, 1])
+SupplyCapMode = 1
+MaxSupplyCap = 200
+MaxEnergy = 400.0
+AiBuildOrderIds = Array[String](["WizHouse", "WizSchool", "WizMageTower", "WizForest", "WizStoneCircle"])
+AiTechOrderIds = Array[String](["WizTechRocketFist", "WizTechRocketFist", "WizTechElementBoost"])
+AiUnitMixIds = Array[String](["WizPuppet", "WizApprentice", "WizBattlePuppet", "WizBattlePuppet", "WizBroomRider", "WizElementMage", "WizMusician"])
+AiWorkerTarget = 10
+AiWorkerUnitId = "WizPuppet"
+AiArmyTarget = 16
+AiExpansionBaseIds = Array[String](["WizCity"])

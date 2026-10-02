@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="WeaponConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://dfefey0exefa8" path="res://Scripts/Data/Configs/WeaponConfig.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+WeaponId = "WizGolemSlam"
+DisplayName = "巨像重击"
+Damage = 200
+DamageType = 0
+RangeType = 0
+AttackRange = 96
+CooldownTicks = 5
+HasAreaDamage = true
+AreaRadius = 96
+AreaEdgeDamagePercent = 50
+CanTargetGround = true
+CanTargetAir = false
+CanTargetStructure = true
+CanTargetNeutral = true
+HitFxRadius = 96.0
+HitFxDuration = 0.4
+HitFxColor = Color(0.75, 0.7, 0.6, 1)
