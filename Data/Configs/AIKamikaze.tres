@@ -18,6 +18,5 @@ SupplyCost = 1
 IsSummoned = true
 LifespanSeconds = 60.0
 Kamikaze = true
-NoControlNeeded = true
 WeaponIds = Array[String](["AIKamikazeBlast"])
 Role = 2

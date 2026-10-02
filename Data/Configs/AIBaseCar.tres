@@ -17,7 +17,5 @@ SupplyProvided = 20
 CanBuild = true
 BuildRangeTiles = 6
 BuildableStructureIds = Array[String](["AICore", "AIGoldStation", "AIRelay", "AILightFactory", "AIAirFactory", "AIHeavyAirfield", "AISkyNetCore"])
-CanDeploy = true
-DeployTimeSeconds = 4.0
 IsWorker = false
 Role = 1
