@@ -305,7 +305,8 @@ public partial class MainMenuController : Control
 	/// </summary>
 	private void DumpProductionChains()
 	{
-		string[] races = { "Union", "Terran", "Demon", "Nano", "Plant", "Cave", "Wanderer", "Wizard", "AICommand" };
+		// 与种族下拉同一来源，避免两份列表再次分叉
+		var races = RTS.Data.Configs.ConfigDatabase.GetAllRaceIds();
 		foreach (string raceId in races)
 		{
 			var rc = RTS.Data.Configs.ConfigDatabase.GetRace(raceId);
@@ -2194,20 +2195,21 @@ public partial class MainMenuController : Control
 	// 注意：这里**必须**与 InputActions 里那种"单一真相"保持一致。
 	// 之前新增巫师/AI 族时我只改了 DumpProductionChains 里的诊断数组，
 	// 漏了这个真正建下拉列表的函数，结果新族在界面上根本选不到。
-	private static readonly string[] PlayableRaces =
-	{
-		"Union", "Nano", "Demon", "Wanderer", "Terran", "Plant", "Cave",
-		"Wizard", "AICommand",
-	};
-
+	// **从种族表直接读**，不再硬编码：Data/Configs/*.tres 里凡是
+	// script_class = RaceConfig 的都会被列出来（按 ID 排序，跨端一致）。
+	// 新增一族只需放一个 .tres，不必改任何代码 ——
+	// 此前这里与 DumpProductionChains、RaceAISmokeTest 各自维护一份数组，
+	// 新增巫师/AI 族时就漏了这里，导致界面上只有 7 个族。
 	private static void AddRaceChoices(OptionButton btn)
 	{
-		foreach (string race in PlayableRaces)
+		RTS.Data.Configs.ConfigDatabase.LoadAll();
+		var ids = RTS.Data.Configs.ConfigDatabase.GetAllRaceIds();
+
+		foreach (string race in ids)
 			AddRaceChoice(btn, race);
 
 		if (OS.GetEnvironment("RACE_DEBUG") == "1")
-			GD.Print($"[RaceDebug] 种族下拉填充 {btn.ItemCount} 项：" +
-				string.Join("/", PlayableRaces));
+			GD.Print($"[RaceDebug] 种族下拉填充 {btn.ItemCount} 项：" + string.Join("/", ids));
 	}
 
 	private static void AddRaceChoice(OptionButton btn, string race)

@@ -269,5 +269,26 @@ namespace RTS.Data.Configs
 
 		public static IEnumerable<System.Collections.Generic.KeyValuePair<string, UnitConfig>> GetAllUnits() => _units;
 		public static IEnumerable<System.Collections.Generic.KeyValuePair<string, StructureConfig>> GetAllStructures() => _structures;
+
+		/// <summary>
+		/// 全部种族 ID，**按 ID 排序**。
+		///
+		/// 为什么必须排序：`_races` 由目录枚举填充，而文件系统枚举顺序
+		/// **跨平台/跨机器不保证一致**。任何进 UI 或进状态哈希的列表都不能依赖它。
+		///
+		/// 为什么要有这个访问器：此前"有哪些种族"在项目里是**多份各自硬编码的数组**
+		/// （MainMenuController.AddRaceChoices、DumpProductionChains、
+		/// RaceAISmokeTest._races），新增一个族必须同时改三处 ——
+		/// 实测就漏掉了界面入口那处，导致新族在种族下拉里选不到。
+		///
+		/// 现在改为从种族表（Data/Configs/*.tres，其 script_class 为 RaceConfig）
+		/// 直接读：新增一族只要放一个 .tres，**不需要改任何代码**。
+		/// </summary>
+		public static System.Collections.Generic.List<string> GetAllRaceIds()
+		{
+			var ids = new System.Collections.Generic.List<string>(_races.Keys);
+			ids.Sort(System.StringComparer.Ordinal);
+			return ids;
+		}
 	}
 }
