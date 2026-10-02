@@ -17,5 +17,6 @@ Tags = Array[String](["AICommand", "Mechanical", "Light", "Air"])
 SupplyCost = 1
 IsSummoned = true
 LifespanSeconds = 60.0
+NoControlNeeded = true
 WeaponIds = Array[String](["AIQuadGun"])
 Role = 2
