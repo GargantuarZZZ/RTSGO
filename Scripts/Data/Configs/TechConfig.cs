@@ -56,6 +56,11 @@ namespace RTS.Data.Configs
 
 		// 采集自动化类：授予无需控制 + 视野加成
 		[Export] public bool GrantNoControlNeeded { get; set; } = false;
+
+		// 回收程序（AI 指挥系统）：武库鸟释放的无人机无目标时返回并被回收。
+		// 用"授予标记"而不是给无人机加专属科技字段：科技的作用对象是
+		// 释放出来的整批无人机，而它们没有独立的配置项可挂。
+		[Export] public bool GrantRecycleProgram { get; set; } = false;
 		[Export(PropertyHint.Range, "0,999,1")]
 		public float VisionBonus { get; set; } = 0f;
 

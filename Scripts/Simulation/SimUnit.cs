@@ -123,6 +123,14 @@ namespace RTS.Simulation
 		/// <summary>本次释放的型号：0=全部 1=仅自爆 2=仅四轴。</summary>
 		public int ClusterReleaseMode = 0;
 
+		/// <summary>
+		/// 回收程序（科技授予）：释放出去的无人机无目标时飞回武库鸟并被回收。
+		/// 记录"母舰 ID"，无人机才有返航目标 —— 释放时写入。
+		/// </summary>
+		public bool RecycleProgramEnabled = false;
+		/// <summary>母舰（武库鸟）实体 ID；-1 = 无。</summary>
+		public int RecycleCarrierId = -1;
+
 		public bool PlasmaAutoFire = true;
 		public FP PlasmaCooldown = FP.Zero;
 		public int PlasmaCastState = 0; // 0=空闲 1=前摇 2=后摇
@@ -470,6 +478,8 @@ namespace RTS.Simulation
 			hash ^= ClusterReleaseActive ? 1 : 0;
 			hash ^= (long)(ClusterReleaseAccum * (FP)1000m);
 			hash ^= ClusterReleaseMode * 374761393;
+			hash ^= RecycleProgramEnabled ? 1 : 0;
+			hash ^= RecycleCarrierId * 668265263;
 			hash ^= PlasmaAutoFire ? 1 : 0;
 			hash ^= (long)(PlasmaCooldown * (FP)100m);
 			hash ^= PlasmaCastState;

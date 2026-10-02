@@ -622,6 +622,7 @@ namespace RTS.Core
 			ProfileTick("DeathEffects", TickDeathEffects);
 			ProfileTick("Wanderer", TickWandererSystems);
 			ProfileTick("ArsenalRelease", TickArsenalRelease);
+			ProfileTick("DroneRecycle", TickDroneRecycle);
 			ProfileTick("PendingSpawns", TickPendingSpawns);
 			ProfileTick("DeathChecks", TickDeathChecks);
 			ProfileTick("CaveWreckages", TickCaveWreckages);
@@ -3996,9 +3997,16 @@ namespace RTS.Core
 					string id = unitId;
 					float px = (float)u.ClusterReleaseTarget.X;
 					float py = (float)u.ClusterReleaseTarget.Y;
+					int carrierId = u.ID;
+					bool recycle = u.RecycleProgramEnabled;
 					RTS.Core.SimEventQueue.EnqueueMain(() =>
-						EntitySpawner.Instance?.SpawnEntity(id, team,
-							new FPVector2((FP)px, (FP)py)));
+					{
+						var sp = EntitySpawner.Instance?.SpawnEntity(id, team,
+							new FPVector2((FP)px, (FP)py));
+						// 回收程序：记下母舰，无人机才知道往哪返航
+						if (sp?.LogicEntity is SimUnit drone && recycle)
+							drone.RecycleCarrierId = carrierId;
+					});
 				}
 
 				if (u.InventoryTotal <= 0)
@@ -4029,6 +4037,64 @@ namespace RTS.Core
 			bird.ClusterReleaseAccum = FP.Zero;
 			// 释放型号由动作参数决定；缺省全部
 			bird.ClusterReleaseMode = 0;
+		}
+
+		/// <summary>
+		/// 回收程序（科技）：释放出去的无人机**无目标**时飞回母舰，
+		/// 接近到 1 格以内就被回收（库存 +1，实体销毁）。
+		///
+		/// 表格：回收保留剩余血量与寿命、在库暂停寿命计时、不退款、满库无法回收。
+		/// 这里实现"回收"的一半：返航 + 销毁 + 回填库存。
+		/// "保留血量与寿命"需要每个库存槽带状态，属于更进一步的数据模型
+		/// （当前库存只有计数），故本版先不保留 —— 见方法末尾注释。
+		/// </summary>
+		private void TickDroneRecycle()
+		{
+			foreach (var u in World.Units.Values)
+			{
+				if (u == null || u.IsDead) continue;
+				if (!u.RecycleProgramEnabled || u.RecycleCarrierId < 0) continue;
+
+				// 有目标就不回收（表格：无目标时才返回）
+				if (u.CombatTargetId >= 0) continue;
+
+				if (World.FindSimEntity(u.RecycleCarrierId) is not SimUnit carrier ||
+					carrier.IsDead)
+				{
+					u.RecycleCarrierId = -1;   // 母舰没了：放弃回收，就地作战
+					continue;
+				}
+
+				FP dist = FP.Sqrt(FPVector2.DistanceSquared(u.Position, carrier.Position));
+				if (dist > (FP)64m)
+				{
+					// 返航：命令移动到母舰位置
+					u.CommandMove(carrier.Position, carrier.ID);
+					continue;
+				}
+
+				// 满库无法回收（表格），此时就地作战
+				var carrierCfg = RTS.Data.Configs.ConfigDatabase.GetUnit(carrier.UnitTypeId);
+				int cap = carrierCfg?.InventoryCapacity ?? 0;
+				if (cap > 0 && carrier.InventoryTotal >= cap)
+					continue;
+
+				// 回收：回填库存 + 销毁实体
+				if (u.UnitTypeId == "AIKamikaze") carrier.InventoryKamikaze++;
+				else if (u.UnitTypeId == "AIQuadDrone") carrier.InventoryQuad++;
+				else continue;
+
+				int deadId = u.ID;
+				u.Hp = FP.Zero;
+				u.IsDead = true;
+				World.Units.Remove(deadId);
+				UnregisterEntityNode(deadId);
+				if (FindEntityById(deadId) is Godot.Node n && GodotObject.IsInstanceValid(n))
+					RTS.Core.SimEventQueue.EnqueueMain(() =>
+					{
+						if (GodotObject.IsInstanceValid(n)) n.QueueFree();
+					});
+			}
 		}
 
 		private void HandleOrbitalStrike(NetAction netAct)

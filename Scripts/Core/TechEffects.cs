@@ -178,6 +178,10 @@ namespace RTS.Core
 				}
 
 				// 多足：采集自动化（无需控制 + 视野）
+				// AI 指挥系统：回收程序（释放的无人机无目标时返回被回收）
+				if (cfg.GrantRecycleProgram && logic is SimUnit recu)
+					recu.RecycleProgramEnabled = true;
+
 				if (cfg.GrantNoControlNeeded && unitCfg != null)
 				{
 					if (logic is SimUnit nsu)

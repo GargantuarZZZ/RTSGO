@@ -10,3 +10,4 @@ Description = "武库鸟释放的无人机无目标时返回并回收。"
 Category = 0
 ResearchTimeSeconds = 45.0
 RequiredTechIds = Array[String](["AITechArsenalPlan"])
+GrantRecycleProgram = true
