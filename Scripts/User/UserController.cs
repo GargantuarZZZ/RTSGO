@@ -1175,6 +1175,16 @@ namespace RTS.Core
 			return;
 		}
 
+		// 武库鸟：集群释放需要先选部署点
+		if (id == "ClusterRelease" && _selectedEntities[0] is Unit arsenalUnit &&
+			RTS.Data.Configs.ConfigDatabase.GetUnit(arsenalUnit.UnitName) is { } arsenalCfg &&
+			arsenalCfg.ProducesToInventoryIds != null && arsenalCfg.ProducesToInventoryIds.Count > 0)
+		{
+			_pendingHeroSkill = id;
+			_pendingHeroSkillGround = true;
+			return;
+		}
+
 		if (id.StartsWith("Build_") && _selectedEntities[0] is Unit u)
 			{
 				var act = u.Brain.GetAction<BuildAction>(id);

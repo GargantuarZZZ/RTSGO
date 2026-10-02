@@ -295,6 +295,19 @@ namespace RTS.Core
 				});
 			}
 
+			// 武库鸟：**库存生产**。
+			//
+			// 关键：TrainableUnitIds 此前只在**建筑**工厂里被遍历生成生产动作，
+			// 而武库鸟是单位 —— 所以它没有生产按钮、库存永远是 0、
+			// 集群释放按钮一直置灰，玩家看不到任何效果。
+			// 这里为单位补上"生产到库存"的那条路径。
+			if (cfg.ProducesToInventoryIds != null && cfg.ProducesToInventoryIds.Count > 0)
+			{
+				int invSlot = 5;
+				foreach (string invUnitId in cfg.ProducesToInventoryIds)
+					AddAction(brain, CreateTrainAction(invUnitId, invSlot++));
+			}
+
 			// 武库鸟：集群释放（把库存按秒投放到指定部署点）
 			if (cfg.ProducesToInventoryIds != null && cfg.ProducesToInventoryIds.Count > 0)
 			{

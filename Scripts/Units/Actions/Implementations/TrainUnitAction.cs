@@ -84,6 +84,16 @@ namespace RTS.Actions.Implementation
 
 			bool success;
 			float costMult = RTS.Core.TechEffects.GetProductionCostMultiplier(player.PlayerData);
+
+			// 武库鸟：库存生产半价（表格）。生产者是单位，读它自己的折扣字段。
+			if (_unit.LogicEntity is SimUnit producer)
+			{
+				var prodCfg = RTS.Data.Configs.ConfigDatabase.GetUnit(producer.UnitTypeId);
+				if (prodCfg != null && prodCfg.ProducesToInventoryIds != null &&
+					prodCfg.ProducesToInventoryIds.Contains(UnitName))
+					costMult *= prodCfg.InventoryCostMultiplier;
+			}
+
 			if (costMult < 1f)
 			{
 				// 模拟线程安全：用纯 C# 字典缩放后走 IReadOnlyDictionary 重载

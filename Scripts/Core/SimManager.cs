@@ -623,6 +623,7 @@ namespace RTS.Core
 			ProfileTick("Wanderer", TickWandererSystems);
 			ProfileTick("ArsenalRelease", TickArsenalRelease);
 			ProfileTick("DroneRecycle", TickDroneRecycle);
+			ProfileTick("Kamikaze", TickKamikaze);
 			ProfileTick("PendingSpawns", TickPendingSpawns);
 			ProfileTick("DeathChecks", TickDeathChecks);
 			ProfileTick("CaveWreckages", TickCaveWreckages);
@@ -4095,6 +4096,89 @@ namespace RTS.Core
 						if (GodotObject.IsInstanceValid(n)) n.QueueFree();
 					});
 			}
+		}
+
+		/// <summary>
+		/// 自杀冲锋单位（熔岩旗手 / 自爆飞机）：**独立于动作系统**的固定步长判定。
+		///
+		/// 为什么不能像原来那样放在 IdleAction 里：
+		/// IdleAction 只在"单位没有其它指令"时才跑。玩家一旦下令（例如右键攻击），
+		/// 动作层切到 Attack/Move，自爆判定就**再也不执行** ——
+		/// 表现就是"单位走过去然后原地不动"，这正是不自爆的根因。
+		///
+		/// 自爆是单位的**固有行为**，不该依赖"当前恰好空闲"。
+		/// 所以提到固定步长里：无论身上有什么指令，都按下面规则走。
+		///
+		/// 规则（表格）：
+		///   自爆飞机优先建筑，其次军事单位，最后工人；只能攻击地面。
+		///   这里用 Tag 近似"军事/工人"的区分，找不到就退化为最近的敌人。
+		/// </summary>
+		private void TickKamikaze()
+		{
+			foreach (var u in World.Units.Values)
+			{
+				if (u == null || u.IsDead) continue;
+
+				var cfg = RTS.Data.Configs.ConfigDatabase.GetUnit(u.UnitTypeId);
+				if (cfg == null || !cfg.Kamikaze) continue;
+
+				// 找目标：优先建筑，其次非工人单位，最后任意（都只限地面）
+				IEntity target = FindKamikazeTarget(u);
+				if (target?.LogicEntity == null)
+					continue;
+
+				FP dist = FP.Sqrt(FPVector2.DistanceSquared(u.Position, target.LogicEntity.Position));
+				FP contact = u.Radius + target.LogicEntity.Radius + (FP)10m;
+
+				if (dist <= contact)
+				{
+					// 命中：自爆。走既有死亡路径（含自爆表现 + 范围伤害结算）
+					u.DeathProcessed = false;
+					u.Hp = FP.Zero;
+					RTS.Core.SimEventQueue.EnqueueMain(() =>
+					{
+						if (FindEntityById(u.ID) is RTS.Units.Unit vis &&
+							GodotObject.IsInstanceValid(vis))
+							vis.StartDeathVisual();
+					});
+					continue;
+				}
+
+				// 未接触：每 tick 重新下达移动指令指向目标。
+				// 每 tick 重下是为了**覆盖**玩家/其它系统给的指令 ——
+				// 自爆单位不该停在半路，这正是不自爆的根因。
+				u.CommandMove(target.LogicEntity.Position, target.LogicEntity.ID);
+			}
+		}
+
+		/// <summary>
+		/// 自爆单位的索敌优先级：建筑 &gt; 军事单位 &gt; 工人，且只打地面。
+		/// 「军事/工人」用配置里的 Tags 近似判断。
+		/// </summary>
+		private IEntity FindKamikazeTarget(SimUnit self)
+		{
+			var view = FindEntityById(self.ID);
+			if (view == null) return null;
+
+			// 第一优先：建筑（地面）
+			var building = view.FindClosestEnemy(600f, e =>
+				e is RTS.Units.Structure && !e.IsDeadOrNull());
+			if (building != null) return building;
+
+			// 第二优先：非工人地面单位
+			var combat = view.FindClosestEnemy(600f, e =>
+			{
+				if (e is not RTS.Units.Unit || e.IsDeadOrNull()) return false;
+				if (e.LogicEntity is SimUnit su && su.IsAir) return false;
+				var c = RTS.Data.Configs.ConfigDatabase.GetUnit(
+					(e as RTS.Units.Unit)?.UnitName ?? "");
+				return c != null && !c.IsWorker;
+			});
+			if (combat != null) return combat;
+
+			// 兜底：任意地面敌人
+			return view.FindClosestEnemy(600f, e =>
+				e.LogicEntity is SimUnit su2 && !su2.IsAir);
 		}
 
 		private void HandleOrbitalStrike(NetAction netAct)

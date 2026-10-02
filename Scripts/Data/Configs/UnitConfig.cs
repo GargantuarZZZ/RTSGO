@@ -385,6 +385,13 @@ namespace RTS.Data.Configs
 		/// <summary>集群释放结束后的冷却（秒）。</summary>
 		[Export(PropertyHint.Range, "0,120,1")]
 		public float ClusterReleaseCooldownSeconds { get; set; } = 12f;
+
+		/// <summary>
+		/// 库存生产的价格倍率（表格：武库鸟**半价**制造自爆飞机与四轴）。
+		/// 1 = 不打折。0.5 = 半价。
+		/// </summary>
+		[Export(PropertyHint.Range, "0,2,0.05")]
+		public float InventoryCostMultiplier { get; set; } = 1f;
 		[Export(PropertyHint.Range, "0.1,10,0.1")]
 		public float DeployTimeSeconds { get; set; } = 1f;
 		// 架设后最大生命倍率（大兵/重装 = 2）
