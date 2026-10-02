@@ -2190,15 +2190,24 @@ public partial class MainMenuController : Control
 	}
 
 	// 种族下拉选项唯一来源（大厅顶部旧下拉与玩家行共用）
+	//
+	// 注意：这里**必须**与 InputActions 里那种"单一真相"保持一致。
+	// 之前新增巫师/AI 族时我只改了 DumpProductionChains 里的诊断数组，
+	// 漏了这个真正建下拉列表的函数，结果新族在界面上根本选不到。
+	private static readonly string[] PlayableRaces =
+	{
+		"Union", "Nano", "Demon", "Wanderer", "Terran", "Plant", "Cave",
+		"Wizard", "AICommand",
+	};
+
 	private static void AddRaceChoices(OptionButton btn)
 	{
-		AddRaceChoice(btn, "Union");
-		AddRaceChoice(btn, "Nano");
-		AddRaceChoice(btn, "Demon");
-		AddRaceChoice(btn, "Wanderer");
-		AddRaceChoice(btn, "Terran");
-		AddRaceChoice(btn, "Plant");
-		AddRaceChoice(btn, "Cave");
+		foreach (string race in PlayableRaces)
+			AddRaceChoice(btn, race);
+
+		if (OS.GetEnvironment("RACE_DEBUG") == "1")
+			GD.Print($"[RaceDebug] 种族下拉填充 {btn.ItemCount} 项：" +
+				string.Join("/", PlayableRaces));
 	}
 
 	private static void AddRaceChoice(OptionButton btn, string race)
