@@ -509,9 +509,15 @@ namespace RTS.Units
 						 child is RTS.Actions.Implementation.SeismicWaveAction ||
 						 child is RTS.Actions.Implementation.WormholeCreateAction ||
 						 child is RTS.Actions.Implementation.OmniLeafDogAction ||
-						 child is RTS.Actions.Implementation.PlantForestSpreadAction)
+						 child is RTS.Actions.Implementation.PlantForestSpreadAction ||
+						 // 巫师面板技能：同样常驻显示。
+						 // 未研究对应"二选一"科技、或充能用完时**置灰**而不是消失 ——
+						 // 消失了玩家就不知道有这个技能、也不知道该去研究什么。
+						 child is RTS.Actions.Implementation.WizardSkillAction ||
+						 // AI 指挥系统：基地车"坐地"与指挥基地"收起"也是形态切换按钮
+						 child is RTS.Actions.Implementation.AIDeployAction)
 				{
-					// 面板技能按钮常驻显示：能量不足时置灰，而不是消失
+					// 面板技能按钮常驻显示：能量不足/未解锁/无充能时置灰，而不是消失
 					if (CurrentState == StructureState.Completed)
 						list.Add(Data((UnitAction)child));
 				}

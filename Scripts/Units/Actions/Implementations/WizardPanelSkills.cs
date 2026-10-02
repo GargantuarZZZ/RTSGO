@@ -36,10 +36,23 @@ namespace RTS.Actions.Implementation
 				return false;
 
 			var cfg = ConfigDatabase.GetStructure(_unit?.DisplayName ?? "");
-			if (cfg == null || cfg.SkillMaxCharges <= 1)
+			if (cfg == null)
 				return true;
 
-			if (_unit?.LogicEntity is SimStructure st)
+			// 二选一解锁：没研究对应科技时置灰。
+			// 与模拟侧的硬校验读同一份数据（SkillRequiredTechIds + 玩家已研究科技），
+			// 所以不会出现"按钮亮着但放不出来"。
+			if (cfg.SkillRequiredTechIds != null &&
+				cfg.SkillRequiredTechIds.TryGetValue(ActionId, out var needTech) &&
+				!string.IsNullOrEmpty(needTech))
+			{
+				var pd = RTS.World.Game.GetPlayerByTeam(_unit?.TeamID ?? 0)?.PlayerData;
+				if (pd == null || !pd.HasTech(needTech))
+					return false;
+			}
+
+			// 充能型（火雨/水墙）：充能用完置灰
+			if (cfg.SkillMaxCharges > 1 && _unit?.LogicEntity is SimStructure st)
 				return st.SkillChargeMask != SkillBit || st.SkillCharges > 0;
 
 			return true;
