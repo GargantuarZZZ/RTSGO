@@ -301,6 +301,16 @@ namespace RTS.Core
 				used += supply;
 				// 单位自带占用人口（牧羊人 -5 等）
 				used += unitCfg?.SupplyUsed ?? 0;
+				// 武库鸟库存占人口（表格：库存占人口）。
+				// 库存在鸟身上，所以按型号计数乘各自 SupplyCost。
+				if (unit.InventoryTotal > 0)
+				{
+					int perKam = (int)(RTS.Data.Configs.ConfigDatabase
+						.GetUnit("AIKamikaze")?.SupplyCost ?? 1);
+					int perQuad = (int)(RTS.Data.Configs.ConfigDatabase
+						.GetUnit("AIQuadDrone")?.SupplyCost ?? 1);
+					used += unit.InventoryKamikaze * perKam + unit.InventoryQuad * perQuad;
+				}
 			}
 
 			// 建筑占人口（恶魔负数建筑）

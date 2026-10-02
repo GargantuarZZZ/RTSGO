@@ -159,6 +159,28 @@ namespace RTS.Data.Configs
 		// - "union_tank"
 		[Export] public Godot.Collections.Array<string> TrainableUnitIds { get; set; } = new();
 
+		// ---- 武库鸟：生产进"库存"而不是直接生成单位 ----
+		//
+		// 表格要求武库鸟半价制造自爆飞机/四轴、共用生产队列、
+		// 库存上限 20 架、**库存占人口**、集群释放时按每秒 4 架投放。
+		//
+		// 这里列出的单位 ID 在生产完成后不生成实体，而是累加到
+		// Structure 所在单位（武库鸟）的库存计数里。
+		// 空数组 = 常规生产（直接生成）。
+		[Export] public Godot.Collections.Array<string> ProducesToInventoryIds { get; set; } = new();
+
+		/// <summary>库存上限（架）。0 = 不限制。</summary>
+		[Export(PropertyHint.Range, "0,100,1")]
+		public int InventoryCapacity { get; set; } = 0;
+
+		/// <summary>集群释放：每秒释放几架。</summary>
+		[Export(PropertyHint.Range, "1,20,1")]
+		public float ClusterReleasePerSecond { get; set; } = 4f;
+
+		/// <summary>集群释放结束后进入的冷却（秒）。</summary>
+		[Export(PropertyHint.Range, "0,120,1")]
+		public float ClusterReleaseCooldownSeconds { get; set; } = 12f;
+
 		[Export(PropertyHint.Range, "1,99,1")]
 		public int ProductionQueueSize { get; set; } = 5;
 

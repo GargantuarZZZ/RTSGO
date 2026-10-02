@@ -293,6 +293,19 @@ namespace RTS.Core
 					Layer = ActionLayer.Ability,
 					BlockingLayers = ActionLayer.Ability | ActionLayer.Movement
 				});
+			}
+
+			// 武库鸟：集群释放（把库存按秒投放到指定部署点）
+			if (cfg.ProducesToInventoryIds != null && cfg.ProducesToInventoryIds.Count > 0)
+			{
+				AddAction(brain, new RTS.Actions.Implementation.ClusterReleaseAction
+				{
+					Name = "ClusterRelease",
+					DisplayNameText = "集群释放",
+					SlotIndex = 9,
+					Layer = ActionLayer.Ability,
+					BlockingLayers = ActionLayer.Ability
+				});
 			}}
 
 			// 泰伦重装：切换弹种

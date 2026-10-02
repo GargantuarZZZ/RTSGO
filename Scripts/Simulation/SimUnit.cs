@@ -80,6 +80,49 @@ namespace RTS.Simulation
 
 		// 多足：无需控制 / 等离子炮 / 腾跃状态
 		public bool NoControlNeeded = false;
+
+		// =========================================================
+		// 武库鸟库存（AI 指挥系统）
+		//
+		// 这是项目里**第一处"单位持有子单位"的状态**：其它单位都是扁平实体，
+		// 状态哈希与同步按单实体设计。为不破坏那套设计，这里刻意
+		// **不存子实体对象**，只存"库存数量"：
+		//   · 库存里的东西不是真实实体 —— 没有位置，不参与寻路/战斗/视野，
+		//     存对象既无意义，又会让哈希与同步复杂化；
+		//   · 释放时才用 EntitySpawner 生成真正的单位。
+		// 于是库存就是普通整数计数，天然可哈希、可同步。
+		//
+		// 库存在库期间占人口（表格要求）：由 PlayerData.GetUsedSupplyInner
+		// 读 InventorySupply 计入。在库**不消耗寿命**，释放后才开始计时。
+		// =========================================================
+
+		/// <summary>
+		/// 武库鸟库存：**分型号计数**。
+		///
+		/// 为什么不像驻扎那样只用结构体的 GarrisonedCount 单值：
+		/// 那个只记"里面有几个"，而表格要求释放时可选择"只放自爆 /
+		/// 只放四轴 / 全部"，单值表达不了型号。
+		/// 所以这里存两个计数，并让结构体的 GarrisonedCount 作为**总数**保持同步
+		/// （入库/释放时一起维护）—— 这样驻扎的既有逻辑
+		/// （占人口、本体被摧毁时把里面的人放回战场）能直接复用。
+		/// </summary>
+		public int InventoryKamikaze = 0;
+		/// <summary>库存里的四轴无人机数量。</summary>
+		public int InventoryQuad = 0;
+		/// <summary>总库存（与结构体 GarrisonedCount 同步）。</summary>
+		public int InventoryTotal => InventoryKamikaze + InventoryQuad;
+
+		/// <summary>集群释放的冷却。释放结束后才开始计时。</summary>
+		public FP ClusterReleaseCooldown = FP.Zero;
+		/// <summary>正在集群释放。</summary>
+		public bool ClusterReleaseActive = false;
+		/// <summary>释放目标点（部署点）。</summary>
+		public FPVector2 ClusterReleaseTarget;
+		/// <summary>释放节奏累加器：每满 1/每秒架数 就投放一架。</summary>
+		public FP ClusterReleaseAccum = FP.Zero;
+		/// <summary>本次释放的型号：0=全部 1=仅自爆 2=仅四轴。</summary>
+		public int ClusterReleaseMode = 0;
+
 		public bool PlasmaAutoFire = true;
 		public FP PlasmaCooldown = FP.Zero;
 		public int PlasmaCastState = 0; // 0=空闲 1=前摇 2=后摇
@@ -420,6 +463,13 @@ namespace RTS.Simulation
 					hash ^= (long)id * 2654435761L;
 			}
 			hash ^= NoControlNeeded ? 1 : 0;
+			// 武库鸟库存：决定"能释放几架"，必须参与确定性
+			hash ^= InventoryKamikaze * 40503;
+			hash ^= InventoryQuad * 2246822519;
+			hash ^= (long)(ClusterReleaseCooldown * (FP)1000m);
+			hash ^= ClusterReleaseActive ? 1 : 0;
+			hash ^= (long)(ClusterReleaseAccum * (FP)1000m);
+			hash ^= ClusterReleaseMode * 374761393;
 			hash ^= PlasmaAutoFire ? 1 : 0;
 			hash ^= (long)(PlasmaCooldown * (FP)100m);
 			hash ^= PlasmaCastState;

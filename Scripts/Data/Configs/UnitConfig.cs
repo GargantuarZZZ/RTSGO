@@ -364,6 +364,27 @@ namespace RTS.Data.Configs
 		// 两者都为空表示该单位不支持形态转换（普通架设类单位走 SimUnit.DeployState）。
 		[Export] public string DeployStructureId { get; set; } = "";
 		[Export] public string DeployUnitId { get; set; } = "";
+
+		// ---- 武库鸟：生产进"库存"而不是直接生成单位 ----
+		//
+		// 表格：武库鸟半价制造自爆飞机/四轴、共用生产队列、库存上限 20 架、
+		// 库存占人口、可移动生产、集群释放按每秒 4 架投放。
+		//
+		// 放在 UnitConfig 而不是 StructureConfig：武库鸟是**单位**（英雄/巨型飞行），
+		// 不是建筑。库存本身也用驻扎模型（见 SimUnit.InventoryKamikaze 注释）。
+		[Export] public Godot.Collections.Array<string> ProducesToInventoryIds { get; set; } = new();
+
+		/// <summary>库存上限（架）。0 = 不限制。</summary>
+		[Export(PropertyHint.Range, "0,100,1")]
+		public int InventoryCapacity { get; set; } = 0;
+
+		/// <summary>集群释放：每秒释放几架。</summary>
+		[Export(PropertyHint.Range, "1,20,1")]
+		public float ClusterReleasePerSecond { get; set; } = 4f;
+
+		/// <summary>集群释放结束后的冷却（秒）。</summary>
+		[Export(PropertyHint.Range, "0,120,1")]
+		public float ClusterReleaseCooldownSeconds { get; set; } = 12f;
 		[Export(PropertyHint.Range, "0.1,10,0.1")]
 		public float DeployTimeSeconds { get; set; } = 1f;
 		// 架设后最大生命倍率（大兵/重装 = 2）

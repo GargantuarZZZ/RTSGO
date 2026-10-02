@@ -150,11 +150,59 @@ namespace RTS.Actions.Implementation
 			// 仍占用生产槽位，队列里的其他单位继续被阻塞。
 			_timerFP = _buildTimeFP;
 
+			// ---- 武库鸟：产物进"库存"而不是生成实体 ----
+			//
+			// 必须在模拟层做：库存在 SimUnit 上、要进状态哈希，
+			// 而 SpawnUnit 的实体生成走 EnqueueMain（主线程），
+			// 在那里改计数会变成非确定性。
+			if (TryStoreToInventory())
+			{
+				Finish();
+				return;
+			}
+
 			if (!HasPopulationSpace())
 				return;
 
 			SpawnUnit();
 			Finish();
+		}
+
+		/// <summary>
+		/// 产物是否应进库存（武库鸟）。是则累加计数并返回 true。
+		///
+		/// 库存已满时**不 Finish**：保持"已完成待入库"状态等库存腾出空位，
+		/// 与人口满时的处理一致（不退款、不消失）。
+		/// </summary>
+		private bool TryStoreToInventory()
+		{
+			// 生产者可以是**单位**（武库鸟）—— 表格里它是巨型飞行单位，
+			// 不是建筑。所以两边都查。
+			if (_unit.LogicEntity is not SimUnit carrier)
+				return false;
+
+			var unitCfg = RTS.Data.Configs.ConfigDatabase.GetUnit(carrier.UnitTypeId);
+			if (unitCfg == null || unitCfg.ProducesToInventoryIds == null ||
+				!unitCfg.ProducesToInventoryIds.Contains(UnitName))
+				return false;
+			int cap = unitCfg.InventoryCapacity;
+
+			// 库存上限：满了就等（返回 true 会让调用方 Finish，所以这里要区分）
+			if (cap > 0)
+			{
+				int total = carrier.InventoryKamikaze + carrier.InventoryQuad;
+				if (total >= cap)
+					return false;   // 未入库：下一 tick 继续尝试
+			}
+
+			if (UnitName == "AIKamikaze")
+				carrier.InventoryKamikaze++;
+			else if (UnitName == "AIQuadDrone")
+				carrier.InventoryQuad++;
+			else
+				return false;
+
+			return true;
 		}
 
 		private void SpawnUnit()

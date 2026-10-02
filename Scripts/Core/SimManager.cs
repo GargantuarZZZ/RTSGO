@@ -621,6 +621,7 @@ namespace RTS.Core
 			ProfileTick("AutoProduce", TickAutoProduce);
 			ProfileTick("DeathEffects", TickDeathEffects);
 			ProfileTick("Wanderer", TickWandererSystems);
+			ProfileTick("ArsenalRelease", TickArsenalRelease);
 			ProfileTick("PendingSpawns", TickPendingSpawns);
 			ProfileTick("DeathChecks", TickDeathChecks);
 			ProfileTick("CaveWreckages", TickCaveWreckages);
@@ -3063,6 +3064,13 @@ namespace RTS.Core
 					continue;
 				}
 
+				// 武库鸟：集群释放（部署点已选定，投放由 TickArsenalRelease 逐步做）
+				if (netAct.ActionId == "ClusterRelease")
+				{
+					HandleClusterRelease(netAct);
+					continue;
+				}
+
 				// AI 指挥系统：基地车坐地 / 收起（单位 ⇄ 建筑 转换）
 				if (netAct.ActionId == "AIDeploy")
 				{
@@ -3925,6 +3933,102 @@ namespace RTS.Core
 
 				}
 			}
+		}
+
+		/// <summary>
+		/// 武库鸟 - 集群释放（每个固定步长调用）。
+		///
+		/// 表格：指定部署点，以每秒 4 架释放当前库存；释放结束进入 cd 12 秒。
+		/// 放在固定步长里而不是"一次生成完"：表格明确要求按秒投放，
+		/// 且这样库存递减是逐步的、可被打断（本体死亡即停止）。
+		///
+		/// 库存用驻扎模型：释放 = 从"入驻"状态生成实体，
+		/// 与既有 _pendingGarrison 的逆向操作一致。
+		/// </summary>
+		private void TickArsenalRelease()
+		{
+			foreach (var u in World.Units.Values)
+			{
+				if (u == null || u.IsDead) continue;
+
+				if (u.ClusterReleaseCooldown > FP.Zero)
+				{
+					u.ClusterReleaseCooldown -= World.FixedDelta;
+					if (u.ClusterReleaseCooldown <= FP.Zero)
+						u.ClusterReleaseCooldown = FP.Zero;
+				}
+
+				if (!u.ClusterReleaseActive) continue;
+
+				var cfg = RTS.Data.Configs.ConfigDatabase.GetUnit(u.UnitTypeId);
+				if (cfg == null || u.InventoryTotal <= 0)
+				{
+					// 放完（或本就不该有库存）：结束并进入冷却
+					u.ClusterReleaseActive = false;
+					u.ClusterReleaseAccum = FP.Zero;
+					u.ClusterReleaseCooldown = FP.Zero;
+					continue;
+				}
+
+				// 节奏累加：每 1/每秒架数 秒投放一架
+				float perSec = cfg.ClusterReleasePerSecond > 0f ? cfg.ClusterReleasePerSecond : 4f;
+				u.ClusterReleaseAccum += World.FixedDelta;
+				FP interval = (FP)(1.0 / perSec);
+
+				while (u.ClusterReleaseAccum >= interval && u.InventoryTotal > 0)
+				{
+					u.ClusterReleaseAccum -= interval;
+
+					// 按型号挑一架（表格：可选只放一种）
+					string unitId = null;
+					if (u.ClusterReleaseMode == 1 && u.InventoryKamikaze > 0) unitId = "AIKamikaze";
+					else if (u.ClusterReleaseMode == 2 && u.InventoryQuad > 0) unitId = "AIQuadDrone";
+					else if (u.InventoryKamikaze > 0) unitId = "AIKamikaze";
+					else if (u.InventoryQuad > 0) unitId = "AIQuadDrone";
+
+					if (unitId == null) break;
+
+					if (unitId == "AIKamikaze") u.InventoryKamikaze--;
+					else u.InventoryQuad--;
+
+					// 生成实体（延迟到主线程；位置用确定性数据算好）
+					int team = u.TeamID;
+					string id = unitId;
+					float px = (float)u.ClusterReleaseTarget.X;
+					float py = (float)u.ClusterReleaseTarget.Y;
+					RTS.Core.SimEventQueue.EnqueueMain(() =>
+						EntitySpawner.Instance?.SpawnEntity(id, team,
+							new FPVector2((FP)px, (FP)py)));
+				}
+
+				if (u.InventoryTotal <= 0)
+				{
+					u.ClusterReleaseActive = false;
+					u.ClusterReleaseAccum = FP.Zero;
+					u.ClusterReleaseCooldown = (FP)(cfg.ClusterReleaseCooldownSeconds > 0f
+						? cfg.ClusterReleaseCooldownSeconds : 12f);
+				}
+			}
+		}
+
+		/// <summary>
+		/// 武库鸟 - 集群释放：把"部署点"写进模拟状态，
+		/// 实际投放交给 TickArsenalRelease 按固定步长做。
+		/// </summary>
+		private void HandleClusterRelease(NetAction netAct)
+		{
+			IEntity executor = GetExecutor(netAct);
+			if (executor?.LogicEntity is not SimUnit bird || bird.IsDead)
+				return;
+			if (bird.InventoryTotal <= 0 || bird.ClusterReleaseCooldown > FP.Zero)
+				return;
+
+			var decoded = netAct.DecodeTargetPos();
+			bird.ClusterReleaseTarget = new FPVector2(decoded.X, decoded.Y);
+			bird.ClusterReleaseActive = true;
+			bird.ClusterReleaseAccum = FP.Zero;
+			// 释放型号由动作参数决定；缺省全部
+			bird.ClusterReleaseMode = 0;
 		}
 
 		private void HandleOrbitalStrike(NetAction netAct)
