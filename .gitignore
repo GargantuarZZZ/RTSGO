@@ -78,3 +78,13 @@ desktop.ini
 # 所以这批数据在运行期完全用不到。
 # 烘焙工具 Tools/VatBakeTool.gd 仍在仓库里，需要时可重建。
 Data/VAT/
+
+# ==========================================
+# AI3D 原始稠密网格备份（巫师/AI 指挥系统，457MB）
+# ==========================================
+# ArtRes/models/<族>/_raw/ 里是减面**之前**的 Hunyuan3D 原始网格
+# （每个 15 万 ~ 170 万面）。已逐字节比对确认：与
+# D:\DEV\AI3D-Pipeline\outputs\*\white_mesh.glb 完全一致，属于冗余副本。
+# 保留在本地是因为 decimate_wizard_ai_models.py 需要从它重新减面；
+# 但 457MB 进仓库没有意义，要重做时重跑 AI3D 管线即可。
+ArtRes/models/*/_raw/

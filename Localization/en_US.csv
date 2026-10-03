@@ -542,3 +542,38 @@ match.restart_confirm,Restart this match?
 groups.help,Number or click: recall. Double tap: focus camera. Ctrl+number/click: replace group. Shift+number/click: add selection. Alt+1-4: offline speed.
 race.wizard,Wizard
 race.aicommand,AI Command
+
+name.AIAirFactory,Drone Air Factory
+name.AIAirSuperiority,Air Superiority Fighter
+name.AIArsenalBird,Arsenal Bird
+name.AIBaseCar,Mobile Base Carrier
+name.AIBomber,Strategic Bomber
+name.AICore,Command Core
+name.AIElectronicWarfare,EW Aircraft
+name.AIGoldStation,Gold Station
+name.AIHeavyAirfield,Heavy Airfield
+name.AIInterceptor,Heavy Interceptor
+name.AIKamikaze,Suicide Drone
+name.AILightFactory,Light Factory
+name.AIQuadDrone,Quad Recon Drone
+name.AIRelay,Signal Relay
+name.AISkyNetCore,Sky Net Core
+name.WizApprentice,Apprentice
+name.WizBattlePuppet,Battle Puppet
+name.WizBroomRider,Broom Rider
+name.WizCity,Arcanist City
+name.WizConcertHall,Concert Hall
+name.WizEarthGolem,Earth Golem
+name.WizElementForge,Element Forge
+name.WizElementMage,Element Mage
+name.WizForest,Enchanted Forest
+name.WizHospitalMage,Hospital Mage
+name.WizHouse,Cottage
+name.WizMageTower,Mage Tower
+name.WizMusician,Musician
+name.WizPuppet,Puppet Worker
+name.WizSchool,School of Magic
+name.WizSpaceLab,Space Laboratory
+name.WizStoneCircle,Stone Circle
+name.WizStoneGolem,Stone Golem
+name.WizWaterWall,Water Wall

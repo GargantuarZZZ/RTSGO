@@ -46,7 +46,9 @@ public partial class SimManager
 		["Nano"] = new NanoBotStrategy(),
 		["Plant"] = new PlantBotStrategy(),
 		["Cave"] = new CaveBotStrategy(),
-		["Wanderer"] = new WandererBotStrategy()
+		["Wanderer"] = new WandererBotStrategy(),
+		["Wizard"] = new WizardBotStrategy(),
+		["AICommand"] = new AICommandBotStrategy()
 	};
 
 	private BotRaceStrategy GetBotStrategy(int team)

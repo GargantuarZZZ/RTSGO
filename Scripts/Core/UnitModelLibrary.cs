@@ -749,6 +749,243 @@ namespace RTS.Core
 				ModelPath = "res://ArtRes/models/Cave/CaveSandworm.glb",
 				Scale = 53.93f, OffsetY = 52.85f,
 				YMin = -0.980f, YMax = 0.860f,
+			},
+
+			// ================= 巫师（SDXL + Hunyuan 生成） =================
+			["WizPuppet"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizPuppet.glb",
+				Scale = 32.38f, OffsetY = 32.32f,
+				YMin = -0.998f, YMax = 0.959f,
+			},
+			["WizApprentice"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizApprentice.glb",
+				Scale = 32.31f, OffsetY = 32.26f,
+				YMin = -0.998f, YMax = 0.959f,
+			},
+			["WizHospitalMage"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizHospitalMage.glb",
+				Scale = 32.58f, OffsetY = 31.58f,
+				YMin = -0.969f, YMax = 0.935f,
+			},
+			["WizBattlePuppet"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizBattlePuppet.glb",
+				Scale = 64.94f, OffsetY = 64.25f,
+				YMin = -0.989f, YMax = 0.940f,
+			},
+			["WizBroomRider"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizBroomRider.glb",
+				Scale = 33.63f, OffsetY = 33.55f,
+				YMin = -0.998f, YMax = 0.957f,
+			},
+			["WizElementMage"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizElementMage.glb",
+				Scale = 34.47f, OffsetY = 34.41f,
+				YMin = -0.998f, YMax = 0.959f,
+			},
+			["WizMusician"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizMusician.glb",
+				Scale = 36.84f, OffsetY = 36.76f,
+				YMin = -0.998f, YMax = 0.957f,
+			},
+			["WizStoneGolem"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizStoneGolem.glb",
+				Scale = 65.02f, OffsetY = 64.52f,
+				YMin = -0.992f, YMax = 0.959f,
+			},
+			["WizEarthGolem"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizEarthGolem.glb",
+				Scale = 69.21f, OffsetY = 69.68f,
+				YMin = -1.007f, YMax = 0.959f,
+			},
+
+			// ================= AI 指挥系统（SDXL + Hunyuan 生成） =================
+			["AIBaseCar"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AIBaseCar.glb",
+				Scale = 96.94f, OffsetY = 96.73f,
+				YMin = -0.998f, YMax = 0.971f,
+				TurnWhileMoving = false,
+			},
+			["AIKamikaze"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AIKamikaze.glb",
+				Scale = 32.70f, OffsetY = 12.09f,
+				YMin = -0.370f, YMax = 0.333f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
+			["AIQuadDrone"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AIQuadDrone.glb",
+				Scale = 32.45f, OffsetY = 29.65f,
+				YMin = -0.914f, YMax = 0.840f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
+			["AIAirSuperiority"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AIAirSuperiority.glb",
+				Scale = 32.71f, OffsetY = 10.91f,
+				YMin = -0.334f, YMax = 0.330f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
+			["AIInterceptor"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AIInterceptor.glb",
+				Scale = 66.21f, OffsetY = 66.08f,
+				YMin = -0.998f, YMax = 0.960f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
+			["AIElectronicWarfare"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AIElectronicWarfare.glb",
+				Scale = 32.64f, OffsetY = 30.53f,
+				YMin = -0.935f, YMax = 0.883f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
+			["AIBomber"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AIBomber.glb",
+				Scale = 65.40f, OffsetY = 30.13f,
+				YMin = -0.461f, YMax = 0.397f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
+			["AIArsenalBird"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AIArsenalBird.glb",
+				Scale = 130.63f, OffsetY = 120.97f,
+				YMin = -0.926f, YMax = 0.596f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
+
+			// ================= 巫师建筑（SDXL + Hunyuan 生成） =================
+			["WizCity"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizCity.glb",
+				Scale = 129.25f, OffsetY = 129.04f,
+				YMin = -0.998f, YMax = 0.959f,
+				TurnWhileMoving = false,
+			},
+			["WizConcertHall"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizConcertHall.glb",
+				Scale = 96.94f, OffsetY = 96.78f,
+				YMin = -0.998f, YMax = 0.959f,
+				TurnWhileMoving = false,
+			},
+			["WizElementForge"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizElementForge.glb",
+				Scale = 97.38f, OffsetY = 75.01f,
+				YMin = -0.770f, YMax = 0.736f,
+				TurnWhileMoving = false,
+			},
+			["WizForest"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizForest.glb",
+				Scale = 65.31f, OffsetY = 58.71f,
+				YMin = -0.899f, YMax = 0.907f,
+				TurnWhileMoving = false,
+			},
+			["WizHouse"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizHouse.glb",
+				Scale = 65.31f, OffsetY = 51.16f,
+				YMin = -0.783f, YMax = 0.724f,
+				TurnWhileMoving = false,
+			},
+			["WizMageTower"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizMageTower.glb",
+				Scale = 108.97f, OffsetY = 108.78f,
+				YMin = -0.998f, YMax = 0.958f,
+				TurnWhileMoving = false,
+			},
+			["WizSchool"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizSchool.glb",
+				Scale = 65.54f, OffsetY = 44.56f,
+				YMin = -0.680f, YMax = 0.641f,
+				TurnWhileMoving = false,
+			},
+			["WizSpaceLab"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizSpaceLab.glb",
+				Scale = 104.41f, OffsetY = 102.64f,
+				YMin = -0.983f, YMax = 0.931f,
+				TurnWhileMoving = false,
+			},
+			["WizStoneCircle"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizStoneCircle.glb",
+				Scale = 97.85f, OffsetY = 88.47f,
+				YMin = -0.904f, YMax = 0.861f,
+				TurnWhileMoving = false,
+			},
+			["WizWaterWall"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/Wizard/WizWaterWall.glb",
+				Scale = 97.24f, OffsetY = 97.07f,
+				YMin = -0.998f, YMax = 0.959f,
+				TurnWhileMoving = false,
+			},
+
+			// ================= AI 指挥系统建筑（SDXL + Hunyuan 生成） =================
+			["AIAirFactory"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AIAirFactory.glb",
+				Scale = 96.94f, OffsetY = 96.77f,
+				YMin = -0.998f, YMax = 0.959f,
+				TurnWhileMoving = false,
+			},
+			["AICore"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AICore.glb",
+				Scale = 129.25f, OffsetY = 129.03f,
+				YMin = -0.998f, YMax = 0.959f,
+				TurnWhileMoving = false,
+			},
+			["AIGoldStation"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AIGoldStation.glb",
+				Scale = 64.62f, OffsetY = 50.43f,
+				YMin = -0.780f, YMax = 0.734f,
+				TurnWhileMoving = false,
+			},
+			["AIHeavyAirfield"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AIHeavyAirfield.glb",
+				Scale = 130.31f, OffsetY = 124.35f,
+				YMin = -0.954f, YMax = 0.918f,
+				TurnWhileMoving = false,
+			},
+			["AILightFactory"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AILightFactory.glb",
+				Scale = 98.05f, OffsetY = 48.10f,
+				YMin = -0.491f, YMax = 0.470f,
+				TurnWhileMoving = false,
+			},
+			["AIRelay"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AIRelay.glb",
+				Scale = 71.39f, OffsetY = 71.28f,
+				YMin = -0.998f, YMax = 0.959f,
+				TurnWhileMoving = false,
+			},
+			["AISkyNetCore"] = new UnitModelInfo
+			{
+				ModelPath = "res://ArtRes/models/AICommand/AISkyNetCore.glb",
+				Scale = 65.41f, OffsetY = 60.37f,
+				YMin = -0.923f, YMax = 0.852f,
+				TurnWhileMoving = false,
 			}
 		};
 
