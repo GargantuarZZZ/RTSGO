@@ -4044,6 +4044,13 @@ namespace RTS.Core
 			{
 				if (u == null || u.IsDead) continue;
 
+				var cfg = RTS.Data.Configs.ConfigDatabase.GetUnit(u.UnitTypeId);
+				if (cfg == null || cfg.ProducesToInventoryIds.Count == 0)
+					continue;
+
+				// ---- 自动生产：补齐两种机型，优先四轴，不需要玩家点队列 ----
+				TickArsenalAutoProduce(u, cfg);
+
 				if (u.ClusterReleaseCooldown > FP.Zero)
 				{
 					u.ClusterReleaseCooldown -= World.FixedDelta;
@@ -4053,10 +4060,9 @@ namespace RTS.Core
 
 				if (!u.ClusterReleaseActive) continue;
 
-				var cfg = RTS.Data.Configs.ConfigDatabase.GetUnit(u.UnitTypeId);
-				if (cfg == null || u.InventoryTotal <= 0)
+				if (u.InventoryTotal <= 0)
 				{
-					// 放完（或本就不该有库存）：结束并进入冷却
+					// 放完：结束并进入冷却
 					u.ClusterReleaseActive = false;
 					u.ClusterReleaseAccum = FP.Zero;
 					u.ClusterReleaseCooldown = FP.Zero;
@@ -4080,25 +4086,7 @@ namespace RTS.Core
 					else if (u.InventoryQuad > 0) unitId = "AIQuadDrone";
 
 					if (unitId == null) break;
-
-					if (unitId == "AIKamikaze") u.InventoryKamikaze--;
-					else u.InventoryQuad--;
-
-					// 生成实体（延迟到主线程；位置用确定性数据算好）
-					int team = u.TeamID;
-					string id = unitId;
-					float px = (float)u.ClusterReleaseTarget.X;
-					float py = (float)u.ClusterReleaseTarget.Y;
-					int carrierId = u.ID;
-					bool recycle = u.RecycleProgramEnabled;
-					RTS.Core.SimEventQueue.EnqueueMain(() =>
-					{
-						var sp = EntitySpawner.Instance?.SpawnEntity(id, team,
-							new FPVector2((FP)px, (FP)py));
-						// 回收程序：记下母舰，无人机才知道往哪返航
-						if (sp?.LogicEntity is SimUnit drone && recycle)
-							drone.RecycleCarrierId = carrierId;
-					});
+					DispatchArsenalDrone(u, unitId, u.ClusterReleaseTarget);
 				}
 
 				if (u.InventoryTotal <= 0)
@@ -4109,6 +4097,85 @@ namespace RTS.Core
 						? cfg.ClusterReleaseCooldownSeconds : 12f);
 				}
 			}
+		}
+
+		/// <summary>
+		/// 武库鸟库存**自动生产**：按固定间隔补一架，优先补四轴。
+		///
+		/// 表格要求"自动生产两种飞机，补充至每种 10 个，优先补充四轴，不需要手动按队列"，
+		/// 所以这里不读玩家的生产队列，直接在模拟层补计数 —— 库存在 SimUnit 上、
+		/// 要进状态哈希，让主线程改计数会变成非确定性。
+		///
+		/// 同时把库存从**总额度**改成**按机型各算**：用总量 20 会出现
+		/// "20 架全是自爆、四轴一架没有"，表格要的是各 10。
+		/// </summary>
+		private void TickArsenalAutoProduce(SimUnit bird, RTS.Data.Configs.UnitConfig cfg)
+		{
+			float interval = cfg.AutoProduceInventoryInterval;
+			if (interval <= 0f)
+				return;   // 0 = 保持旧的"手动点生产进库存"行为
+
+			int cap = cfg.InventoryPerTypeCapacity > 0
+				? cfg.InventoryPerTypeCapacity
+				: cfg.InventoryCapacity;
+			if (cap <= 0)
+				return;
+			// 总容量是硬上限（扩展机库把 20 提到 30 时仍然生效）
+			int totalCap = cfg.InventoryCapacity > 0 ? cfg.InventoryCapacity : cap * 2;
+			if (bird.InventoryTotal >= totalCap)
+				return;
+
+			bird.InventoryAutoTimer += World.FixedDelta;
+			if (bird.InventoryAutoTimer < (FP)interval)
+				return;
+			bird.InventoryAutoTimer = FP.Zero;
+
+			// 优先四轴，四轴满了再补自爆
+			bool wantQuad = bird.InventoryQuad < cap;
+			bool wantKam = bird.InventoryKamikaze < cap;
+			if (!wantQuad && !wantKam)
+				return;
+
+			if (wantQuad) bird.InventoryQuad++;
+			else bird.InventoryKamikaze++;
+			bird.InventoryLastProduced = wantQuad ? "AIQuadDrone" : "AIKamikaze";
+		}
+
+		/// <summary>
+		/// 从库存投放一架到指定点（扣计数 + 主线程生成实体）。
+		/// 自动生产与手动集群释放共用，避免两处各写一份计数逻辑。
+		/// </summary>
+		private void DispatchArsenalDrone(SimUnit bird, string unitId, FPVector2 at)
+		{
+			if (unitId == "AIKamikaze")
+			{
+				if (bird.InventoryKamikaze <= 0) return;
+				bird.InventoryKamikaze--;
+			}
+			else if (unitId == "AIQuadDrone")
+			{
+				if (bird.InventoryQuad <= 0) return;
+				bird.InventoryQuad--;
+			}
+			else
+			{
+				return;
+			}
+
+			int team = bird.TeamID;
+			string id = unitId;
+			float px = (float)at.X;
+			float py = (float)at.Y;
+			int carrierId = bird.ID;
+			bool recycle = bird.RecycleProgramEnabled;
+			RTS.Core.SimEventQueue.EnqueueMain(() =>
+			{
+				var sp = EntitySpawner.Instance?.SpawnEntity(id, team,
+					new FPVector2((FP)px, (FP)py));
+				// 回收程序：记下母舰，无人机才知道往哪返航
+				if (sp?.LogicEntity is SimUnit drone && recycle)
+					drone.RecycleCarrierId = carrierId;
+			});
 		}
 
 		/// <summary>

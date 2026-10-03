@@ -94,8 +94,14 @@ public partial class SimManager
 	}
 
 	/// <summary>
-	/// 武库鸟投放：库存够多、且要么正在交战、要么正在推进时才放。
-	/// 造价减半的库存攒得慢，见敌就倒空会让它一路裸奔。
+	/// 武库鸟：**定位射程 16 格**（配置 StandoffRangeTiles）。
+	///
+	/// 表格要求"AI 定位射程 16 格，攻击行为会在目标 16 格之外释放无人机攻击"：
+	/// 鸟自己不上前肉搏，只在 16 格外的安全距离把库存倒出去，
+	/// 无人机自己飞向敌人开打。
+	///
+	/// 所以判定条件是"16 格内有敌人"而不是"自己被打到"（旧版用 CombatTargetId，
+	/// 而武库鸟没有武器，永远不会自己进交战状态 —— 于是一架都放不出来）。
 	/// </summary>
 	private void TickBotArsenalRelease(int team, int currentTick)
 	{
@@ -114,35 +120,64 @@ public partial class SimManager
 				continue;
 			if (bird.ClusterReleaseCooldown > FP.Zero)
 				continue;
-			// 库存到一半以上才放：留出持续作战能力
-			int capacity = cfg.InventoryCapacity > 0 ? cfg.InventoryCapacity : 10;
-			if (bird.InventoryTotal * 2 < capacity)
-				continue;
 
-			bool engaged = bird.CombatTargetId >= 0 || IsBaseUnderAttack(team);
-			if (!engaged)
-				continue;
-
-			// 投放点：朝最近敌人的方向外推 2 格（无人机自己会继续压上）
-			FPVector2 drop = bird.Position;
-			var enemy = World.FindNearestUnit(bird.Position, FP.MaxValue,
-				u => u.ID != bird.ID && u.TeamID > 0 && AreTeamsHostile(bird.TeamID, u.TeamID), bird.ID);
-			if (enemy != null)
+			// 定位射程：0 = 未配，回退到"库存过半就放"的旧行为
+			int standoffTiles = cfg.StandoffRangeTiles;
+			if (standoffTiles > 0)
 			{
-				FPVector2 dir = (enemy.Position - bird.Position).Normalized();
-				if (dir.X != FP.Zero || dir.Y != FP.Zero)
-					drop = bird.Position + dir * (FP)(2 * World.Grid.TileSize);
+				// 16 格内有敌人（单位或建筑）就释放
+				FP range = (FP)(standoffTiles * World.Grid.TileSize);
+				if (!HasArsenalTargetInRange(bird, range))
+					continue;
 			}
+			else
+			{
+				int capacity = cfg.InventoryCapacity > 0 ? cfg.InventoryCapacity : 10;
+				if (bird.InventoryTotal * 2 < capacity)
+					continue;
+				if (bird.CombatTargetId < 0 && !IsBaseUnderAttack(team))
+					continue;
+			}
+
+			// 投放点 = 鸟当前位置：无人机从这里出发自己索敌。
+			// 不往敌人方向外推 —— 外推会把部署点推到 16 格之内，
+			// 鸟就得跟上去，和"定位 16 格"矛盾。
 			HandleClusterRelease(new NetAction
 			{
 				PlayerID = team,
 				ActionId = "ClusterRelease",
 				EntityIDs = new[] { bird.ID },
-				TargetX = (long)(drop.X * (FP)1000m),
-				TargetY = (long)(drop.Y * (FP)1000m),
+				TargetX = (long)(bird.Position.X * (FP)1000m),
+				TargetY = (long)(bird.Position.Y * (FP)1000m),
 				TargetEntityID = -1,
 			});
 		}
+	}
+
+	/// <summary>射程内是否有敌对目标（敌方单位或建筑）。</summary>
+	private bool HasArsenalTargetInRange(SimUnit bird, FP range)
+	{
+		FP rSq = range * range;
+		foreach (var u in World.Units.Values)
+		{
+			if (u == null || u.IsDead || u.TeamID <= 0 || u.ID == bird.ID)
+				continue;
+			if (!AreTeamsHostile(bird.TeamID, u.TeamID))
+				continue;
+			if (FPVector2.DistanceSquared(bird.Position, u.Position) <= rSq)
+				return true;
+		}
+		// 没有敌方单位就看建筑：拆家同样值得放无人机
+		foreach (var s in World.Structures.Values)
+		{
+			if (s == null || s.IsDead || s.TeamID <= 0)
+				continue;
+			if (!AreTeamsHostile(bird.TeamID, s.TeamID))
+				continue;
+			if (FPVector2.DistanceSquared(bird.Position, s.Position) <= rSq)
+				return true;
+		}
+		return false;
 	}
 }
 }

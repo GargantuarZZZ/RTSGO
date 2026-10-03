@@ -124,6 +124,18 @@ namespace RTS.Simulation
 		public int ClusterReleaseMode = 0;
 
 		/// <summary>
+		/// 库存自动生产计时器（秒）。归零时补一架，然后重置为配置间隔。
+		///
+		/// 表格要求武库鸟"自动生产两种飞机，补充至每种 10 个，优先补充四轴，
+		/// 不需要手动按队列"。放在模拟层（而不是让玩家点生产按钮）是因为
+		/// 计数要进状态哈希 —— 主线程改库存会变成非确定性。
+		/// </summary>
+		public FP InventoryAutoTimer = FP.Zero;
+
+		/// <summary>最近一次自动生产出来的机型（给机库条 UI 显示"这批是什么"）。</summary>
+		public string InventoryLastProduced = "";
+
+		/// <summary>
 		/// 回收程序（科技授予）：释放出去的无人机无目标时飞回武库鸟并被回收。
 		/// 记录"母舰 ID"，无人机才有返航目标 —— 释放时写入。
 		/// </summary>
@@ -480,6 +492,10 @@ namespace RTS.Simulation
 			hash ^= ClusterReleaseMode * 374761393;
 			hash ^= RecycleProgramEnabled ? 1 : 0;
 			hash ^= RecycleCarrierId * 668265263;
+			// 库存自动生产：计时器决定"下一架什么时候出"，必须参与确定性
+			hash ^= (long)(InventoryAutoTimer * (FP)1000m);
+			foreach (char c in InventoryLastProduced ?? "")
+				hash ^= (long)c * 2654435761L;
 			hash ^= PlasmaAutoFire ? 1 : 0;
 			hash ^= (long)(PlasmaCooldown * (FP)100m);
 			hash ^= PlasmaCastState;

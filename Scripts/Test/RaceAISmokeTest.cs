@@ -80,6 +80,7 @@ public partial class RaceAISmokeTest : Node
 			TestResourceDepletion();
 			TestAIDeployGridAlignment();
 			TestActionSlots();
+			TestArsenalBirdAutoProduce();
 			// Every race executes a real decision against the mechanism fixtures above.
 			for (int i = 0; i < _races.Length; i++)
 			{
@@ -345,6 +346,70 @@ public partial class RaceAISmokeTest : Node
 		}
 		Check(_sim.World.Units.Count > unitsBefore,
 			$"生产真的产出单位（前 {unitsBefore}，后 {_sim.World.Units.Count}）");
+	}
+
+	/// <summary>
+	/// 武库鸟：自动生产两种机型、各 10 架上限、优先四轴、库存不计人口。
+	/// </summary>
+	private void TestArsenalBirdAutoProduce()
+	{
+		int team = 9;
+		var cfg = ConfigDatabase.GetUnit("AIArsenalBird");
+		Check(cfg != null && cfg.AutoProduceInventoryInterval > 0f, "武库鸟配了自动生产间隔");
+		Check(cfg.InventoryPerTypeCapacity == 10,
+			$"每种机型上限 10（实际 {cfg.InventoryPerTypeCapacity}）");
+
+		var bird = (Unit)Spawn("AIArsenalBird", team, 6000, 6000);
+		Call("DrainSimEvents");
+		var sim = bird.SimUnitData;
+		Check(sim.InventoryQuad == 0 && sim.InventoryKamikaze == 0, "出厂库存为空");
+
+		// 推进模拟：间隔 9 秒、固定步长 0.05s，跑 600 tick = 30 秒，足够出满一轮
+		for (int i = 0; i < 600; i++)
+			Call("TickArsenalRelease");
+
+		Check(sim.InventoryQuad > 0, "自动生产启动了（四轴开始入库）");
+		Check(sim.InventoryQuad <= cfg.InventoryPerTypeCapacity,
+			$"四轴不超过上限（{sim.InventoryQuad} <= {cfg.InventoryPerTypeCapacity}）");
+		Check(sim.InventoryKamikaze <= cfg.InventoryPerTypeCapacity,
+			$"自爆不超过上限（{sim.InventoryKamikaze} <= {cfg.InventoryPerTypeCapacity}）");
+		Check(sim.InventoryQuad >= sim.InventoryKamikaze,
+			$"优先补四轴（四轴 {sim.InventoryQuad} >= 自爆 {sim.InventoryKamikaze}）");
+
+		// 库存不计人口（表格明确要求）
+		var pd = _players[team].PlayerData;
+		int usedWithStock = pd.GetUsedSupply();
+		sim.InventoryQuad = 0;
+		sim.InventoryKamikaze = 0;
+		int usedEmpty = pd.GetUsedSupply();
+		Check(usedWithStock == usedEmpty,
+			$"库存不计人口（满库 {usedWithStock} == 空库 {usedEmpty}）");
+
+		// ---- 定位射程 16 格：射程外不放、射程内才放 ----
+		Check(cfg.StandoffRangeTiles == 16, $"定位射程 16 格（实际 {cfg.StandoffRangeTiles}）");
+		var brain = Brain(team);
+
+		// 充满库存并清冷却，确保唯一的拦截因素是"有没有目标"
+		sim.InventoryQuad = cfg.InventoryPerTypeCapacity;
+		sim.InventoryKamikaze = cfg.InventoryPerTypeCapacity;
+		sim.ClusterReleaseActive = false;
+		sim.ClusterReleaseCooldown = FP.Zero;
+
+		// 30 格外放一个敌人（> 16）→ 不该放
+		var far = (Unit)Spawn("Marine", 2, 6000 + 30 * 64, 6000);
+		Call("DrainSimEvents");
+		int phase = team * 7 % 30;
+		Call("TickBotArsenalRelease", team, 300 - phase);
+		Check(!sim.ClusterReleaseActive, "敌人在 16 格外时不释放无人机");
+
+		// 挪到 10 格外（< 16）→ 该放
+		far.SimUnitData.Position = new FPVector2((FP)(6000 + 10 * 64), (FP)6000);
+		Call("TickBotArsenalRelease", team, 300 - phase);
+		Check(sim.ClusterReleaseActive, "敌人在 16 格内时释放无人机");
+		// 投放点应是鸟自身位置（不往敌人方向外推，否则鸟得跟上去）
+		Check((long)sim.ClusterReleaseTarget.X == 6000 && (long)sim.ClusterReleaseTarget.Y == 6000,
+			$"投放点在鸟自身位置（实际 {(long)sim.ClusterReleaseTarget.X},{(long)sim.ClusterReleaseTarget.Y}）");
+		_ = brain;
 	}
 }
 }

@@ -374,9 +374,36 @@ namespace RTS.Data.Configs
 		// 不是建筑。库存本身也用驻扎模型（见 SimUnit.InventoryKamikaze 注释）。
 		[Export] public Godot.Collections.Array<string> ProducesToInventoryIds { get; set; } = new();
 
-		/// <summary>库存上限（架）。0 = 不限制。</summary>
+		/// <summary>
+		/// 库存上限（架）。0 = 不限制。
+		///
+		/// 设定为**按机型分别计数**的上限（表格：武库鸟各存 10 架）。
+		/// 仍保留这个总量字段给"总容量"语义使用（如扩展机库把 20 提到 30）。
+		/// </summary>
 		[Export(PropertyHint.Range, "0,100,1")]
 		public int InventoryCapacity { get; set; } = 0;
+
+		/// <summary>
+		/// 每种机型的库存上限（架）。0 = 回退到 InventoryCapacity。
+		///
+		/// 为什么单独一个字段：表格要求自爆飞机、四轴无人机**各自**存 10 架，
+		/// 用总量 20 无法表达 —— 会出现"20 架全是自爆、四轴一架没有"。
+		/// </summary>
+		[Export(PropertyHint.Range, "0,100,1")]
+		public int InventoryPerTypeCapacity { get; set; } = 0;
+
+		/// <summary>
+		/// 自动生产间隔（秒）。> 0 时武库鸟**自动**补齐两种机型，不需要玩家点生产。
+		///
+		/// 表格要求："自动生产两种飞机，补充至每种 10 个，优先补充四轴，不需要手动按队列"。
+		/// 0 = 保持旧的"手动点生产进库存"行为。
+		/// </summary>
+		[Export(PropertyHint.Range, "0,120,0.5")]
+		public float AutoProduceInventoryInterval { get; set; } = 0f;
+
+		/// <summary>武库鸟定位射程（格）：在此距离外释放无人机，自己不上前。</summary>
+		[Export(PropertyHint.Range, "0,64,1")]
+		public int StandoffRangeTiles { get; set; } = 0;
 
 		/// <summary>集群释放：每秒释放几架。</summary>
 		[Export(PropertyHint.Range, "1,20,1")]

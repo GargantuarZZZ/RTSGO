@@ -17,6 +17,14 @@ public partial class UnitHealthBar3D : Node3D
 	private MeshInstance3D _lifeFill;
 	private MeshInstance3D _prodBackground;
 	private MeshInstance3D _prodFill;
+	// 武库鸟机库条：灰=四轴、黄=自爆，两种颜色 + 每格之间的分隔线
+	private MeshInstance3D _hangarBackground;
+	private MeshInstance3D _hangarQuadFill;
+	private MeshInstance3D _hangarKamFill;
+	private readonly List<MeshInstance3D> _hangarDividers = new();
+	private int _hangarQuadCap;
+	private int _hangarKamCap;
+	private float _hangarW;
 	private UnitLife _life;
 	private IEntity _owner;
 	private float _width = 48f;
@@ -29,6 +37,11 @@ public partial class UnitHealthBar3D : Node3D
 	private static readonly StandardMaterial3D EnergyFillMaterial = CreateBarMaterial(new Color(0.25f, 0.7f, 1f, 1f));
 	private static readonly StandardMaterial3D LifeFillMaterial = CreateBarMaterial(new Color(0.75f, 0.4f, 0.9f, 1f));
 	private static readonly StandardMaterial3D ProdFillMaterial = CreateBarMaterial(new Color(1f, 0.88f, 0.3f, 1f));
+	// 机库条：四轴用灰、自爆用黄（与表格"灰色代表四轴,黄色代表自爆"一致）
+	private static readonly StandardMaterial3D QuadFillMaterial = CreateBarMaterial(new Color(0.62f, 0.65f, 0.7f, 1f));
+	private static readonly StandardMaterial3D KamFillMaterial = CreateBarMaterial(new Color(1f, 0.82f, 0.2f, 1f));
+	/// <summary>整数分格的分隔线：压在填充之上的一根细深色条。</summary>
+	private static readonly StandardMaterial3D DividerMaterial = CreateBarMaterial(new Color(0.05f, 0.06f, 0.07f, 1f));
 
 	/// <summary>
 	/// 血条材质：无光照 + **始终朝向相机**。
@@ -117,9 +130,117 @@ public partial class UnitHealthBar3D : Node3D
 			AddChild(_prodFill);
 		}
 
+		// 武库鸟机库条：库存分两种颜色显示，条本身不占人口、不随血量变
+		var birdCfg = _owner is Unit birdUnit
+			? RTS.Data.Configs.ConfigDatabase.GetUnit(birdUnit.UnitName)
+			: null;
+		if (birdCfg != null && birdCfg.ProducesToInventoryIds.Count > 0 &&
+			InventoryCapPerType(birdCfg) > 0)
+		{
+			BuildHangarBar(width);
+		}
+
 		UpdateVisibility();
-		// 普通血条只靠 HealthChanged 事件刷新，不需要每帧轮询；只有能量/生产条才开 _Process
-		SetProcess(_energyFill != null || _prodFill != null || _lifeFill != null);
+		// 普通血条只靠 HealthChanged 事件刷新，不需要每帧轮询；
+		// 能量/生产条/机库条要每帧跟随模拟值才开 _Process
+		SetProcess(_energyFill != null || _prodFill != null || _lifeFill != null
+			|| _hangarQuadFill != null);
+	}
+
+	// =========================================================
+	// 武库鸟机库条
+	//
+	// 表格要求："补充一个机库条 UI，类似能量条，但是分两种颜色，
+	// 灰色代表四轴、黄色代表自爆" + "整数条中间有分隔"。
+	//
+	// 做法：两种情况并排 —— 左侧【四轴 cap 格】灰、右侧【自爆 cap 格】黄，
+	// 每一格之间压一根 1px 深色分隔线。整数格是硬要求：
+	// 玩家要能一眼数出还剩几架，而不是估长度。
+	// =========================================================
+
+	/// <summary>每种机型的库存上限（0 = 回退总量的一半，再不行给 10）。</summary>
+	private static int InventoryCapPerType(RTS.Data.Configs.UnitConfig cfg)
+	{
+		if (cfg.InventoryPerTypeCapacity > 0)
+			return cfg.InventoryPerTypeCapacity;
+		if (cfg.InventoryCapacity > 0)
+			return cfg.InventoryCapacity / 2;
+		return 0;
+	}
+
+	private void BuildHangarBar(float width)
+	{
+		var cfg = _owner is Unit ownerBird
+			? RTS.Data.Configs.ConfigDatabase.GetUnit(ownerBird.UnitName)
+			: null;
+		if (cfg == null)
+			return;
+
+		_hangarQuadCap = InventoryCapPerType(cfg);
+		_hangarKamCap = _hangarQuadCap;
+		_hangarW = width;
+
+		_hangarBackground = MakeQuad(BgMaterial, width, 5f, 0f);
+		_hangarBackground.Position = new Vector3(0f, -14f, 0f);
+		AddChild(_hangarBackground);
+
+		// 两种颜色的填充各占一半宽度，各自从自己那半的左端生长
+		_hangarQuadFill = MakeQuad(QuadFillMaterial, width * 0.5f, 4f, 0.1f);
+		_hangarKamFill = MakeQuad(KamFillMaterial, width * 0.5f, 4f, 0.1f);
+		AddChild(_hangarQuadFill);
+		AddChild(_hangarKamFill);
+
+		RebuildHangarDividers();
+	}
+
+	/// <summary>
+	/// 重建分隔线。只在格子数变化时调用（科技改了上限），不是每帧。
+	/// </summary>
+	private void RebuildHangarDividers()
+	{
+		foreach (var d in _hangarDividers)
+		{
+			RemoveChild(d);
+			d.QueueFree();
+		}
+		_hangarDividers.Clear();
+
+		int total = _hangarQuadCap + _hangarKamCap;
+		if (total <= 1)
+			return;
+
+		float seg = _hangarW / total;
+		// 每格右边界画一根（最后一格的右边界就是条末端，不画）
+		for (int i = 1; i < total; i++)
+		{
+			float x = -_hangarW * 0.5f + seg * i;
+			var line = MakeQuad(DividerMaterial, 1.2f, 4.6f, 0.2f);
+			line.Position = new Vector3(x, -14f, 0.2f);
+			AddChild(line);
+			_hangarDividers.Add(line);
+		}
+	}
+
+	private void UpdateHangarBar()
+	{
+		if (_hangarQuadFill == null || _owner?.LogicEntity is not SimUnit bird)
+			return;
+
+		int quadCap = System.Math.Max(1, _hangarQuadCap);
+		int kamCap = System.Math.Max(1, _hangarKamCap);
+		float halfW = _hangarW * 0.5f;
+
+		// 左半：四轴。填充左端固定，按比例收缩
+		float qr = Mathf.Clamp(bird.InventoryQuad / (float)quadCap, 0f, 1f);
+		_hangarQuadFill.Scale = new Vector3(qr, 1f, 1f);
+		_hangarQuadFill.Position = new Vector3(
+			-halfW * 0.5f + halfW * (qr - 1f) * 0.5f, -14f, 0.1f);
+
+		// 右半：自爆
+		float kr = Mathf.Clamp(bird.InventoryKamikaze / (float)kamCap, 0f, 1f);
+		_hangarKamFill.Scale = new Vector3(kr, 1f, 1f);
+		_hangarKamFill.Position = new Vector3(
+			halfW * 0.5f + halfW * (kr - 1f) * 0.5f, -14f, 0.1f);
 	}
 
 	public void SetFogHidden(bool hidden)
@@ -191,6 +312,8 @@ public partial class UnitHealthBar3D : Node3D
 			_lifeFill.Scale = new Vector3(lifeRatio, 1f, 1f);
 			_lifeFill.Position = new Vector3(_width * (lifeRatio - 1f) * 0.5f, -8f, 0.1f);
 		}
+
+		UpdateHangarBar();
 	}
 
 	public override void _ExitTree()

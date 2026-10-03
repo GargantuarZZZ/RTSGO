@@ -301,16 +301,8 @@ namespace RTS.Core
 				used += supply;
 				// 单位自带占用人口（牧羊人 -5 等）
 				used += unitCfg?.SupplyUsed ?? 0;
-				// 武库鸟库存占人口（表格：库存占人口）。
-				// 库存在鸟身上，所以按型号计数乘各自 SupplyCost。
-				if (unit.InventoryTotal > 0)
-				{
-					int perKam = (int)(RTS.Data.Configs.ConfigDatabase
-						.GetUnit("AIKamikaze")?.SupplyCost ?? 1);
-					int perQuad = (int)(RTS.Data.Configs.ConfigDatabase
-						.GetUnit("AIQuadDrone")?.SupplyCost ?? 1);
-					used += unit.InventoryKamikaze * perKam + unit.InventoryQuad * perQuad;
-				}
+				// 武库鸟库存**不占人口**（表格明确要求"生产的飞机不计入人口"）。
+				// 这里原本按型号计数乘 SupplyCost 计入，现已去掉。
 			}
 
 			// 建筑占人口（恶魔负数建筑）

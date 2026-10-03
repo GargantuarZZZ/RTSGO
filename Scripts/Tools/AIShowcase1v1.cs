@@ -300,13 +300,29 @@ namespace RTS.Tools
 							sy += st.GridPosition.Y + st.GridHeight / 2;
 							n++;
 						}
+						float tile = simF.World.Grid.TileSize;
 						if (n > 0)
 						{
-							float tile = simF.World.Grid.TileSize;
 							focus = new Vector3(sx / (float)n * tile + tile * 0.5f, 0f,
 								sy / (float)n * tile + tile * 0.5f);
 						}
-						GD.Print($"[AIShowcase] 相机焦点 = 1 队建筑中心 ({focus.X:F0}, {focus.Z:F0})，建筑 {n} 座");
+						else
+						{
+							// 没有建筑（如 AI 指挥系统开局只有基地车）：退回看单位
+							long ux = 0, uy = 0;
+							int un = 0;
+							foreach (var un2 in simF.World.Units.Values)
+							{
+								if (un2 == null || un2.IsDead || un2.TeamID != 1)
+									continue;
+								ux += (long)un2.Position.X;
+								uy += (long)un2.Position.Y;
+								un++;
+							}
+							if (un > 0)
+								focus = new Vector3(ux / (float)un, 0f, uy / (float)un);
+						}
+						GD.Print($"[AIShowcase] 相机焦点 = ({focus.X:F0}, {focus.Z:F0})，建筑 {n} 座");
 					}
 				}
 				cam.Position = focus + new Vector3(0f, 9000f, 0f);

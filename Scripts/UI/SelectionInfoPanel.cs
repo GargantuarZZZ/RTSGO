@@ -54,6 +54,48 @@ namespace RTS.Core
 			PaintBarsGreen(HpBar);
 			PaintBarsGreen(ShieldBar);
 			PaintBarsGreen(SecondaryBar);
+
+			// 弹药条：整数分格。SecondaryBar 也显示英雄能量/寿命，
+			// 但只有一个真的需要"每一格 = 1 发"，所以格子数在 UpdateSingle 里按类型设。
+			if (SecondaryBar != null)
+				SecondaryBar.Draw += DrawSecondarySegments;
+		}
+
+		/// <summary>当前 SecondaryBar 该分几格（1 = 不分格）。</summary>
+		private int _secondarySegments;
+
+		/// <summary>
+		/// 给弹药条画整数分隔线（"这种整数条中间有分隔"）。
+		///
+		/// 弹量上限差异很大（战斗机 3 发、解放者 240 发），逐发画线在 240 发时
+		/// 会糊成一片、还压掉基本看不清的填充。所以按上限分级：
+		/// ≤40 发逐发分格，更多的按"10 发一格"分。
+		/// </summary>
+		private void DrawSecondarySegments()
+		{
+			if (SecondaryBar == null || _secondarySegments <= 1)
+				return;
+			var size = SecondaryBar.Size;
+			if (size.X <= 0f || size.Y <= 0f)
+				return;
+
+			var line = new Color(0.05f, 0.06f, 0.07f, 0.85f);
+			float step = size.X / _secondarySegments;
+			for (int i = 1; i < _secondarySegments; i++)
+			{
+				float x = step * i;
+				SecondaryBar.DrawLine(new Vector2(x, 0f), new Vector2(x, size.Y), line, 1f);
+			}
+		}
+
+		/// <summary>按弹药上限决定分格数。</summary>
+		private static int AmmoSegmentsFor(float maxAmmo)
+		{
+			if (maxAmmo <= 1f)
+				return 0;
+			if (maxAmmo <= 40f)
+				return Mathf.RoundToInt(maxAmmo);   // 逐发
+			return Mathf.Max(2, Mathf.RoundToInt(maxAmmo / 10f));   // 10 发一格
 		}
 
 		private static void PaintBarsGreen(ProgressBar bar)
@@ -92,6 +134,7 @@ namespace RTS.Core
 
 		public override void _ExitTree()
 		{
+            if (Instance == this) Instance = null;
 			GameEventBus.SelectionChanged -= OnBusSelectionChanged;
 			base._ExitTree();
 		}
@@ -460,6 +503,7 @@ namespace RTS.Core
 			if (SecondaryBar != null)
 			{
 				SecondaryBar.Visible = hasSecondary || showAmmo || showLifespan;
+				int segments = 0;
 				if (hasSecondary && logic is SimUnit heroUnit)
 				{
 					SecondaryBar.MaxValue = (float)heroUnit.HeroMaxEnergy;
@@ -469,11 +513,18 @@ namespace RTS.Core
 				{
 					SecondaryBar.MaxValue = (float)ammoUnit2.MaxAmmo;
 					SecondaryBar.Value = (float)ammoUnit2.Ammo;
+					segments = AmmoSegmentsFor((float)ammoUnit2.MaxAmmo);
 				}
 				else if (showLifespan && logic is SimUnit lifeUnit2)
 				{
 					SecondaryBar.MaxValue = lifeUnit2.LifespanMax > FP.Zero ? (float)lifeUnit2.LifespanMax : 1f;
 					SecondaryBar.Value = (float)lifeUnit2.LifespanTimer;
+				}
+				// 只有弹药条分格；能量/寿命是连续量，分了反而误读
+				if (_secondarySegments != segments)
+				{
+					_secondarySegments = segments;
+					SecondaryBar.QueueRedraw();
 				}
 			}
 			if (SecondaryLabel != null)
