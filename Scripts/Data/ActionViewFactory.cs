@@ -104,15 +104,22 @@ namespace RTS.Data
 					if (!string.IsNullOrEmpty(pfs.DisplayNameText)) act.DisplayName = pfs.DisplayNameText;
 					break;
 				default:
-					// 基础指令槽位统一（移动/停止/攻击/驻守）
-					act.SlotIndex = a.ActionName switch
-					{
-						"Move" => 0,
-						"Stop" => 1,
-						"Attack" => 2,
-						"Hold" => 3,
-						_ => a.SlotIndex
-					};
+					// 基础指令槽位统一（移动/停止/攻击/驻守）。
+					//
+					// 只对**单位**重映射：建筑不移动，它的 Attack/Idle 槽位由
+					// EntityFactory3D.AddStructureActions 显式给定（0/1），
+					// 研究/技能按钮从空位往后排。这里若无条件把 Attack 拽到槽 2，
+					// 就会和研究按钮撞槽 —— ActionPanel.Refresh 是
+					// `map[SlotIndex] = a`，同槽后加的覆盖先加的，建筑卡上会少按钮。
+					if (a.Unit is not RTS.Units.Structure)
+						act.SlotIndex = a.ActionName switch
+						{
+							"Move" => 0,
+							"Stop" => 1,
+							"Attack" => 2,
+							"Hold" => 3,
+							_ => a.SlotIndex
+						};
 					break;
 			}
 

@@ -974,16 +974,16 @@ namespace RTS.Core
 		/// </summary>
 		private static void AddWizardPanelSkills(UnitActionController brain, StructureConfig cfg)
 		{
-			var skills = new (long Bit, string Name, int Slot)[]
+			var skills = new (long Bit, string Name)[]
 			{
-				(256,   "SummonStoneGolem", 0),
-				(512,   "SummonEarthGolem", 1),
-				(1024,  "TeleportField",    2),
-				(2048,  "TimeFreeze",       3),
-				(4096,  "FireRain",         4),
-				(8192,  "WaterWall",        5),
-				(16384, "InspireMelody",    6),
-				(32768, "SolemnMelody",     7),
+				(256,   "SummonStoneGolem"),
+				(512,   "SummonEarthGolem"),
+				(1024,  "TeleportField"),
+				(2048,  "TimeFreeze"),
+				(4096,  "FireRain"),
+				(8192,  "WaterWall"),
+				(16384, "InspireMelody"),
+				(32768, "SolemnMelody"),
 			};
 
 			foreach (var s in skills)
@@ -1005,23 +1005,56 @@ namespace RTS.Core
 				if (action == null) continue;
 
 				action.Name = s.Name;
-				action.SlotIndex = s.Slot;
+				// 槽位必须**动态取空位**，不能写死 0..7。
+				//
+				// 建筑卡上 Idle/Attack 占槽 0、研究按钮从槽 1 起排（巨石阵有 4 个研究），
+				// SelfDestruct 占 13、Cancel 占 14。写死 0..7 会和这些全撞上 ——
+				// ActionPanel.Refresh 是 `map[SlotIndex] = a`，同槽后加的覆盖先加的，
+				// 于是技能被压在下面，玩家看到的就是"面版完全不显示"。
+				action.SlotIndex = NextFreeSlot(brain);
 				AddAction(brain, action);
 
 				if (System.Environment.GetEnvironmentVariable("WIZ_DEBUG") == "1")
-					GD.Print($"[WizSkill] {cfg.ResourcePath.GetFile()} 生成技能 {s.Name} (位 {s.Bit}, 槽 {s.Slot})");
+					GD.Print($"[WizSkill] {cfg.ResourcePath.GetFile()} 生成技能 {s.Name} " +
+						$"(位 {s.Bit}, 槽 {action.SlotIndex})");
 			}
+		}
+
+		/// <summary>
+		/// 找一个还没被占用的命令卡槽位（0..14）。
+		/// 同槽会互相覆盖，所以任何"追加动作"都必须走这里，不能写死槽号。
+		/// </summary>
+		private static int NextFreeSlot(UnitActionController brain)
+		{
+			var used = new System.Collections.Generic.HashSet<int>();
+			foreach (Node child in brain.GetChildren())
+				if (child is UnitAction ua && ua.SlotIndex >= 0)
+					used.Add(ua.SlotIndex);
+
+			for (int s = 0; s < 15; s++)
+				if (!used.Contains(s))
+					return s;
+			return -1;
 		}
 
 		private static void AddStructureActions(UnitActionController brain)
 		{
-			AddAction(brain, new AttackAction { Name = "Attack" });
-			AddAction(brain, new IdleAction { Name = "Idle" });
+			// 建筑不移动：基础指令只留"攻击"与"待机"，且必须给**明确且不同**的槽位。
+			// 两者都用默认值会同时落到槽 0（ActionViewFactory 的 default 分支只认
+			// Move/Stop/Attack/Hold，不认 Idle/Attack 的建筑变体），
+			// 于是槽 0 上后加的覆盖先加的 —— 实测建筑卡上少一个按钮。
+			AddAction(brain, new AttackAction { Name = "Attack", SlotIndex = 0 });
+			AddAction(brain, new IdleAction { Name = "Idle", SlotIndex = 1 });
 			AddAction(brain, new GeneralCancelAction { Name = "Cancel", SlotIndex = 14 });
 		}
 
 		// 研究院/牧羊人：按配置表 ResearchableTechIds 生成研究按钮
-		private static void AddResearchActionsFromConfig(UnitActionController brain, string structureId, int startSlot = 1)
+		//
+		// startSlot < 0 = 自动从空位开始排（默认）。写死起始槽会和基础指令
+		// （建筑的 Attack/Idle 占 0/1）撞车 —— 实测巨石阵的 Attack 与研究按钮
+		// 同时落在槽 2，互相覆盖。只有确实需要固定槽段的调用方才显式传值
+		// （如单位的研究从 9 起，给前面的技能让位）。
+		private static void AddResearchActionsFromConfig(UnitActionController brain, string structureId, int startSlot = -1)
 		{
 			var cfg = GetStructCfg(structureId);
 			var unitCfg = cfg == null ? GetUnitCfg(structureId) : null;
@@ -1033,7 +1066,7 @@ namespace RTS.Core
 			if (techIds == null)
 				return;
 
-			int slot = startSlot;
+			int slot = startSlot >= 0 ? startSlot : NextFreeSlot(brain);
 
 			foreach (string techId in techIds)
 			{

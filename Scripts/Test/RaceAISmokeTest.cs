@@ -81,6 +81,7 @@ public partial class RaceAISmokeTest : Node
 			TestAIDeployGridAlignment();
 			TestActionSlots();
 			TestArsenalBirdAutoProduce();
+			TestWizardPanelSkills();
 			// Every race executes a real decision against the mechanism fixtures above.
 			for (int i = 0; i < _races.Length; i++)
 			{
@@ -321,8 +322,7 @@ public partial class RaceAISmokeTest : Node
 		AssertNoSlotCollision(arty, "Artillery");
 
 		// 指挥核心要能生产（TrainUnitAction 的 ActionId 就是单位名）
-		var core = (Structure)Spawn("AICore", 9, 4000, 4000);
-		Call("DrainSimEvents");
+		var core = (Structure)Spawn("AICore", 9, 4000, 4000);		Call("DrainSimEvents");
 		Check(core.Brain.HasCachedAction("AIBaseCar"), "指挥核心有生产动作（生产链没断）");
 		var coreActs = core.GetAvailableActions();
 		Check(coreActs.Any(a => a.ActionId == "AIBaseCar"), "指挥核心的生产按钮在命令卡上");
@@ -481,6 +481,41 @@ public partial class RaceAISmokeTest : Node
 		var autoTarget = droneNode.FindAutoAttackTarget(400f);
 		Check(autoTarget != null,
 			$"无人机能在射程内索到敌人（IdleAction 会据此下令攻击）");
+	}
+
+	/// <summary>
+	/// 巫师面板技能按钮必须常驻显示（未研究二选一科技时置灰，而不是消失）。
+	/// 用户报告"法师的面板完全不显示"，这条就是防它再退化。
+	/// </summary>
+	private void TestWizardPanelSkills()
+	{
+		int team = 8;   // Wizard
+		var circle = (Structure)Spawn("WizStoneCircle", team, -6000, -6000);
+		Call("DrainSimEvents");
+
+		var acts = circle.GetAvailableActions();
+		Check(acts.Any(a => a.ActionId == "SummonStoneGolem"),
+			"巨石阵有石魔像按钮（未研究科技也应显示）");
+		Check(acts.Any(a => a.ActionId == "SummonEarthGolem"),
+			"巨石阵有土魔像按钮");
+		// 二选一：没研究就置灰，不能消失
+		var stone = acts.First(a => a.ActionId == "SummonStoneGolem");
+		Check(!stone.IsEnabled, "未研究 WizUnlockStoneGolem 时石魔像按钮置灰");
+
+		var forge = (Structure)Spawn("WizElementForge", team, -7000, -6000);
+		Call("DrainSimEvents");
+		var fActs = forge.GetAvailableActions();
+		Check(fActs.Any(a => a.ActionId == "FireRain") && fActs.Any(a => a.ActionId == "WaterWall"),
+			"元素熔炉有火雨 / 水墙两个按钮");
+
+		// 槽位不能互相撞：同槽会被 ActionPanel.Refresh 的 map[SlotIndex] 覆盖
+		var dup = acts.GroupBy(a => a.SlotIndex).Where(g => g.Count() > 1).ToList();
+		if (dup.Count > 0)
+			foreach (var g in dup)
+				GD.Print($"[SlotDump] WizStoneCircle 槽 {g.Key}: " +
+					string.Join(" / ", g.Select(a => a.ActionId)));
+		Check(dup.Count == 0, "巫师建筑命令卡槽位无冲突" +
+			(dup.Count == 0 ? "" : "，冲突槽：" + string.Join(",", dup.Select(g => g.Key))));
 	}
 
 	/// <summary>跑 TickArsenalRelease 直到库存 +1，返回用掉的 tick 数（超时返回 -1）。</summary>
