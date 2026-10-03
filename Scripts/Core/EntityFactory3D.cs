@@ -235,11 +235,17 @@ namespace RTS.Core
 
 			if (cfg.CanBuild)
 			{
-				int slot = 5;
+				// 建造动作从 6 起排，"架设/坐地"固定占 7 以外的位置：
+				// 命令卡只有 15 格，5 槽留给 Skill1，建造动作与形态转换必须错开，
+				// 否则同槽后加的会覆盖先加的（见上面的槽位说明）。
+				int buildSlot = 6;
 
 				foreach (string buildId in cfg.BuildableStructureIds)
 				{
-					var buildAct = CreateBuildAction(buildId, slot++);
+					// 7 槽留给"架设/坐地"这类形态转换动作
+					if (buildSlot == 7)
+						buildSlot++;
+					var buildAct = CreateBuildAction(buildId, buildSlot++);
 					// 默认近身贴蓝图（0.625 格）；远程建造单位按配置（如多足 Builder 5 格）
 					buildAct.BuildRange = cfg.BuildRangeTiles > 0 ? cfg.BuildRangeTiles * 64f : 40f;
 					AddAction(brain, buildAct);
@@ -268,8 +274,19 @@ namespace RTS.Core
 			AddSkillAction(brain, cfg.Skill1Kind, cfg.Skill1Name, 1, 5);
 			AddSkillAction(brain, cfg.Skill2Kind, cfg.Skill2Name, 2, 6);
 
+			// 形态转换：两种机制互斥，必须二选一。
+			//
+			// 泰伦"架设"是**单位内部改状态**（SimUnit.DeployState）；
+			// AI 基地车"坐地"是**换成另一个实体**（SimManager.HandleAIDeploy）。
+			// 一个单位配了 DeployStructureId 就该走后者，不能再给 DeployAction ——
+			// 否则两个动作会抢同一个槽位（Deploy 用 7、AIDeploy 用 8，但建造动作
+			// 也从 5 开始连排 7 个，必定撞车）。ActionPanel.Refresh 是
+			// `map[SlotIndex] = a`，同槽后加的覆盖先加的，玩家点到的可能不是
+			// 自己以为的那个动作：点"坐地"结果走了泰伦架设，永远不变建筑。
+			bool entitySwapDeploy = cfg.CanDeploy && !string.IsNullOrEmpty(cfg.DeployStructureId);
+
 			// 泰伦架设：可架设单位给“架设/收起”按钮
-			if (cfg.CanDeploy)
+			if (cfg.CanDeploy && !entitySwapDeploy)
 			{
 				AddAction(brain, new RTS.Actions.Implementation.DeployAction
 				{
@@ -279,17 +296,21 @@ namespace RTS.Core
 					Layer = ActionLayer.Ability,
 					BlockingLayers = ActionLayer.Ability | ActionLayer.Movement
 				});
-			
+			}
+
 			// AI 指挥系统：基地车形态转换（单位 ⇄ 建筑）。
 			// 与泰伦的"架设"不是同一件事：架设是单位内部改状态，
 			// 这个是**换成另一个实体**（SimManager.HandleAIDeploy）。
-			if (cfg.CanDeploy && !string.IsNullOrEmpty(cfg.DeployStructureId))
+			if (entitySwapDeploy)
 			{
 				AddAction(brain, new RTS.Actions.Implementation.AIDeployAction
 				{
 					Name = "AIDeploy",
 					DisplayNameText = "坐地/收起",
-					SlotIndex = 8,
+					// 槽位 -1：命令卡不显示 —— 基地车的 5~11 槽已被
+					// 7 个建造动作占满（AICore/AIGoldStation/…），再塞一个只会撞车。
+					// 坐地改由**右键自己**触发（见 UserController 的单位右键分派）。
+					SlotIndex = -1,
 					Layer = ActionLayer.Ability,
 					BlockingLayers = ActionLayer.Ability | ActionLayer.Movement
 				});
@@ -319,7 +340,7 @@ namespace RTS.Core
 					Layer = ActionLayer.Ability,
 					BlockingLayers = ActionLayer.Ability
 				});
-			}}
+			}
 
 			// 泰伦重装：切换弹种
 			if (cfg.CanSwitchAmmoMode)

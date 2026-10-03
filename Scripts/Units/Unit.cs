@@ -238,14 +238,30 @@ namespace RTS.Units
 			}
 
 			// 自杀：摧毁自身（不走普通指令队列，由 SimManager 确定性处理）
-			list.Add(new EntityAction
-			{
-				ActionId = "SelfDestruct",
-				DisplayName = RTS.Settings.Localization.Tr("action.SelfDestruct"),
-				SlotIndex = 13,
-				Tooltip = RTS.Settings.Localization.Tr("action.SelfDestructTip"),
-				IsEnabled = RTS.Core.WorldScanner.IsOperable(this, RTS.Core.Main.Instance?.LocalPlayerID ?? 0)
-			});
+			//
+			// 槽位必须动态找空位，不能硬编码 13：命令卡一共 15 格，
+			// 而建造动作可以从 6 一路排到 13（基地车正好 7 座建筑），
+			// 硬编码会和建造按钮撞槽 —— ActionPanel.Refresh 用
+			// `map[SlotIndex] = a`，同槽的后者覆盖前者，玩家点到的
+			// 动作全看添加顺序。本文件末尾才加 SelfDestruct，所以它会把
+			// 最后一个建造按钮顶掉，表现为"某个建筑建不了"。
+			const int SelfDestructSlotMin = 12;
+			const int SlotCount = 15;
+			var taken = new HashSet<int>();
+			foreach (var a in list)
+				if (a.SlotIndex >= 0) taken.Add(a.SlotIndex);
+			int selfSlot = -1;
+			for (int s = SelfDestructSlotMin; s < SlotCount; s++)
+				if (!taken.Contains(s)) { selfSlot = s; break; }
+			if (selfSlot >= 0)
+				list.Add(new EntityAction
+				{
+					ActionId = "SelfDestruct",
+					DisplayName = RTS.Settings.Localization.Tr("action.SelfDestruct"),
+					SlotIndex = selfSlot,
+					Tooltip = RTS.Settings.Localization.Tr("action.SelfDestructTip"),
+					IsEnabled = RTS.Core.WorldScanner.IsOperable(this, RTS.Core.Main.Instance?.LocalPlayerID ?? 0)
+				});
 
 			return list;
 		}

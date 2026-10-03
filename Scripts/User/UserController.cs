@@ -687,6 +687,43 @@ namespace RTS.Core
 						return;
 					}
 
+					// AI 指挥系统：右键基地车自己 / 指挥核心自己 = 形态转换（坐地 / 收起）。
+					//
+					// 为什么走右键而不是命令卡按钮：基地车的命令卡 5~11 槽已被 7 个建造
+					// 动作占满，再塞"坐地"必定和建造按钮撞槽 —— ActionPanel.Refresh 用
+					// `map[SlotIndex] = a`，同槽后加的覆盖先加的，玩家点到的是哪个动作
+					// 全看添加顺序。实测撞车后点"坐地"走的是泰伦架设（只改 DeployState），
+					// 单位永远不变建筑。右键自己这条路径不进槽位表，不会撞。
+					if (target is Unit swapTarget &&
+						swapTarget.TeamID == myTeam &&
+						RTS.Data.Configs.ConfigDatabase.GetUnit(swapTarget.UnitName) is { } swapCfg &&
+						swapCfg.CanDeploy && !string.IsNullOrEmpty(swapCfg.DeployStructureId))
+					{
+						var swapIds = myUnits
+							.Where(u => u.LogicEntity != null &&
+								RTS.Data.Configs.ConfigDatabase.GetUnit(u.UnitName) is { } uc &&
+								uc.CanDeploy && !string.IsNullOrEmpty(uc.DeployStructureId))
+							.Select(u => u.LogicEntity.ID).ToArray();
+						if (swapIds.Length > 0)
+						{
+							LockstepManager.Instance.SendAction(NetAction.GroundCommand(
+								"AIDeploy", Main.Instance.LocalPlayerID, mPos, swapIds, targetEntityId, false));
+							_gameFX?.SpawnClickMarker(mPos, new Color(0.9f, 0.75f, 0.25f, 1f));
+							return;
+						}
+					}
+					if (target is Structure swapStruct &&
+						swapStruct.TeamID == myTeam &&
+						RTS.Data.Configs.ConfigDatabase.GetStructure(swapStruct.StructureName) is { } ssCfg &&
+						(ssCfg.PanelSkillMode & 65536) != 0)
+					{
+						LockstepManager.Instance.SendAction(NetAction.GroundCommand(
+							"AIDeploy", Main.Instance.LocalPlayerID, mPos,
+							new[] { swapStruct.LogicEntity.ID }, targetEntityId, false));
+						_gameFX?.SpawnClickMarker(mPos, new Color(0.9f, 0.75f, 0.25f, 1f));
+						return;
+					}
+
 					string order = DetermineOrder(myUnits[0], target);
 					var cmd = NetAction.GroundCommand(
 						order, Main.Instance.LocalPlayerID, mPos,

@@ -79,6 +79,7 @@ public partial class RaceAISmokeTest : Node
 			TestPlasmaAutoFire();
 			TestResourceDepletion();
 			TestAIDeployGridAlignment();
+			TestActionSlots();
 			// Every race executes a real decision against the mechanism fixtures above.
 			for (int i = 0; i < _races.Length; i++)
 			{
@@ -271,6 +272,79 @@ public partial class RaceAISmokeTest : Node
 		for (int dx = -6; dx <= 6; dx++)
 			for (int dy = -6; dy <= 6; dy++)
 				_sim.World.Grid.StaticObstacles.Remove(new SimVector2I(bx + dx, by + dy));
+	}
+
+	/// <summary>
+	/// 命令卡槽位不能冲突：ActionPanel.Refresh 用 `map[SlotIndex] = a`，
+	/// 同槽后加的会覆盖先加的，玩家点到的动作全看添加顺序。
+	///
+	/// 实测踩过：AI 基地车同时满足 CanBuild 和 CanDeploy，建造动作从 5 连排 7 个、
+	/// DeployAction 占 7、AIDeployAction 占 8 —— 点"坐地"命中泰伦架设
+	/// （只改 DeployState），单位永远不变建筑。
+	/// </summary>
+	private void TestActionSlots()
+	{
+		void AssertNoSlotCollision(Unit u, string label)
+		{
+			var acts = u.GetAvailableActions()
+				.Where(a => a.SlotIndex >= 0)
+				.ToList();
+			var dup = acts.GroupBy(a => a.SlotIndex).Where(g => g.Count() > 1).ToList();
+			if (dup.Count > 0)
+				foreach (var g in dup)
+					GD.Print($"[SlotDump] {label} 槽 {g.Key}: " +
+						string.Join(" / ", g.Select(a => a.ActionId)));
+			Check(dup.Count == 0, $"{label} 命令卡槽位无冲突" +
+				(dup.Count == 0 ? "" : "，冲突槽：" + string.Join(",", dup.Select(g => g.Key))));
+		}
+
+		// 基地车：建造 + 坐地 + 生产 挤在一张卡上，最容易撞
+		var car = (Unit)Spawn("AIBaseCar", 9, 3000, 3000);
+		Call("DrainSimEvents");
+		AssertNoSlotCollision(car, "AIBaseCar");
+		// 坐地动作故意不进命令卡（SlotIndex = -1），所以在 brain 里查而不是卡片上
+		Check(car.Brain.HasCachedAction("AIDeploy"), "基地车有坐地动作（右键自己触发）");
+		Check(!car.Brain.HasCachedAction("Deploy"),
+			"配了 DeployStructureId 的单位不再挂泰伦架设（两种转换互斥）");
+		var carActs = car.GetAvailableActions();
+		int buildCount = carActs.Count(a => a.ActionId.StartsWith("Build_"));
+		Check(buildCount == 7, $"基地车 7 个建造动作都在卡上（实际 {buildCount} 个）");
+
+		// 泰伦单位反过来：只该有架设，不该有 AI 坐地
+		// （Artillery/HeavyInfantry/Liberator/Marine/MissileVehicle 都是 CanDeploy，
+		//   但没配 DeployStructureId，所以走泰伦架设而不是换实体）
+		var arty = (Unit)Spawn("Artillery", 2, -3000, 3000);
+		Call("DrainSimEvents");
+		Check(arty.Brain.HasCachedAction("Deploy"), "泰伦可架设单位仍有架设动作");
+		Check(!arty.Brain.HasCachedAction("AIDeploy"), "泰伦单位不挂 AI 坐地动作");
+		AssertNoSlotCollision(arty, "Artillery");
+
+		// 指挥核心要能生产（TrainUnitAction 的 ActionId 就是单位名）
+		var core = (Structure)Spawn("AICore", 9, 4000, 4000);
+		Call("DrainSimEvents");
+		Check(core.Brain.HasCachedAction("AIBaseCar"), "指挥核心有生产动作（生产链没断）");
+		var coreActs = core.GetAvailableActions();
+		Check(coreActs.Any(a => a.ActionId == "AIBaseCar"), "指挥核心的生产按钮在命令卡上");
+
+		// 不只是按钮在：真的点下去要能进生产队列（排队→出单位）
+		//
+		// 注意 tick 次数：TrainUnitAction.OnUpdate 累加的是 World.FixedDelta（20Hz），
+		// 不是传进去的 delta。所以要按 BuildTime / FixedDelta 算，否则单位还没造完
+		// 就断言，会误判成"生产坏了"。
+		int unitsBefore = _sim.World.Units.Count;
+		core.Brain.StartAction("AIBaseCar");
+		Check(core.Brain.GetActiveProductionAction() != null,
+			"点生产后核心进入生产队列（不是亮着不响应）");
+
+		double fixedDelta = (double)_sim.World.FixedDelta;
+		int needTicks = (int)(45.0 / System.Math.Max(fixedDelta, 0.001)) + 20;
+		for (int i = 0; i < needTicks && core.Brain.GetActiveProductionAction() != null; i++)
+		{
+			core.Brain.LogicTick(fixedDelta);
+			Call("DrainSimEvents");
+		}
+		Check(_sim.World.Units.Count > unitsBefore,
+			$"生产真的产出单位（前 {unitsBefore}，后 {_sim.World.Units.Count}）");
 	}
 }
 }
