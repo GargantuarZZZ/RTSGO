@@ -4115,6 +4115,22 @@ namespace RTS.Core
 			if (interval <= 0f)
 				return;   // 0 = 保持旧的"手动点生产进库存"行为
 
+			// **所有建造/生产速度加成都要吃到**（用户要求）。
+			//
+			// 用 GetProductionTimeMultiplier：流水线(0.667)、一体成型(0.5)、
+			// 稳定生产(0.667) 都是往这个字段里乘的，一处就全覆盖。
+			//
+			// 注意它的语义是**时间倍率**而不是速度倍率：
+			// ProductionTimeMultiplier = 0.667 表示"生产快 1.5 倍"（时间变 0.667）。
+			// 所以间隔要**乘**这个系数；乘成除法会把加成变成惩罚。
+			// 与 TrainUnitAction.OnEnter（BuildTime *= 该系数）保持同一方向，
+			// 否则手动生产与自动生产的加速会不一致。
+			var owner = RTS.World.Game.GetPlayerByTeam(bird.TeamID);
+			float timeMul = RTS.Core.TechEffects.GetProductionTimeMultiplier(owner?.PlayerData);
+			if (timeMul <= 0f)
+				timeMul = 1f;
+			interval *= timeMul;
+
 			int cap = cfg.InventoryPerTypeCapacity > 0
 				? cfg.InventoryPerTypeCapacity
 				: cfg.InventoryCapacity;

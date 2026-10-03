@@ -724,6 +724,27 @@ namespace RTS.Core
 						return;
 					}
 
+					// 武库鸟：右键 = 在该点集群释放。
+					//
+					// 为什么必须补这条：ClusterRelease 原本只有命令卡按钮一个入口，
+					// 而玩家的肌肉记忆是"选中兵 → 右键敌人/地面 = 打过去"。
+					// 对武库鸟来说右键只会发 Move/Attack（它没有武器，攻击无效），
+					// 于是"视野内有敌人、机库有货、右键点了"却一架都不放。
+					// 右键这条路径不进槽位表，也不会和建造/技能按钮撞。
+					var producer = myUnits.OfType<Unit>().FirstOrDefault(u =>
+						u.LogicEntity is SimUnit su && su.InventoryTotal > 0 &&
+						RTS.Data.Configs.ConfigDatabase.GetUnit(u.UnitName) is { } pc &&
+						pc.ProducesToInventoryIds.Count > 0);
+					if (producer != null)
+					{
+						var relCmd = NetAction.GroundCommand(
+							"ClusterRelease", Main.Instance.LocalPlayerID, mPos,
+							new[] { producer.LogicEntity.ID }, targetEntityId, false);
+						LockstepManager.Instance.SendAction(relCmd);
+						_gameFX?.SpawnClickMarker(mPos, new Color(1f, 0.75f, 0.2f, 1f));
+						return;
+					}
+
 					string order = DetermineOrder(myUnits[0], target);
 					var cmd = NetAction.GroundCommand(
 						order, Main.Instance.LocalPlayerID, mPos,

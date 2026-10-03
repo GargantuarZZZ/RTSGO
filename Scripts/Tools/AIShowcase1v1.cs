@@ -257,6 +257,56 @@ namespace RTS.Tools
 					}
 				};
 			}
+			// AI_TEST_SPAWN=[<队伍>:]<单位ID>[,[<队伍>:]<单位ID>...]
+			// 给指定队伍补单位（省略队伍 = 1 队）。用于截图验证"只有后期才造得出来"
+			// 的单位（武库鸟需要 T3 科技，正常对局几分钟内看不到）。
+			// 队伍参数很关键：AI 行为只在**机器人队**（_botTeams）里跑，
+			// 塞给人类队的话看不出 AI 有没有动作。
+			string spawnCsv = OS.GetEnvironment("AI_TEST_SPAWN");
+			if (!string.IsNullOrEmpty(spawnCsv))
+			{
+				GetTree().CreateTimer(1.5).Timeout += () =>
+				{
+					var sim = RTS.Core.SimManager.Instance;
+					if (sim?.World == null)
+						return;
+					var sp = RTS.Core.EntitySpawner.Instance;
+					if (sp == null)
+					{
+						GD.PrintErr("[AIShowcase] AI_TEST_SPAWN: EntitySpawner.Instance 为空，无法生成");
+						return;
+					}
+					int i = 0;
+					foreach (string entry in spawnCsv.Split(','))
+					{
+						string spec = entry.Trim();
+						if (spec.Length == 0) continue;
+
+						int team = 1;
+						string uid = spec;
+						int colon = spec.IndexOf(':');
+						if (colon > 0 && int.TryParse(spec.Substring(0, colon), out int t))
+						{
+							team = t;
+							uid = spec.Substring(colon + 1).Trim();
+						}
+						if (uid.Length == 0) continue;
+
+						// 出生点：该队首个实体的位置，往外错开避免叠在一起
+						FPVector2 anchor = FPVector2.Zero;
+						foreach (var u in sim.World.Units.Values)
+						{
+							if (u != null && !u.IsDead && u.TeamID == team) { anchor = u.Position; break; }
+						}
+						var pos = new FPVector2(anchor.X + (FP)(i * 260), anchor.Y + (FP)260);
+						var e = sp.SpawnEntity(uid, team, pos);
+						GD.Print($"[AIShowcase] AI_TEST_SPAWN 生成 {uid} (队{team}) -> " +
+							$"{(e != null ? "OK" : "失败")} @({(float)pos.X:F0},{(float)pos.Y:F0})");
+						i++;
+					}
+				};
+			}
+
 			// 2 秒后自检：两队实体数量打到日志与屏幕，定位“看不见第二队”是生成问题还是渲染问题
 			GetTree().CreateTimer(2.0).Timeout += ReportTeams;
 		}
@@ -322,6 +372,10 @@ namespace RTS.Tools
 							if (un > 0)
 								focus = new Vector3(ux / (float)un, 0f, uy / (float)un);
 						}
+						// AI_TEST_CAM_OFFSET_Z：把焦点往下挪，用于把单位连同
+						// 头顶的血条/机库条一起框进画面（否则条会被下边缘裁掉）。
+						if (float.TryParse(OS.GetEnvironment("AI_TEST_CAM_OFFSET_Z"), out float oz))
+							focus.Z += oz;
 						GD.Print($"[AIShowcase] 相机焦点 = ({focus.X:F0}, {focus.Z:F0})，建筑 {n} 座");
 					}
 				}

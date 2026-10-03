@@ -1,3 +1,4 @@
+using Godot;
 using System;
 using System.Collections.Generic;
 using RTS.Data;
@@ -123,14 +124,18 @@ public partial class SimManager
 
 			// 定位射程：0 = 未配，回退到"库存过半就放"的旧行为
 			int standoffTiles = cfg.StandoffRangeTiles;
+			bool hasTarget = true;
 			if (standoffTiles > 0)
 			{
 				// 16 格内有敌人（单位或建筑）就释放
 				FP range = (FP)(standoffTiles * World.Grid.TileSize);
-				if (!HasArsenalTargetInRange(bird, range))
-					continue;
+				hasTarget = HasArsenalTargetInRange(bird, range);
 			}
-			else
+
+			if (!hasTarget)
+				continue;
+
+			if (standoffTiles <= 0)
 			{
 				int capacity = cfg.InventoryCapacity > 0 ? cfg.InventoryCapacity : 10;
 				if (bird.InventoryTotal * 2 < capacity)

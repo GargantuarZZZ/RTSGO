@@ -134,6 +134,13 @@ public partial class UnitHealthBar3D : Node3D
 		var birdCfg = _owner is Unit birdUnit
 			? RTS.Data.Configs.ConfigDatabase.GetUnit(birdUnit.UnitName)
 			: null;
+		if (System.Environment.GetEnvironmentVariable("HANGAR_DEBUG") == "1")
+		{
+			string ownerName = _owner is Unit dbgUnit ? dbgUnit.UnitName : "-";
+			GD.Print($"[Hangar] owner={_owner?.GetType().Name ?? "null"} name={ownerName} " +
+				$"cfg={(birdCfg != null)} produces={birdCfg?.ProducesToInventoryIds.Count ?? -1} " +
+				$"capPerType={(birdCfg != null ? InventoryCapPerType(birdCfg) : -1)}");
+		}
 		if (birdCfg != null && birdCfg.ProducesToInventoryIds.Count > 0 &&
 			InventoryCapPerType(birdCfg) > 0)
 		{

@@ -385,6 +385,25 @@ public partial class RaceAISmokeTest : Node
 		Check(usedWithStock == usedEmpty,
 			$"库存不计人口（满库 {usedWithStock} == 空库 {usedEmpty}）");
 
+		// ---- 自动生产要吃建造/生产速度加成 ----
+		//
+		// ProductionTimeMultiplier 是**时间倍率**（0.667 = 快 1.5 倍），
+		// 所以间隔要乘它。乘成除法会把加成变成惩罚，这里用实测比对锁住方向。
+		var pd2 = _players[team].PlayerData;
+		sim.InventoryQuad = 0;
+		sim.InventoryKamikaze = 0;
+		sim.InventoryAutoTimer = FP.Zero;
+		int ticksBaseline = TicksToProduceOne(sim, pd2);
+		Check(ticksBaseline > 0, $"基线：{ticksBaseline} tick 产出一架");
+
+		pd2.GrantTech("AITechAssemblyLine");   // ProductionTimeMultiplier = 0.667
+		sim.InventoryQuad = 0;
+		sim.InventoryKamikaze = 0;
+		sim.InventoryAutoTimer = FP.Zero;
+		int ticksBoosted = TicksToProduceOne(sim, pd2);
+		Check(ticksBoosted < ticksBaseline,
+			$"生产加速科技生效：{ticksBaseline} -> {ticksBoosted} tick（应更快）");
+
 		// ---- 定位射程 16 格：射程外不放、射程内才放 ----
 		Check(cfg.StandoffRangeTiles == 16, $"定位射程 16 格（实际 {cfg.StandoffRangeTiles}）");
 		var brain = Brain(team);
@@ -410,6 +429,71 @@ public partial class RaceAISmokeTest : Node
 		Check((long)sim.ClusterReleaseTarget.X == 6000 && (long)sim.ClusterReleaseTarget.Y == 6000,
 			$"投放点在鸟自身位置（实际 {(long)sim.ClusterReleaseTarget.X},{(long)sim.ClusterReleaseTarget.Y}）");
 		_ = brain;
+
+		// ---- 手动右键释放（用户报告的路径）：发 ClusterRelease → 真的生成无人机 ----
+		sim.InventoryQuad = cfg.InventoryPerTypeCapacity;
+		sim.InventoryKamikaze = cfg.InventoryPerTypeCapacity;
+		sim.ClusterReleaseActive = false;
+		sim.ClusterReleaseCooldown = FP.Zero;
+		int unitsBeforeRelease = _sim.World.Units.Count;
+
+		Call("HandleClusterRelease", new RTS.Network.NetAction
+		{
+			PlayerID = team, ActionId = "ClusterRelease",
+			EntityIDs = new[] { sim.ID },
+			TargetX = 6000L * 1000L, TargetY = 6000L * 1000L,
+			TargetEntityID = -1,
+		});
+		Check(sim.ClusterReleaseActive, "右键释放后进入投放状态");
+
+		// 投放节奏 4 架/秒：跑 60 tick（3 秒）应放出若干架
+		for (int i = 0; i < 60; i++)
+		{
+			Call("TickArsenalRelease");
+			Call("DrainSimEvents");
+		}
+		Check(sim.InventoryTotal < cfg.InventoryPerTypeCapacity * 2,
+			$"投放真的扣了库存（现 {sim.InventoryTotal}）");
+		Check(_sim.World.Units.Count > unitsBeforeRelease,
+			$"投放真的生成了无人机实体（前 {unitsBeforeRelease}，后 {_sim.World.Units.Count}）");
+
+		// ---- 放出来的无人机要能自己索敌开打 ----
+		//
+		// 表格："到达后在部署点 6 格范围内索敌，无目标时盘旋"。
+		// 上一版完全没有这段 —— 无人机生成后就呆在原地，看着像"不放飞机/不攻击"。
+		var drone = _sim.World.Units.Values.FirstOrDefault(u =>
+			!u.IsDead && u.TeamID == team && u.UnitTypeId == "AIQuadDrone");
+		Check(drone != null, "投放出的四轴无人机存在于世界里");
+
+		// 在它的武器射程内放一个敌人（AIQuadGun 射程 256）
+		var victim = (Unit)Spawn("Marine", 2, 6000 + 150, 6000);
+		Call("DrainSimEvents");
+		drone.Position = new FPVector2((FP)6000, (FP)6000);
+
+		// 索敌能力：无人机挂的是 IdleAction（Unit._Ready 里自动 StartAction("Idle")），
+		// 由 IdleAction.OnUpdate 调 TryAutoAttack。测试里不重建整个 action 循环，
+		// 直接验这条链路本身可用：Idle 动作在，且能在射程内找到可打的目标。
+		var droneNode = _sim.FindEntityById(drone.ID);
+		Check(droneNode != null, "投放出的无人机有可视节点");
+		Check(droneNode.Brain != null && droneNode.Brain.HasCachedAction("Idle"),
+			"无人机挂着 Idle 动作（自动索敌入口）");
+		Check(droneNode.CombatModule != null, "无人机有战斗模块");
+		var autoTarget = droneNode.FindAutoAttackTarget(400f);
+		Check(autoTarget != null,
+			$"无人机能在射程内索到敌人（IdleAction 会据此下令攻击）");
+	}
+
+	/// <summary>跑 TickArsenalRelease 直到库存 +1，返回用掉的 tick 数（超时返回 -1）。</summary>
+	private int TicksToProduceOne(SimUnit bird, PlayerData pd)
+	{
+		int before = bird.InventoryTotal;
+		for (int i = 1; i <= 4000; i++)
+		{
+			Call("TickArsenalRelease");
+			if (bird.InventoryTotal > before)
+				return i;
+		}
+		return -1;
 	}
 }
 }
