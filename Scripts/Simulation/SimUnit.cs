@@ -143,6 +143,16 @@ namespace RTS.Simulation
 		/// <summary>母舰（武库鸟）实体 ID；-1 = 无。</summary>
 		public int RecycleCarrierId = -1;
 
+		/// <summary>
+		/// 无人机被释放时**指派的敌人**（武库鸟释放瞬间锁定的那个目标）。
+		///
+		/// 表格写"到达部署点后索敌"，但那会变成"在原地等敌人进射程"：
+		/// 武库鸟站在 16 格外释放，无人机却只在部署点附近打转，永远够不到人。
+		/// 所以释放时直接把当时的敌人 ID 写进来，无人机直奔过去。
+		/// -1 = 没有指派目标（按最近敌人自行索敌）。
+		/// </summary>
+		public int AssignedTargetId = -1;
+
 		public bool PlasmaAutoFire = true;
 		public FP PlasmaCooldown = FP.Zero;
 		public int PlasmaCastState = 0; // 0=空闲 1=前摇 2=后摇
@@ -492,6 +502,8 @@ namespace RTS.Simulation
 			hash ^= ClusterReleaseMode * 374761393;
 			hash ^= RecycleProgramEnabled ? 1 : 0;
 			hash ^= RecycleCarrierId * 668265263;
+			// 被指派的攻击目标：决定无人机往哪飞，必须参与确定性
+			hash ^= AssignedTargetId * 1274126177;
 			// 库存自动生产：计时器决定"下一架什么时候出"，必须参与确定性
 			hash ^= (long)(InventoryAutoTimer * (FP)1000m);
 			foreach (char c in InventoryLastProduced ?? "")

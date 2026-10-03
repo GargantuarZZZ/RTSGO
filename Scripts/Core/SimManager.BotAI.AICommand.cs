@@ -122,31 +122,35 @@ public partial class SimManager
 			if (bird.ClusterReleaseCooldown > FP.Zero)
 				continue;
 
-			// 定位射程：0 = 未配，回退到"库存过半就放"的旧行为
+			// **必须有目标敌人才释放**（用户要求："只有目标敌人存在的时候才释放"）。
+			// 没目标就攒着库存，别把飞机倒空在原地。
+			//
+			// 定位射程（StandoffRangeTiles）：只在这个距离**以内**才打，
+			// 鸟自己不上前肉搏。同时把这个敌人 ID 记下来 —— 释放瞬间指派给无人机，
+			// 它们才会直奔目标，而不是在原地乱飞。
 			int standoffTiles = cfg.StandoffRangeTiles;
-			bool hasTarget = true;
+			int targetId = -1;
 			if (standoffTiles > 0)
 			{
-				// 16 格内有敌人（单位或建筑）就释放
 				FP range = (FP)(standoffTiles * World.Grid.TileSize);
-				hasTarget = HasArsenalTargetInRange(bird, range);
+				targetId = FindArsenalTargetId(bird, range);
+				if (targetId < 0)
+					continue;   // 16 格内没有敌人：不释放
 			}
-
-			if (!hasTarget)
-				continue;
-
-			if (standoffTiles <= 0)
+			else
 			{
+				// 未配定位射程的旧行为：库存过半 + 已交战才放
 				int capacity = cfg.InventoryCapacity > 0 ? cfg.InventoryCapacity : 10;
 				if (bird.InventoryTotal * 2 < capacity)
 					continue;
 				if (bird.CombatTargetId < 0 && !IsBaseUnderAttack(team))
 					continue;
+				targetId = bird.CombatTargetId;
 			}
 
-			// 投放点 = 鸟当前位置：无人机从这里出发自己索敌。
-			// 不往敌人方向外推 —— 外推会把部署点推到 16 格之内，
-			// 鸟就得跟上去，和"定位 16 格"矛盾。
+			// 投放点 = 鸟**旁边**：无人机在母舰身边亮相，然后直奔目标。
+			// 不往敌人方向外推 —— 外推会把无人机直接丢到敌人脸上，
+			// 而且鸟还得跟上去，和"定位 16 格"矛盾。
 			HandleClusterRelease(new NetAction
 			{
 				PlayerID = team,
@@ -154,35 +158,59 @@ public partial class SimManager
 				EntityIDs = new[] { bird.ID },
 				TargetX = (long)(bird.Position.X * (FP)1000m),
 				TargetY = (long)(bird.Position.Y * (FP)1000m),
-				TargetEntityID = -1,
+				TargetEntityID = targetId,
 			});
 		}
 	}
 
-	/// <summary>射程内是否有敌对目标（敌方单位或建筑）。</summary>
-	private bool HasArsenalTargetInRange(SimUnit bird, FP range)
+	/// <summary>
+	/// 射程内最近的敌对目标 ID（单位优先，其次建筑）。-1 = 没有。
+	///
+	/// 单位优先是因为无人机要"直奔目标攻击"：先打会动的威胁，
+	/// 没单位可打时才拆建筑。
+	/// </summary>
+	private int FindArsenalTargetId(SimUnit bird, FP range)
 	{
 		FP rSq = range * range;
+		FP best = FP.MaxValue;
+		int bestId = -1;
+
 		foreach (var u in World.Units.Values)
 		{
 			if (u == null || u.IsDead || u.TeamID <= 0 || u.ID == bird.ID)
 				continue;
 			if (!AreTeamsHostile(bird.TeamID, u.TeamID))
 				continue;
-			if (FPVector2.DistanceSquared(bird.Position, u.Position) <= rSq)
-				return true;
+			FP d = FPVector2.DistanceSquared(bird.Position, u.Position);
+			if (d <= rSq && d < best)
+			{
+				best = d;
+				bestId = u.ID;
+			}
 		}
-		// 没有敌方单位就看建筑：拆家同样值得放无人机
+		if (bestId >= 0)
+			return bestId;
+
 		foreach (var s in World.Structures.Values)
 		{
 			if (s == null || s.IsDead || s.TeamID <= 0)
 				continue;
 			if (!AreTeamsHostile(bird.TeamID, s.TeamID))
 				continue;
-			if (FPVector2.DistanceSquared(bird.Position, s.Position) <= rSq)
-				return true;
+			FP d = FPVector2.DistanceSquared(bird.Position, s.Position);
+			if (d <= rSq && d < best)
+			{
+				best = d;
+				bestId = s.ID;
+			}
 		}
-		return false;
+		return bestId;
+	}
+
+	/// <summary>射程内是否有敌对目标（敌方单位或建筑）。</summary>
+	private bool HasArsenalTargetInRange(SimUnit bird, FP range)
+	{
+		return FindArsenalTargetId(bird, range) >= 0;
 	}
 }
 }

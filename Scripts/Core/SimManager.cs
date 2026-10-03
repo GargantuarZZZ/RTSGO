@@ -622,6 +622,7 @@ namespace RTS.Core
 			ProfileTick("DeathEffects", TickDeathEffects);
 			ProfileTick("Wanderer", TickWandererSystems);
 			ProfileTick("ArsenalRelease", TickArsenalRelease);
+			ProfileTick("ArsenalDrone", TickArsenalDroneBehavior);
 			ProfileTick("DroneRecycle", TickDroneRecycle);
 			ProfileTick("Kamikaze", TickKamikaze);
 			ProfileTick("PendingSpawns", TickPendingSpawns);
@@ -4086,7 +4087,7 @@ namespace RTS.Core
 					else if (u.InventoryQuad > 0) unitId = "AIQuadDrone";
 
 					if (unitId == null) break;
-					DispatchArsenalDrone(u, unitId, u.ClusterReleaseTarget);
+					DispatchArsenalDrone(u, unitId, u.ClusterReleaseTarget, u.AssignedTargetId);
 				}
 
 				if (u.InventoryTotal <= 0)
@@ -4160,8 +4161,12 @@ namespace RTS.Core
 		/// <summary>
 		/// 从库存投放一架到指定点（扣计数 + 主线程生成实体）。
 		/// 自动生产与手动集群释放共用，避免两处各写一份计数逻辑。
+		///
+		/// assignedTargetId：释放瞬间锁定的敌人。无人机生成后直奔它，
+		/// 而不是在部署点原地"等敌人进射程"（那样永远够不到 16 格外的目标）。
 		/// </summary>
-		private void DispatchArsenalDrone(SimUnit bird, string unitId, FPVector2 at)
+		private void DispatchArsenalDrone(SimUnit bird, string unitId, FPVector2 at,
+			int assignedTargetId = -1)
 		{
 			if (unitId == "AIKamikaze")
 			{
@@ -4184,14 +4189,71 @@ namespace RTS.Core
 			float py = (float)at.Y;
 			int carrierId = bird.ID;
 			bool recycle = bird.RecycleProgramEnabled;
+			int targetId = assignedTargetId;
 			RTS.Core.SimEventQueue.EnqueueMain(() =>
 			{
 				var sp = EntitySpawner.Instance?.SpawnEntity(id, team,
 					new FPVector2((FP)px, (FP)py));
+				if (sp?.LogicEntity is not SimUnit drone)
+					return;
 				// 回收程序：记下母舰，无人机才知道往哪返航
-				if (sp?.LogicEntity is SimUnit drone && recycle)
+				if (recycle)
 					drone.RecycleCarrierId = carrierId;
+				// 指派目标：无人机直奔它
+				drone.AssignedTargetId = targetId;
 			});
+		}
+
+		/// <summary>
+		/// 武库鸟释放出去的无人机：**直奔被指派的目标**。
+		///
+		/// 为什么不能只靠 IdleAction 的自动索敌：
+		///   武库鸟是"定位 16 格"释放的，无人机落在离敌人十几格的地方，
+		///   而四轴射程只有 4 格、自爆 0.5 格 —— 原地索敌永远够不到，
+		///   表现就是"放出来一堆飞机在原地乱飞"。
+		/// 所以这里每 tick 把无人机推向目标（CommandMove 由寻路接管），
+		/// 进入射程后交给战斗模块正常开火 / 自爆。
+		/// </summary>
+		private void TickArsenalDroneBehavior()
+		{
+			foreach (var u in World.Units.Values)
+			{
+				if (u == null || u.IsDead) continue;
+				if (u.UnitTypeId != "AIKamikaze" && u.UnitTypeId != "AIQuadDrone") continue;
+
+				// 目标没了（被打死/不存在）：清掉指派，退回常规自动索敌
+				SimEntity target = u.AssignedTargetId >= 0
+					? World.FindEntityById(u.AssignedTargetId)
+					: null;
+				if (target == null || target.IsDead)
+				{
+					u.AssignedTargetId = -1;
+					continue;
+				}
+
+				// 已经在打它就别插手（AttackAction 会自己拉近到射程）
+				if (u.CombatTargetId >= 0)
+					continue;
+
+				var node = FindEntityById(u.ID);
+				if (node == null || node.Brain == null)
+					continue;
+				// 移动中不重复下令：CommandMove 会打断当前动作，每 tick 重下会原地卡住
+				if (u.HasTarget || u.PathPending)
+					continue;
+
+				bool isKamikaze = u.UnitTypeId == "AIKamikaze";
+				FP range = isKamikaze
+					? (FP)(World.Grid.TileSize * 0.5)              // 自爆要贴身
+					: (FP)(World.Grid.TileSize * 4);               // 四轴按射程压上
+				if (FPVector2.IsWithinRange(u.Position, target.Position, range))
+					continue;   // 已进入交战距离，交给战斗模块
+
+				if (isKamikaze)
+					u.CommandMove(target.Position, target.ID);     // 碰到即自爆
+				else
+					node.Brain.StartAction("AttackMove", target.Position, null);
+			}
 		}
 
 		/// <summary>
@@ -4212,6 +4274,10 @@ namespace RTS.Core
 			bird.ClusterReleaseAccum = FP.Zero;
 			// 释放型号由动作参数决定；缺省全部
 			bird.ClusterReleaseMode = 0;
+			// 指派的敌人：AI 释放时带上它，无人机投放时会继承并直奔过去。
+			// 玩家手动右键释放时通常不带（TargetEntityID = 点到的实体或 -1），
+			// 这时无人机按"最近敌人"自行索敌。
+			bird.AssignedTargetId = netAct.TargetEntityID;
 		}
 
 		/// <summary>

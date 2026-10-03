@@ -428,6 +428,8 @@ public partial class RaceAISmokeTest : Node
 		// 投放点应是鸟自身位置（不往敌人方向外推，否则鸟得跟上去）
 		Check((long)sim.ClusterReleaseTarget.X == 6000 && (long)sim.ClusterReleaseTarget.Y == 6000,
 			$"投放点在鸟自身位置（实际 {(long)sim.ClusterReleaseTarget.X},{(long)sim.ClusterReleaseTarget.Y}）");
+		Check(sim.AssignedTargetId == far.SimUnitData.ID,
+			$"释放时把目标敌人指派给了无人机（指派={sim.AssignedTargetId}，敌人={far.SimUnitData.ID}）");
 		_ = brain;
 
 		// ---- 手动右键释放（用户报告的路径）：发 ClusterRelease → 真的生成无人机 ----
@@ -481,6 +483,42 @@ public partial class RaceAISmokeTest : Node
 		var autoTarget = droneNode.FindAutoAttackTarget(400f);
 		Check(autoTarget != null,
 			$"无人机能在射程内索到敌人（IdleAction 会据此下令攻击）");
+
+		// ---- 指派目标：无人机直奔它，而不是在原地乱飞 ----
+		//
+		// 武库鸟在 16 格外释放，无人机落在离敌人十几格的地方；四轴射程 4 格、
+		// 自爆 0.5 格 —— 只靠原地自动索敌永远够不到。所以释放时指派目标，
+		// 由 TickArsenalDroneBehavior 每 tick 把无人机推向它。
+		var prey = (Unit)Spawn("Marine", 2, 6000 + 20 * 64, 6000);
+		Call("DrainSimEvents");
+		drone.Position = new FPVector2((FP)6000, (FP)6000);
+		drone.AssignedTargetId = prey.SimUnitData.ID;
+		drone.HasTarget = false;
+		drone.PathPending = false;
+		drone.CombatTargetId = -1;
+
+		var before = drone.Position;
+		for (int i = 0; i < 40; i++)
+			Call("TickArsenalDroneBehavior");
+		Check(drone.AssignedTargetId == prey.SimUnitData.ID, "存活期间保持指派目标");
+		// 查"是否下了推进指令"而不是查坐标：本用例只跑行为 tick，
+		// 不跑寻路/移动模拟，坐标不会变。
+		var droneBrain = _sim.FindEntityById(drone.ID)?.Brain;
+		Check(droneBrain != null && droneBrain.GetActiveProductionAction() == null,
+			"无人机有动作控制器");
+		bool ordered = drone.HasTarget || drone.PathPending ||
+			(droneBrain?.GetAction<RTS.Actions.UnitAction>("AttackMove")?.IsActive ?? false) ||
+			(droneBrain?.GetAction<RTS.Actions.UnitAction>("Move")?.IsActive ?? false);
+		Check(ordered,
+			$"朝指派目标下达了推进指令（HasTarget={drone.HasTarget} " +
+			$"PathPending={drone.PathPending} 动作={drone.ActiveActionName}）");
+
+		// 目标死亡 → 指派清除，退回常规自动索敌
+		prey.SimUnitData.Hp = FP.Zero;
+		prey.SimUnitData.IsDead = true;
+		Call("TickArsenalDroneBehavior");
+		Check(drone.AssignedTargetId == -1, "目标死亡后清除指派");
+		_ = before;
 	}
 
 	/// <summary>
