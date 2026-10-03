@@ -15,6 +15,7 @@
 [ext_resource type="Script" uid="uid://nl8k8araik1v" path="res://Scripts/UI/OrbitalPanelUI.cs" id="12_orbital"]
 [ext_resource type="Texture2D" uid="uid://8jscxkvwpn3q" path="res://ArtRes/imgs/Wall.png" id="13_wall"]
 [ext_resource type="Script" path="res://Scripts/UI/PlantPanelUI.cs" id="14_plantui"]
+[ext_resource type="Script" path="res://Scripts/UI/WizardPanelUI.cs" id="15_wizpanel"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wall"]
 texture = ExtResource("13_wall")
@@ -243,6 +244,24 @@ custom_minimum_size = Vector2(110, 26)
 layout_mode = 2
 text = "瓦斯→金属 20e"
 metadata/tr_key = "orbital.btn_ex_gas"
+
+[node name="RacePanel_Wizard" type="PanelContainer" parent="MainControl"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -462.0
+offset_right = 462.0
+offset_bottom = 36.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_wall")
+script = ExtResource("15_wizpanel")
+
+[node name="ButtonRow" type="HBoxContainer" parent="MainControl/RacePanel_Wizard"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
 
 [node name="TopBar" type="Panel" parent="MainControl"]
 layout_mode = 0

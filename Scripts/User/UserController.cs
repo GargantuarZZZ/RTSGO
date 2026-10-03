@@ -34,6 +34,8 @@ namespace RTS.Core
 	private bool _orbitalStrikePending = false;
 	private string _pendingHeroSkill = "";
 	private bool _pendingHeroSkillGround = false;
+	/// <summary>面板按钮直接指定的施法者（巫师顶部面板：不必先选中建筑）。</summary>
+	private IEntity _pendingSkillCaster = null;
 	// 植物树墙：拖拽连续生成一排
 	private bool _wallDragActive = false;
 	private Vector2I _wallLastCell;
@@ -1262,17 +1264,22 @@ namespace RTS.Core
 		{
 			string id = _pendingHeroSkill;
 			bool ground = _pendingHeroSkillGround;
+			IEntity caster = _pendingSkillCaster;
 			_pendingHeroSkill = "";
 			_pendingHeroSkillGround = false;
+			_pendingSkillCaster = null;
 
 			if (id.Length == 0)
 				return;
 
-			bool structureOrigin = _selectedEntities.OfType<Structure>().Any(s => s.LogicEntity != null);
+			// 面板（巫师顶部面板）直接指定的施法者优先于当前选中 ——
+			// 玩家点面板按钮时不一定要先选中那座建筑。
+			bool structureOrigin = caster is Structure ||
+				_selectedEntities.OfType<Structure>().Any(s => s.LogicEntity != null);
 			if (ground)
 			{
 				if (structureOrigin)
-					SendStructureSkill(id, null, GetMousePos());
+					SendStructureSkill(id, null, GetMousePos(), caster);
 				else
 					SendHeroSkill(id, null, GetMousePos());
 				return;
@@ -1280,15 +1287,46 @@ namespace RTS.Core
 
 			var hit = WorldScanner.Raycast(GetTree(), GetMousePos(), Main.Instance.LocalPlayerID);
 			if (structureOrigin)
-				SendStructureSkill(id, hit, Vector2.Zero);
+				SendStructureSkill(id, hit, Vector2.Zero, caster);
 			else
 				SendHeroSkill(id, hit, Vector2.Zero);
 		}
 
-		// 建筑面板技能指令（共振波/地震波/制造虫洞）：与英雄技能同构，施法者为选中建筑
-		private void SendStructureSkill(string actionId, IEntity target, Vector2 groundPos)
+		/// <summary>
+		/// 巫师顶部面板：由面板按钮直接发起一次"点地面选区域"的建筑技能。
+		///
+		/// 与走命令卡的路径区别：施法者是**面板指定的那座建筑**，不要求玩家先选中它。
+		/// 进待选状态后，下一次左键点地面由 ConfirmHeroSkill 收尾（它优先用这个 caster）。
+		/// </summary>
+		public void EnterPanelSkillPending(string actionId, Structure caster)
 		{
-			var structure = _selectedEntities.OfType<Structure>().FirstOrDefault(s => s.LogicEntity != null);
+			if (caster?.LogicEntity == null || string.IsNullOrEmpty(actionId))
+				return;
+			_pendingHeroSkill = actionId;
+			_pendingHeroSkillGround = true;
+			_pendingSkillCaster = caster;
+			// 范围圈由 WizardPanelUI._Process 每帧画（跟随鼠标），这里不碰视觉层
+		}
+
+		public bool IsPanelSkillPending => _pendingHeroSkill.Length > 0;
+
+		/// <summary>当前待选的建筑技能 id（面板画范围圈时用）。</summary>
+		public string PendingPanelSkillId => _pendingHeroSkill;
+
+		public void CancelPanelSkillPending()
+		{
+			_pendingHeroSkill = "";
+			_pendingHeroSkillGround = false;
+			_pendingSkillCaster = null;
+			SkillRangeIndicator.GetOrCreate(GetTree()).HideRanges();
+		}
+
+		// 建筑面板技能指令（共振波/地震波/制造虫洞）：与英雄技能同构，施法者为选中建筑
+		private void SendStructureSkill(string actionId, IEntity target, Vector2 groundPos,
+			IEntity explicitCaster = null)
+		{
+			var structure = explicitCaster as Structure
+				?? _selectedEntities.OfType<Structure>().FirstOrDefault(s => s.LogicEntity != null);
 			if (structure?.LogicEntity == null)
 				return;
 
@@ -1417,6 +1455,14 @@ namespace RTS.Core
 				ind.ShowEffectRange(new Vector3(mouse.X, 0f, mouse.Y), cfg.StrikeRadiusTiles * 64f, new Color(1f, 0.55f, 0.2f, 0.5f));
 				return;
 			}
+		}
+
+		// 巫师顶部面板：待选阶段画"落点效果圈"（半径 = SkillRadiusTiles）
+		var wizPanel = GetTree().Root.FindChild("RacePanel_Wizard", true, false) as WizardPanelUI;
+		if (wizPanel != null && wizPanel.IsVisibleInTree() && IsPanelSkillPending)
+		{
+			wizPanel.DrawPendingRange(mouse);
+			return;
 		}
 
 		// 纳米虫扩散：落点效果圈
