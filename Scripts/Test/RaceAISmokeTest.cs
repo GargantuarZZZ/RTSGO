@@ -78,6 +78,7 @@ public partial class RaceAISmokeTest : Node
 			TestWandererRewrite();
 			TestPlasmaAutoFire();
 			TestResourceDepletion();
+			TestAIDeployGridAlignment();
 			// Every race executes a real decision against the mechanism fixtures above.
 			for (int i = 0; i < _races.Length; i++)
 			{
@@ -197,6 +198,79 @@ public partial class RaceAISmokeTest : Node
 		var barracks = (Structure)Spawn("BB", 1, -3000, 0);
 		Call("TickBotProduction", 1, ConfigDatabase.GetRace("Union"), 0);
 		Check(barracks.Brain.GetActiveProductionAction() != null, "paid production starts through real action queue");
+	}
+
+	/// <summary>
+	/// AI 基地车坐地必须是"变成一座对齐网格的建筑"，不是原地架设。
+	///
+	/// 这条以前是错的：HandleAIDeploy 直接把车的位置原样传给 SpawnEntity，
+	/// 既不吸附格子也不做放置校验 —— 车停在墙边/别的建筑上，照样会变出一座
+	/// 压上去的基地，把阻挡烘焙和寻路带坏。
+	/// </summary>
+	private void TestAIDeployGridAlignment()
+	{
+		int team = 9;  // AICommand
+		var cfgUnit = ConfigDatabase.GetUnit("AIBaseCar");
+		var cfgCore = ConfigDatabase.GetStructure("AICore");
+		int size = System.Math.Max(cfgCore.GridWidth, cfgCore.GridHeight);
+
+		// ---- 正面：开阔地按格吸附 ----
+		// 故意给个非整格坐标（格 20,20 中心是 1312；偏 +21 让它落在格内偏右）
+		var car = (Unit)Spawn("AIBaseCar", team, 20 * 64 + 53, 20 * 64 + 17);
+		int carId = car.SimUnitData.ID;
+		int structuresBefore = _sim.World.Structures.Count;
+
+		Call("HandleAIDeploy", new RTS.Network.NetAction
+		{
+			PlayerID = team, ActionId = "AIDeploy",
+			EntityIDs = new[] { carId }, TargetEntityID = -1,
+		});
+		Call("DrainSimEvents");
+
+		Check(!_sim.World.Units.ContainsKey(carId), "坐地后基地车实体已退场");
+		Check(_sim.World.Structures.Count == structuresBefore + 1, "坐地后多出一座建筑");
+
+		var core = _sim.World.Structures.Values.First(s => s.TeamID == team && s.StructureTypeId == "AICore");
+
+		// 占地左上角必须是 size 对齐的格子（GetTopLeftFromCenter 的结果）
+		int expLeft = 20 - size / 2;
+		Check(core.GridPosition.X == expLeft && core.GridPosition.Y == expLeft,
+			$"建筑左上角格对齐：期望 ({expLeft},{expLeft})，实际 ({core.GridPosition.X},{core.GridPosition.Y})");
+		Check(core.GridWidth == size && core.GridHeight == size,
+			$"建筑占地写到模拟层：{core.GridWidth}x{core.GridHeight}（期望 {size}x{size}）");
+
+		// 位置必须落在"整块占地的中心"：左上格中心 + 32*(size-1)
+		long expX = expLeft * 64 + 32 + 32 * (size - 1);
+		long expY = expLeft * 64 + 32 + 32 * (size - 1);
+		Check((long)core.Position.X == expX && (long)core.Position.Y == expY,
+			$"建筑位置吸附到格中心：期望 ({expX},{expY})，实际 ({(long)core.Position.X},{(long)core.Position.Y})");
+		Check(core.CurrentState == SimStructure.StructureState.Active, "坐地生成的建筑直接可用");
+
+		// ---- 反面：被墙围死时拒绝转换，保持车形态 ----
+		(int bx, int by) = (60, 60);
+		// 用车所在格为中心，把 13x13 全设成静态障碍（车无处可放）
+		for (int dx = -6; dx <= 6; dx++)
+			for (int dy = -6; dy <= 6; dy++)
+				_sim.World.Grid.StaticObstacles.Add(new SimVector2I(bx + dx, by + dy));
+
+		var car2 = (Unit)Spawn("AIBaseCar", team, bx * 64 + 32, by * 64 + 32);
+		int car2Id = car2.SimUnitData.ID;
+		int structuresBefore2 = _sim.World.Structures.Count;
+
+		Call("HandleAIDeploy", new RTS.Network.NetAction
+		{
+			PlayerID = team, ActionId = "AIDeploy",
+			EntityIDs = new[] { car2Id }, TargetEntityID = -1,
+		});
+		Call("DrainSimEvents");
+
+		Check(_sim.World.Units.ContainsKey(car2Id), "落点非法时基地车保持不变（不凭空变出建筑）");
+		Check(_sim.World.Structures.Count == structuresBefore2, "落点非法时不产生新建筑");
+
+		// 清掉测试墙，别影响后面的用例
+		for (int dx = -6; dx <= 6; dx++)
+			for (int dy = -6; dy <= 6; dy++)
+				_sim.World.Grid.StaticObstacles.Remove(new SimVector2I(bx + dx, by + dy));
 	}
 }
 }

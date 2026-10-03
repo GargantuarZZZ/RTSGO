@@ -1198,21 +1198,38 @@ namespace RTS.Core
 				return;
 			if (car.IsDeployBusy)
 				return; // 转换中，忽略重复指令
+			if (car.IsDeployed)
+				return; // 已坐地：本函数只处理"单位 -> 建筑"；收起走上面的建筑侧分支
 
-			bool wantDeploy = !car.IsDeployed;
-
-			// 两形态各自对应哪个实体，由配置里的两个 ID 决定
-			string targetId = wantDeploy ? carCfg.DeployStructureId : carCfg.DeployUnitId;
-			if (string.IsNullOrEmpty(targetId))
+			// =========================================================
+			// 坐地：单位 -> 建筑
+			//
+			// 表格要求的是"变成一座**对齐网格的建筑**"，不是泰伦那种原地架设。
+			// 所以这里必须做两件事，缺一件就不算建筑：
+			//   1. 落点按目标建筑的占地算出左上角格并吸附到格中心；
+			//   2. 落点必须通过建筑放置校验（合法地面 / 不压静态障碍 /
+			//      不与现有建筑重叠 / 不在作者画的禁建区）。
+			// 落不下就**不转换** —— 否则会凭空变出一座压在墙上或叠在别的
+			// 建筑里的基地，阻挡烘焙和寻路都会被它带坏。
+			// =========================================================
+			if (string.IsNullOrEmpty(carCfg.DeployStructureId))
 				return;
 
+			var targetCfg = RTS.Data.Configs.ConfigDatabase.GetStructure(carCfg.DeployStructureId);
+			if (targetCfg == null)
+				return;
+
+			int size = System.Math.Max(targetCfg.GridWidth, targetCfg.GridHeight);
+			if (!TryFindDeployFootprint(car.Position, size, out var topLeft, out var alignedPos))
+				return;   // 车周围找不到能盖下这座建筑的地方：保持车形态
+
 			FP hp = car.Hp;
-			FP x = car.Position.X, y = car.Position.Y;
 			int team = car.TeamID;
 			int carId = car.ID;
 			IEntity oldNode = executor;
 
-			var newNode = EntitySpawner.Instance?.SpawnEntity(targetId, team, new FPVector2(x, y));
+			var newNode = EntitySpawner.Instance?.SpawnEntity(
+				carCfg.DeployStructureId, team, alignedPos);
 
 			// 把血量搬到新实体上（表格要求两形态共用血量）。
 			// 不搬的话"坐地"会回满血，成为可反复利用的漏洞。
@@ -1220,14 +1237,88 @@ namespace RTS.Core
 			if (spawned != null)
 			{
 				spawned.Hp = hp;
-				// 坐地生成的建筑直接可用（不需要再施工）
 				if (spawned is SimStructure st)
+				{
+					// Structure.SnapAndRegister 已经把 GridPosition/GridSize 写好并按
+					// 格中心对齐了；这里把模拟层的位置与占地再钉死一遍，保证哈希与
+					// 阻挡烘焙读到的是对齐后的值，而不是生成瞬间的浮点位置。
+					st.Position = alignedPos;
+					st.GridPosition = new RTS.Simulation.SimVector2I(topLeft.X, topLeft.Y);
+					st.GridWidth = size;
+					st.GridHeight = size;
+					// 坐地生成的建筑直接可用（不需要再施工）
 					st.CurrentState = SimStructure.StructureState.Active;
+				}
 			}
 
 			World.Units.Remove(carId);
 			UnregisterEntityNode(carId);
 			RetireNode(executor);
+		}
+
+		/// <summary>
+		/// 给"单位坐地成建筑"找一个合法的对齐格落点。
+		///
+		/// 从车所在格出发按切比雪夫半径 0..maxRadius 逐圈扫，先找到的先用
+		/// （同一圈内按 y、x 顺序，配合固定 maxRadius ⇒ 结果确定，锁步两端一致）。
+		/// 校验用的是**模拟层**接口，不能调 MapGrid.IsPositionAvailableForBlueprint：
+		/// 那个走 GetTree()/GetNodesInGroup，模拟线程调用不安全。
+		/// </summary>
+		private bool TryFindDeployFootprint(
+			FPVector2 center, int size, out RTS.Simulation.SimVector2I topLeft, out FPVector2 alignedPos)
+		{
+			const int maxRadius = 6;
+			int tile = World.Grid.TileSize;
+			var centerCell = new RTS.Simulation.SimVector2I(
+				(int)FP.Floor(center.X / (FP)tile),
+				(int)FP.Floor(center.Y / (FP)tile));
+			int offset = size / 2;
+
+			for (int r = 0; r <= maxRadius; r++)
+			{
+				for (int dy = -r; dy <= r; dy++)
+				{
+					for (int dx = -r; dx <= r; dx++)
+					{
+						// 只扫这一圈的外壳，内圈上一轮已经查过
+						if (r > 0 && System.Math.Max(System.Math.Abs(dx), System.Math.Abs(dy)) != r)
+							continue;
+
+						var tl = new RTS.Simulation.SimVector2I(
+							centerCell.X + dx - offset, centerCell.Y + dy - offset);
+						if (!IsDeployFootprintValid(tl, size))
+							continue;
+
+						topLeft = tl;
+						// 与 MapGrid.GetAlignedWorldPos 同一算式：
+						// 左上格中心 + 32*(size-1) = 整块占地的中心
+						var c = World.Grid.GridToWorldCentered(tl);
+						alignedPos = new FPVector2(
+							c.X + (FP)(32 * (size - 1)),
+							c.Y + (FP)(32 * (size - 1)));
+						return true;
+					}
+				}
+			}
+
+			topLeft = default;
+			alignedPos = center;
+			return false;
+		}
+
+		/// <summary>建筑落点是否合法（模拟层判定，锁步安全）。</summary>
+		private bool IsDeployFootprintValid(RTS.Simulation.SimVector2I topLeft, int size)
+		{
+			if (!World.Grid.IsAreaPlaceable(topLeft, size))
+				return false;                 // 必须在合法地面且不压墙
+			if (World.IsAreaOccupiedByStructure(topLeft, size))
+				return false;                 // 不能和现存建筑/蓝图重叠
+			for (int x = 0; x < size; x++)
+				for (int y = 0; y < size; y++)
+					if (RTS.Simulation.SimWorld.IsBuildBlockedByMap(
+						new RTS.Simulation.SimVector2I(topLeft.X + x, topLeft.Y + y)))
+						return false;         // 作者画的建造禁区
+			return true;
 		}
 
 		/// <summary>
