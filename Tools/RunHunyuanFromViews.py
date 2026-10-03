@@ -14,6 +14,7 @@ import os
 import re
 import shutil
 import sys
+import time
 
 sys.path.insert(0, r"D:\DEV\AI3D-Pipeline")
 
@@ -32,6 +33,10 @@ def main():
     ap.add_argument("--chunks", type=int, default=8000)
     ap.add_argument("--seed", type=int, default=777)
     ap.add_argument("--only", type=int, default=0, help="只处理第 N 个目录（1 起）")
+    ap.add_argument("--skip-existing", action="store_true",
+                    help="已有输出就跳过（断点续跑：批量中途挂了不用从头再来）")
+    ap.add_argument("--retries", type=int, default=2, help="单个重建失败的重试次数")
+    ap.add_argument("--retry-delay", type=float, default=20.0, help="重试间隔秒数")
     ap.add_argument("--no-shutdown", action="store_true")
     args = ap.parse_args()
 
@@ -50,6 +55,13 @@ def main():
     try:
         for i, d in enumerate(dirs, 1):
             dpath = os.path.join(args.refs_base, d)
+            name = "textured_mesh.glb" if args.textured else "white_mesh.glb"
+            dst = os.path.join(dpath, name)
+            # 断点续跑：批量中途挂了（服务被停 / 显存不足）不该从头再来一遍，
+            # 那样要白烧几十分钟 GPU。
+            if args.skip_existing and os.path.exists(dst) and os.path.getsize(dst) > 0:
+                print(f"[{i}/{len(dirs)}] 已有 {name}，跳过: {d}")
+                continue
             views = {}
             for v in ("front", "back", "left", "right"):
                 vp = os.path.join(dpath, f"{v}.png")
@@ -60,14 +72,22 @@ def main():
             if "front" not in views:
                 print(f"[{i}/{len(dirs)}] 缺少 front.png: {dpath}")
                 sys.exit(1)
-            print(f"[{i}/{len(dirs)}] {d} 开始重建 (textured={args.textured})")
-            glb = h3d.generate(
-                views, seed=args.seed + i - 1, steps=args.steps,
-                guidance=args.guidance, octree=args.octree,
-                chunks=args.chunks, textured=args.textured,
-            )
-            name = "textured_mesh.glb" if args.textured else "white_mesh.glb"
-            dst = os.path.join(dpath, name)
+            print(f"[{i}/{len(dirs)}] {d} 开始重建 (textured={args.textured})", flush=True)
+            glb = None
+            for attempt in range(args.retries + 1):
+                try:
+                    glb = h3d.generate(
+                        views, seed=args.seed + i - 1, steps=args.steps,
+                        guidance=args.guidance, octree=args.octree,
+                        chunks=args.chunks, textured=args.textured,
+                    )
+                    break
+                except Exception as e:  # noqa: BLE001
+                    if attempt >= args.retries:
+                        raise
+                    print(f"  重建失败（第 {attempt + 1} 次），{args.retry_delay}s 后重试: "
+                          f"{type(e).__name__}: {str(e)[:120]}", flush=True)
+                    time.sleep(args.retry_delay)
             shutil.copyfile(glb, dst)
             meta = {
                 "prompt_dir": d,

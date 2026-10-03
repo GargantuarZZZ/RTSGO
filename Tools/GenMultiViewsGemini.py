@@ -12,11 +12,16 @@ import io
 import os
 import re
 import sys
+import time
 
 import requests
 from PIL import Image
 
 API_BASE = "https://generativelanguage.googleapis.com/v1beta/models"
+
+# 实测一次批量跑到第 11~16 个时 Gemini 会开始返 HTTP 500（INTERNAL，限流特征），
+# 之后又自己恢复。只试一次会白白丢掉这些视图，所以加退避重试。
+RETRY_DELAYS = (5, 20, 45)
 
 DIRECTIONS = {
     "back": (
@@ -123,15 +128,21 @@ def main():
                 continue
             full = build_prompt(p, view)
             ok = False
-            for model in models:
+            for attempt, delay in enumerate((*RETRY_DELAYS, None)):
+                if attempt:
+                    time.sleep(RETRY_DELAYS[attempt - 1])
                 try:
-                    img = call_gemini(full, front, key, model)
+                    img = call_gemini(full, front, key, models[0])
                     img.save(out_path)
-                    print(f"  saved {view}.png")
+                    print(f"  saved {view}.png" + (f"（第 {attempt + 1} 次尝试）" if attempt else ""))
                     ok = True
                     break
                 except Exception as e:  # noqa: BLE001
-                    print(f"  {view} {model} 失败: {type(e).__name__}: {str(e)[:160]}")
+                    msg = f"{type(e).__name__}: {str(e)[:140]}"
+                    if delay is None:
+                        print(f"  {view} 全部重试失败: {msg}")
+                    else:
+                        print(f"  {view} 第 {attempt + 1} 次失败，{delay}s 后重试: {msg}")
             if not ok:
                 print(f"  !! {view} 生成失败")
         # 镜像右侧得到左侧（左右对称设计）

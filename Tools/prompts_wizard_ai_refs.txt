@@ -1,0 +1,45 @@
+# 巫师族 — 参考图提示词（GenReferenceViewsGemini.py 会自动追加 WoW style 模板）
+# 注意：不要写 "RTS game unit" / "sprite sheet" 这类词，会把 SDXL 带到素材图集画法上
+# （实测出 2x3 / 4x4 多配色拼图，喂给 Hunyuan 重建必然歪）。
+
+# ---- 单位 ----
+a wooden puppet worker construct, wooden joints, cloth robe, glowing blue runes, fantasy wizard servant
+a young wizard apprentice, small hooded figure holding a wooden staff, blue robe, glowing rune book
+a wizard hospital mage, robed healer with a glowing green lantern staff, white and gold trim
+a wizard battle puppet, armored wooden golem soldier, sword and shield, blue runes carved on the armor
+a wizard broom rider, mage in a pointed hat sitting on a wooden broom, blue robe, flying pose
+a wizard element mage, floating robed caster holding an arcane orb, cyan and orange elemental swirls
+a wizard musician bard, robed figure with a lute, purple robe, floating musical notes
+a stone golem construct, grey rock body, glowing blue core in the chest, heavy stone fists
+an earth golem construct, brown clay body, moss patches, glowing orange core, heavy arms
+
+# ---- 建筑 ----
+a wizard arcanist city hall, tall spiral towers, floating blue rune rings, white stone and gold trim
+a wizard concert hall, grand domed amphitheater, purple banners, floating musical notes
+a wizard element forge, stone forge with glowing cyan and orange element crystals, anvil, chimneys
+a wizard enchanted forest grove, twisted glowing trees around a blue rune circle on the ground
+a wizard cottage house, thatched roof, crooked chimney, glowing round window
+a wizard mage tower, tall stone spire topped with a glowing blue crystal, arched doorway
+a wizard school of magic, wide stone academy with a clock tower and rune banners
+a wizard space laboratory, stone hall with floating brass orrery spheres and arcane machinery
+a wizard stone circle, ring of tall standing stones carved with runes, glowing blue altar in the center
+a wizard conjured water wall, a straight wall of frozen translucent blue water, ice shards on top
+
+# ---- AI 指挥系统 · 单位 ----
+a futuristic mobile base carrier vehicle, six wheels, flat deployable platform on top, antenna, grey armor
+a small suicide drone aircraft, single warhead nose, fixed wings, red light
+a quadcopter recon drone, four rotors, camera pod underneath, grey and blue
+a sleek air superiority fighter jet, delta wings, twin engines, blue energy trails
+a heavy interceptor aircraft, thick fuselage, four missile pods under the wings, dark grey armor
+an electronic warfare aircraft, large radar dish on top, antenna arrays along the fuselage, purple glow
+a heavy strategic bomber aircraft, wide wingspan, four engines, open bomb bay, dark grey
+a colossal flying arsenal carrier aircraft, huge wingspan, open drone bays along the belly, grey and orange
+
+# ---- AI 指挥系统 · 建筑 ----
+a futuristic drone air factory, wide hangar with landing pads on the roof and robotic arms, grey armor panels
+a futuristic AI command core, large domed bunker with a glowing blue central eye and an antenna ring
+a futuristic automated gold station, compact refinery with pipes and a rotating dispenser, grey metal
+a futuristic heavy airfield, huge flat runway platform with a control tower and hangar bays, grey armor
+a futuristic light factory, blocky factory with an assembly conveyor and venting steam pipes, grey and orange
+a futuristic signal relay tower, dish and antenna array on a lattice mast, glowing purple lights
+a futuristic sky net core, compact radar core tower projecting a glowing holographic grid dome

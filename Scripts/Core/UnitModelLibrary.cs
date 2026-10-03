@@ -751,242 +751,274 @@ namespace RTS.Core
 				YMin = -0.980f, YMax = 0.860f,
 			},
 
-			// ================= 巫师（SDXL + Hunyuan 生成） =================
+
+
+			// ================= 巫师（Gemini 参考图 + Hunyuan octree 64 重建，带贴图） =================
 			["WizPuppet"] = new UnitModelInfo
 			{
+				// 视觉 高 48.3 / 宽 34.5（目标高 48.3，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizPuppet.glb",
-				Scale = 32.38f, OffsetY = 32.32f,
-				YMin = -0.998f, YMax = 0.959f,
+				Scale = 25.02f, OffsetY = 24.93f,
+				YMin = -0.996f, YMax = 0.934f,
 			},
 			["WizApprentice"] = new UnitModelInfo
 			{
+				// 视觉 高 41.0 / 宽 21.2（目标高 41.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizApprentice.glb",
-				Scale = 32.31f, OffsetY = 32.26f,
-				YMin = -0.998f, YMax = 0.959f,
+				Scale = 21.24f, OffsetY = 21.15f,
+				YMin = -0.996f, YMax = 0.934f,
 			},
 			["WizHospitalMage"] = new UnitModelInfo
 			{
+				// 视觉 高 44.0 / 宽 23.6（目标高 44.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizHospitalMage.glb",
-				Scale = 32.58f, OffsetY = 31.58f,
-				YMin = -0.969f, YMax = 0.935f,
+				Scale = 22.8f, OffsetY = 22.71f,
+				YMin = -0.996f, YMax = 0.934f,
 			},
 			["WizBattlePuppet"] = new UnitModelInfo
 			{
+				// 视觉 高 58.0 / 宽 56.1（目标高 58.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizBattlePuppet.glb",
-				Scale = 64.94f, OffsetY = 64.25f,
-				YMin = -0.989f, YMax = 0.940f,
+				Scale = 30.14f, OffsetY = 30.02f,
+				YMin = -0.996f, YMax = 0.928f,
 			},
 			["WizBroomRider"] = new UnitModelInfo
 			{
+				// 视觉 高 52.0 / 宽 35.1（目标高 52.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizBroomRider.glb",
-				Scale = 33.63f, OffsetY = 33.55f,
-				YMin = -0.998f, YMax = 0.957f,
+				Scale = 26.92f, OffsetY = 26.89f,
+				YMin = -0.999f, YMax = 0.932f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
 			},
 			["WizElementMage"] = new UnitModelInfo
 			{
+				// 视觉 高 54.0 / 宽 36.5（目标高 54.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizElementMage.glb",
-				Scale = 34.47f, OffsetY = 34.41f,
-				YMin = -0.998f, YMax = 0.959f,
+				Scale = 28.1f, OffsetY = 27.98f,
+				YMin = -0.996f, YMax = 0.926f,
 			},
 			["WizMusician"] = new UnitModelInfo
 			{
+				// 视觉 高 46.0 / 宽 27.0（目标高 46.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizMusician.glb",
-				Scale = 36.84f, OffsetY = 36.76f,
-				YMin = -0.998f, YMax = 0.957f,
+				Scale = 23.83f, OffsetY = 23.74f,
+				YMin = -0.996f, YMax = 0.934f,
 			},
 			["WizStoneGolem"] = new UnitModelInfo
 			{
+				// 视觉 高 90.2 / 宽 103.7（目标高 90.24，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizStoneGolem.glb",
-				Scale = 65.02f, OffsetY = 64.52f,
-				YMin = -0.992f, YMax = 0.959f,
+				Scale = 53.76f, OffsetY = 46.8f,
+				YMin = -0.87f, YMax = 0.808f,
 			},
 			["WizEarthGolem"] = new UnitModelInfo
 			{
+				// 视觉 高 90.2 / 宽 101.5（目标高 90.24，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizEarthGolem.glb",
-				Scale = 69.21f, OffsetY = 69.68f,
-				YMin = -1.007f, YMax = 0.959f,
+				Scale = 52.46f, OffsetY = 46.22f,
+				YMin = -0.881f, YMax = 0.839f,
 			},
-
-			// ================= AI 指挥系统（SDXL + Hunyuan 生成） =================
-			["AIBaseCar"] = new UnitModelInfo
-			{
-				ModelPath = "res://ArtRes/models/AICommand/AIBaseCar.glb",
-				Scale = 96.94f, OffsetY = 96.73f,
-				YMin = -0.998f, YMax = 0.971f,
-				TurnWhileMoving = false,
-			},
-			["AIKamikaze"] = new UnitModelInfo
-			{
-				ModelPath = "res://ArtRes/models/AICommand/AIKamikaze.glb",
-				Scale = 32.70f, OffsetY = 12.09f,
-				YMin = -0.370f, YMax = 0.333f,
-				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
-			},
-			["AIQuadDrone"] = new UnitModelInfo
-			{
-				ModelPath = "res://ArtRes/models/AICommand/AIQuadDrone.glb",
-				Scale = 32.45f, OffsetY = 29.65f,
-				YMin = -0.914f, YMax = 0.840f,
-				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
-			},
-			["AIAirSuperiority"] = new UnitModelInfo
-			{
-				ModelPath = "res://ArtRes/models/AICommand/AIAirSuperiority.glb",
-				Scale = 32.71f, OffsetY = 10.91f,
-				YMin = -0.334f, YMax = 0.330f,
-				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
-			},
-			["AIInterceptor"] = new UnitModelInfo
-			{
-				ModelPath = "res://ArtRes/models/AICommand/AIInterceptor.glb",
-				Scale = 66.21f, OffsetY = 66.08f,
-				YMin = -0.998f, YMax = 0.960f,
-				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
-			},
-			["AIElectronicWarfare"] = new UnitModelInfo
-			{
-				ModelPath = "res://ArtRes/models/AICommand/AIElectronicWarfare.glb",
-				Scale = 32.64f, OffsetY = 30.53f,
-				YMin = -0.935f, YMax = 0.883f,
-				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
-			},
-			["AIBomber"] = new UnitModelInfo
-			{
-				ModelPath = "res://ArtRes/models/AICommand/AIBomber.glb",
-				Scale = 65.40f, OffsetY = 30.13f,
-				YMin = -0.461f, YMax = 0.397f,
-				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
-			},
-			["AIArsenalBird"] = new UnitModelInfo
-			{
-				ModelPath = "res://ArtRes/models/AICommand/AIArsenalBird.glb",
-				Scale = 130.63f, OffsetY = 120.97f,
-				YMin = -0.926f, YMax = 0.596f,
-				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
-			},
-
-			// ================= 巫师建筑（SDXL + Hunyuan 生成） =================
 			["WizCity"] = new UnitModelInfo
 			{
+				// 视觉 高 256.0 / 宽 128.9（目标高 256.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizCity.glb",
-				Scale = 129.25f, OffsetY = 129.04f,
-				YMin = -0.998f, YMax = 0.959f,
+				Scale = 132.65f, OffsetY = 132.15f,
+				YMin = -0.996f, YMax = 0.934f,
 				TurnWhileMoving = false,
 			},
 			["WizConcertHall"] = new UnitModelInfo
 			{
+				// 视觉 高 192.0 / 宽 185.8（目标高 192.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizConcertHall.glb",
-				Scale = 96.94f, OffsetY = 96.78f,
-				YMin = -0.998f, YMax = 0.959f,
+				Scale = 99.69f, OffsetY = 99.41f,
+				YMin = -0.997f, YMax = 0.929f,
 				TurnWhileMoving = false,
 			},
 			["WizElementForge"] = new UnitModelInfo
 			{
+				// 视觉 高 192.0 / 宽 173.1（目标高 192.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizElementForge.glb",
-				Scale = 97.38f, OffsetY = 75.01f,
-				YMin = -0.770f, YMax = 0.736f,
+				Scale = 99.44f, OffsetY = 99.12f,
+				YMin = -0.997f, YMax = 0.934f,
 				TurnWhileMoving = false,
 			},
 			["WizForest"] = new UnitModelInfo
 			{
+				// 视觉 高 128.0 / 宽 127.5（目标高 128.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizForest.glb",
-				Scale = 65.31f, OffsetY = 58.71f,
-				YMin = -0.899f, YMax = 0.907f,
+				Scale = 67.64f, OffsetY = 67.21f,
+				YMin = -0.994f, YMax = 0.899f,
 				TurnWhileMoving = false,
 			},
 			["WizHouse"] = new UnitModelInfo
 			{
+				// 视觉 高 128.0 / 宽 88.4（目标高 128.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizHouse.glb",
-				Scale = 65.31f, OffsetY = 51.16f,
-				YMin = -0.783f, YMax = 0.724f,
+				Scale = 66.91f, OffsetY = 66.65f,
+				YMin = -0.996f, YMax = 0.917f,
 				TurnWhileMoving = false,
 			},
 			["WizMageTower"] = new UnitModelInfo
 			{
+				// 视觉 高 192.0 / 宽 62.7（目标高 192.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizMageTower.glb",
-				Scale = 108.97f, OffsetY = 108.78f,
-				YMin = -0.998f, YMax = 0.958f,
+				Scale = 100.12f, OffsetY = 99.72f,
+				YMin = -0.996f, YMax = 0.922f,
 				TurnWhileMoving = false,
 			},
 			["WizSchool"] = new UnitModelInfo
 			{
+				// 视觉 高 128.0 / 宽 78.4（目标高 128.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizSchool.glb",
-				Scale = 65.54f, OffsetY = 44.56f,
-				YMin = -0.680f, YMax = 0.641f,
+				Scale = 66.3f, OffsetY = 66.07f,
+				YMin = -0.996f, YMax = 0.934f,
 				TurnWhileMoving = false,
 			},
 			["WizSpaceLab"] = new UnitModelInfo
 			{
+				// 视觉 高 176.8 / 宽 192.0（目标高 192.0，定标模式 f）
 				ModelPath = "res://ArtRes/models/Wizard/WizSpaceLab.glb",
-				Scale = 104.41f, OffsetY = 102.64f,
-				YMin = -0.983f, YMax = 0.931f,
+				Scale = 101.2f, OffsetY = 94.36f,
+				YMin = -0.932f, YMax = 0.814f,
 				TurnWhileMoving = false,
 			},
 			["WizStoneCircle"] = new UnitModelInfo
 			{
+				// 视觉 高 64.9 / 宽 192.0（目标高 192.0，定标模式 f）
 				ModelPath = "res://ArtRes/models/Wizard/WizStoneCircle.glb",
-				Scale = 97.85f, OffsetY = 88.47f,
-				YMin = -0.904f, YMax = 0.861f,
+				Scale = 99.37f, OffsetY = 37.07f,
+				YMin = -0.373f, YMax = 0.28f,
 				TurnWhileMoving = false,
 			},
 			["WizWaterWall"] = new UnitModelInfo
 			{
+				// 视觉 高 192.0 / 宽 63.3（目标高 192.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/Wizard/WizWaterWall.glb",
-				Scale = 97.24f, OffsetY = 97.07f,
-				YMin = -0.998f, YMax = 0.959f,
+				Scale = 101.0f, OffsetY = 100.61f,
+				YMin = -0.996f, YMax = 0.905f,
 				TurnWhileMoving = false,
 			},
-
-			// ================= AI 指挥系统建筑（SDXL + Hunyuan 生成） =================
+			// ================= AI 指挥系统（Gemini 参考图 + Hunyuan octree 64 重建，带贴图） =================
+			["AIBaseCar"] = new UnitModelInfo
+			{
+				// 视觉 高 75.9 / 宽 94.3（目标高 75.9，定标模式 h）
+				ModelPath = "res://ArtRes/models/AICommand/AIBaseCar.glb",
+				Scale = 48.85f, OffsetY = 39.46f,
+				YMin = -0.808f, YMax = 0.746f,
+			},
+			["AIKamikaze"] = new UnitModelInfo
+			{
+				// 视觉 高 19.4 / 宽 64.0（目标高 29.1，定标模式 f）
+				ModelPath = "res://ArtRes/models/AICommand/AIKamikaze.glb",
+				Scale = 32.9f, OffsetY = 10.19f,
+				YMin = -0.31f, YMax = 0.28f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
+			["AIQuadDrone"] = new UnitModelInfo
+			{
+				// 视觉 高 28.8 / 宽 64.0（目标高 31.2，定标模式 f）
+				ModelPath = "res://ArtRes/models/AICommand/AIQuadDrone.glb",
+				Scale = 33.22f, OffsetY = 15.37f,
+				YMin = -0.463f, YMax = 0.404f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
+			["AIAirSuperiority"] = new UnitModelInfo
+			{
+				// 视觉 高 16.7 / 宽 64.0（目标高 31.2，定标模式 f）
+				ModelPath = "res://ArtRes/models/AICommand/AIAirSuperiority.glb",
+				Scale = 33.76f, OffsetY = 9.45f,
+				YMin = -0.28f, YMax = 0.215f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
+			["AIInterceptor"] = new UnitModelInfo
+			{
+				// 视觉 高 28.8 / 宽 128.0（目标高 41.6，定标模式 f）
+				ModelPath = "res://ArtRes/models/AICommand/AIInterceptor.glb",
+				Scale = 66.19f, OffsetY = 16.47f,
+				YMin = -0.249f, YMax = 0.187f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
+			["AIElectronicWarfare"] = new UnitModelInfo
+			{
+				// 视觉 高 41.6 / 宽 50.8（目标高 41.6，定标模式 h）
+				ModelPath = "res://ArtRes/models/AICommand/AIElectronicWarfare.glb",
+				Scale = 26.38f, OffsetY = 21.76f,
+				YMin = -0.825f, YMax = 0.752f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
+			["AIBomber"] = new UnitModelInfo
+			{
+				// 视觉 高 38.9 / 宽 128.0（目标高 44.0，定标模式 f）
+				ModelPath = "res://ArtRes/models/AICommand/AIBomber.glb",
+				Scale = 66.31f, OffsetY = 22.67f,
+				YMin = -0.342f, YMax = 0.245f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
+			["AIArsenalBird"] = new UnitModelInfo
+			{
+				// 视觉 高 49.0 / 宽 256.0（目标高 90.24，定标模式 f）
+				ModelPath = "res://ArtRes/models/AICommand/AIArsenalBird.glb",
+				Scale = 131.74f, OffsetY = 38.82f,
+				YMin = -0.295f, YMax = 0.077f,
+				IdleAnimation = "Flying_Idle", MoveAnimation = "Fast_Flying",
+			},
 			["AIAirFactory"] = new UnitModelInfo
 			{
+				// 视觉 高 38.1 / 宽 192.0（目标高 192.0，定标模式 f）
 				ModelPath = "res://ArtRes/models/AICommand/AIAirFactory.glb",
-				Scale = 96.94f, OffsetY = 96.77f,
-				YMin = -0.998f, YMax = 0.959f,
+				Scale = 102.02f, OffsetY = 22.21f,
+				YMin = -0.218f, YMax = 0.156f,
 				TurnWhileMoving = false,
 			},
 			["AICore"] = new UnitModelInfo
 			{
+				// 视觉 高 124.0 / 宽 256.0（目标高 256.0，定标模式 f）
 				ModelPath = "res://ArtRes/models/AICommand/AICore.glb",
-				Scale = 129.25f, OffsetY = 129.03f,
-				YMin = -0.998f, YMax = 0.959f,
+				Scale = 132.96f, OffsetY = 66.14f,
+				YMin = -0.497f, YMax = 0.435f,
 				TurnWhileMoving = false,
 			},
 			["AIGoldStation"] = new UnitModelInfo
 			{
+				// 视觉 高 126.2 / 宽 128.0（目标高 128.0，定标模式 f）
 				ModelPath = "res://ArtRes/models/AICommand/AIGoldStation.glb",
-				Scale = 64.62f, OffsetY = 50.43f,
-				YMin = -0.780f, YMax = 0.734f,
+				Scale = 65.38f, OffsetY = 65.14f,
+				YMin = -0.996f, YMax = 0.934f,
 				TurnWhileMoving = false,
 			},
 			["AIHeavyAirfield"] = new UnitModelInfo
 			{
+				// 视觉 高 123.7 / 宽 256.0（目标高 256.0，定标模式 f）
 				ModelPath = "res://ArtRes/models/AICommand/AIHeavyAirfield.glb",
-				Scale = 130.31f, OffsetY = 124.35f,
-				YMin = -0.954f, YMax = 0.918f,
+				Scale = 132.63f, OffsetY = 65.98f,
+				YMin = -0.497f, YMax = 0.435f,
 				TurnWhileMoving = false,
 			},
 			["AILightFactory"] = new UnitModelInfo
 			{
+				// 视觉 高 183.6 / 宽 192.0（目标高 192.0，定标模式 f）
 				ModelPath = "res://ArtRes/models/AICommand/AILightFactory.glb",
-				Scale = 98.05f, OffsetY = 48.10f,
-				YMin = -0.491f, YMax = 0.470f,
+				Scale = 99.4f, OffsetY = 93.34f,
+				YMin = -0.939f, YMax = 0.908f,
 				TurnWhileMoving = false,
 			},
 			["AIRelay"] = new UnitModelInfo
 			{
+				// 视觉 高 128.0 / 宽 56.3（目标高 128.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/AICommand/AIRelay.glb",
-				Scale = 71.39f, OffsetY = 71.28f,
-				YMin = -0.998f, YMax = 0.959f,
+				Scale = 66.42f, OffsetY = 66.21f,
+				YMin = -0.997f, YMax = 0.93f,
 				TurnWhileMoving = false,
 			},
 			["AISkyNetCore"] = new UnitModelInfo
 			{
+				// 视觉 高 128.0 / 宽 81.6（目标高 128.0，定标模式 h）
 				ModelPath = "res://ArtRes/models/AICommand/AISkyNetCore.glb",
-				Scale = 65.41f, OffsetY = 60.37f,
-				YMin = -0.923f, YMax = 0.852f,
+				Scale = 66.34f, OffsetY = 66.07f,
+				YMin = -0.996f, YMax = 0.933f,
 				TurnWhileMoving = false,
-			}
+			},
+
 		};
 
 		public static UnitModelInfo Get(string entityName)

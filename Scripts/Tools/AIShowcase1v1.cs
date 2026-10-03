@@ -279,8 +279,38 @@ namespace RTS.Tools
 				cam.Size = camSize;
 				cam.Near = 100f;
 				cam.Far = 30000f;
-				cam.Position = new Vector3(0f, 9000f, 0f);
-				cam.LookAtFromPosition(cam.Position, Vector3.Zero, Vector3.Forward);
+
+				// 相机默认看原点。但"地图原点"和"基地所在处"常常不是一个地方
+				// （作战区整体偏移），截图时就会拍到空地。AI_TEST_CAM_FOCUS=1
+				// 让相机对到 1 号玩家的建筑群中心，方便给单位/建筑拍特写。
+				Vector3 focus = Vector3.Zero;
+				if (OS.GetEnvironment("AI_TEST_CAM_FOCUS") == "1")
+				{
+					var simF = RTS.Core.SimManager.Instance;
+					if (simF?.World != null)
+					{
+						// GetTeamCentroid 是私有的，这里直接对建筑格子求平均即可
+						long sx = 0, sy = 0;
+						int n = 0;
+						foreach (var st in simF.World.Structures.Values)
+						{
+							if (st == null || st.IsDead || st.TeamID != 1)
+								continue;
+							sx += st.GridPosition.X + st.GridWidth / 2;
+							sy += st.GridPosition.Y + st.GridHeight / 2;
+							n++;
+						}
+						if (n > 0)
+						{
+							float tile = simF.World.Grid.TileSize;
+							focus = new Vector3(sx / (float)n * tile + tile * 0.5f, 0f,
+								sy / (float)n * tile + tile * 0.5f);
+						}
+						GD.Print($"[AIShowcase] 相机焦点 = 1 队建筑中心 ({focus.X:F0}, {focus.Z:F0})，建筑 {n} 座");
+					}
+				}
+				cam.Position = focus + new Vector3(0f, 9000f, 0f);
+				cam.LookAtFromPosition(cam.Position, focus, Vector3.Forward);
 				cam.MakeCurrent();
 			}
 
