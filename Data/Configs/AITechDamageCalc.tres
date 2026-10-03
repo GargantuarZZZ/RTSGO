@@ -6,6 +6,6 @@
 script = ExtResource("1")
 TechId = "AITechDamageCalc"
 DisplayName = "伤害计算器"
-Description = "自动选敌时计入在途伤害，减少溢出。"
+Description = "战术空优机、拦截巡航机自动选敌时，计入己方在途攻击伤害；已有攻击足以击杀的目标优先交给其他火力处理，减少伤害溢出,电子战机不会攻击同一目标"
 Category = 0
 ResearchTimeSeconds = 45.0

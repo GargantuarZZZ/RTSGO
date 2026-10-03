@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "AITechStableProd"
 DisplayName = "稳定生产"
-Description = "武库鸟不移动时生产速度 +50%。"
+Description = "武库鸟不移动时，生产速度+50%"
 Category = 0
 ResearchTimeSeconds = 45.0
 RequiredTechIds = Array[String](["AITechArsenalPlan"])

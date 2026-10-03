@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "AITechEngineering"
 DisplayName = "工程学"
-Description = "建筑施工速度 +25%。"
+Description = "建筑施工速度+25%"
 Category = 0
 ResearchTimeSeconds = 35.0
 ProductionTimeMultiplier = 0.8

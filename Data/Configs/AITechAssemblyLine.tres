@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "AITechAssemblyLine"
 DisplayName = "流水线"
-Description = "轻型无人机厂生产速度为基准的 150%。"
+Description = "轻型无人机厂生产速度提升为基础的150%"
 Category = 0
 ResearchTimeSeconds = 30.0
 ProductionTimeMultiplier = 0.667

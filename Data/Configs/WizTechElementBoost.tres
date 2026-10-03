@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "WizTechElementBoost"
 DisplayName = "元素强化"
-Description = "医院法师获得四个强化技能，5 格内友军伤害 +30%，持续 20 秒。"
+Description = "医院法师获得四个强化技能,所有医院法师5格范围友军的电磁,动能,热能,光束伤害+30%,持续20秒,cd60s,四个技能,以及所有医院法师共享cd."
 Category = 0
 RequiresHarvester = false
 ResearchTimeSeconds = 30.0

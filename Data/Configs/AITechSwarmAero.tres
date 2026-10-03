@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "AITechSwarmAero"
 DisplayName = "集群气动学说"
-Description = "5 格内有至少 5 个友方飞行单位时，移速 +20%。"
+Description = "飞行单位周围5格内有至少5个其他友方飞行单位时，移速+20%，不叠加"
 Category = 0
 ResearchTimeSeconds = 45.0
 FieldMoveSpeedBonus = 0.2

@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "AITechSuperManeuver"
 DisplayName = "超机动"
-Description = "战术空优机获得被动：免疫下一次受到的伤害，cd 15 秒。"
+Description = "战术空优机获得被动技能:超机动,避免下一次受到的伤害,cd15s"
 Category = 0
 ResearchTimeSeconds = 60.0
 TargetUnitIds = Array[String](["AIAirSuperiority"])

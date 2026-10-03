@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "WizTechRocketFist"
 DisplayName = "火箭飞拳"
-Description = "傀儡攻击方式改为远程动能弹道，射程 3 格。"
+Description = "傀儡攻击方式变为远程动能30弹道,射程3"
 Category = 0
 RequiresHarvester = false
 ResearchTimeSeconds = 30.0

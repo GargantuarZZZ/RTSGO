@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "WizTechMagicInstrument"
 DisplayName = "魔石乐器"
-Description = "音乐家射程 +2 格。"
+Description = "音乐家射程+2"
 Category = 0
 RequiresHarvester = false
 ResearchTimeSeconds = 30.0

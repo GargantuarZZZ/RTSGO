@@ -543,36 +543,36 @@ groups.help,Number or click: recall. Double tap: focus camera. Ctrl+number/click
 race.wizard,Wizard
 race.aicommand,AI Command
 
-name.AIAirFactory,Drone Air Factory
-name.AIAirSuperiority,Air Superiority Fighter
+name.AIAirFactory,Air Combat Factory
+name.AIAirSuperiority,Tactical Air Superiority Fighter
 name.AIArsenalBird,Arsenal Bird
-name.AIBaseCar,Mobile Base Carrier
-name.AIBomber,Strategic Bomber
-name.AICore,Command Core
-name.AIElectronicWarfare,EW Aircraft
-name.AIGoldStation,Gold Station
+name.AIBaseCar,Standard Base Car
+name.AIBomber,Bomber
+name.AICore,Command Base
+name.AIElectronicWarfare,Electronic Warfare Craft
+name.AIGoldStation,Auto Gold Station
 name.AIHeavyAirfield,Heavy Airfield
-name.AIInterceptor,Heavy Interceptor
-name.AIKamikaze,Suicide Drone
-name.AILightFactory,Light Factory
-name.AIQuadDrone,Quad Recon Drone
-name.AIRelay,Signal Relay
+name.AIInterceptor,Interceptor Cruiser
+name.AIKamikaze,Suicide Plane
+name.AILightFactory,Light Drone Factory
+name.AIQuadDrone,Quad Drone
+name.AIRelay,Compute Relay
 name.AISkyNetCore,Sky Net Core
 name.WizApprentice,Apprentice
 name.WizBattlePuppet,Battle Puppet
 name.WizBroomRider,Broom Rider
-name.WizCity,Arcanist City
+name.WizCity,City
 name.WizConcertHall,Concert Hall
 name.WizEarthGolem,Earth Golem
 name.WizElementForge,Element Forge
 name.WizElementMage,Element Mage
-name.WizForest,Enchanted Forest
+name.WizForest,Timber Yard
 name.WizHospitalMage,Hospital Mage
-name.WizHouse,Cottage
+name.WizHouse,House
 name.WizMageTower,Mage Tower
 name.WizMusician,Musician
-name.WizPuppet,Puppet Worker
-name.WizSchool,School of Magic
+name.WizPuppet,Puppet
+name.WizSchool,School
 name.WizSpaceLab,Space Laboratory
 name.WizStoneCircle,Stone Circle
 name.WizStoneGolem,Stone Golem

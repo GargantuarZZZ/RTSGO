@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "AITechFullSalvo"
 DisplayName = "全弹发射"
-Description = "拦截巡航机四连发变为六连发。"
+Description = "四连发变为6连发"
 Category = 0
 ResearchTimeSeconds = 45.0
 GrantWeaponCount = 2

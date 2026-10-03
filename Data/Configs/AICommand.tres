@@ -23,7 +23,7 @@ Offset = Vector2(300, 0)
 [resource]
 script = ExtResource("1")
 RaceId = "AICommand"
-DisplayName = "AI 指挥系统"
+DisplayName = "AI指挥系统"
 Description = "以无人机与空军为核心的阵营。基地车坐地后建造，战斗单位自动部署、不可指挥，存在时间有限。"
 RoleSummary = "无人机蜂群与空中打击"
 WeaknessDescription = "没有主动恢复手段，也没有防御建筑；单位存在时间有限，需要持续投放。"

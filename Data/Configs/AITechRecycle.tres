@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "AITechRecycle"
 DisplayName = "回收程序"
-Description = "武库鸟释放的无人机无目标时返回并回收。"
+Description = "武库鸟获得回收程序，自己释放的无人机在部署区无目标时尝试返回回收"
 Category = 0
 ResearchTimeSeconds = 45.0
 RequiredTechIds = Array[String](["AITechArsenalPlan"])

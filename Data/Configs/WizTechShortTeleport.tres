@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "WizTechShortTeleport"
 DisplayName = "短距离传送"
-Description = "扫帚骑手获得闪现技能。"
+Description = "扫帚骑手获得闪现技能"
 Category = 0
 RequiresHarvester = false
 ResearchTimeSeconds = 30.0

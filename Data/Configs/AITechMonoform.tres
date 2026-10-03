@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "AITechMonoform"
 DisplayName = "一体成型"
-Description = "轻型无人机厂生产速度为基准的 200%，替代流水线。"
+Description = "轻型无人机厂生产速度提升为基础的200%，替代流水线效果"
 Category = 0
 ResearchTimeSeconds = 30.0
 RequiredTechIds = Array[String](["AIT2"])

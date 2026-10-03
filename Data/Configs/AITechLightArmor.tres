@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "AITechLightArmor"
 DisplayName = "轻质装甲"
-Description = "自爆飞机与四轴无人机生命上限 +50%。"
+Description = "自爆飞机、四轴无人机生命上限+50%"
 Category = 0
 ResearchTimeSeconds = 35.0
 TargetUnitIds = Array[String](["AIKamikaze", "AIQuadDrone"])

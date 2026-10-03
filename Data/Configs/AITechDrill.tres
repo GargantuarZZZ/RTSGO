@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "AITechDrill"
 DisplayName = "采集钻"
-Description = "自动采金站产出 +25%。"
+Description = "自动采金站产出+25%，每秒4金提高至5金"
 Category = 0
 ResearchTimeSeconds = 35.0
 HarvesterIncomeMultiplier = 1.25

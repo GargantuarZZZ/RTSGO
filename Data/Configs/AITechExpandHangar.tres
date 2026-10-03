@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "AITechExpandHangar"
 DisplayName = "扩展机库"
-Description = "武库鸟库存容量由 20 提升至 30。"
+Description = "武库鸟库存容量20提升至30"
 Category = 0
 ResearchTimeSeconds = 45.0
 RequiredTechIds = Array[String](["AITechArsenalPlan"])

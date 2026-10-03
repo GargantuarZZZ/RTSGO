@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "AITechElectronicWarfare"
 DisplayName = "电子战"
-Description = "解锁电子战机生产。"
+Description = "解锁电子战机生产"
 Category = 0
 ResearchTimeSeconds = 40.0
 UnlockStructureIds = Array[String]([])

@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "WizTechPuppetRebirth"
 DisplayName = "傀儡复生"
-Description = "傀儡阵亡后留下残骸，20 秒后以残骸生命值复活。"
+Description = "傀儡死后会转化为生命值上限一半血量的残骸,20秒后以残骸的生命值复活"
 Category = 0
 RequiresHarvester = false
 ResearchTimeSeconds = 30.0

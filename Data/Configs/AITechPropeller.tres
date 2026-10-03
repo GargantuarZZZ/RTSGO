@@ -6,7 +6,7 @@
 script = ExtResource("1")
 TechId = "AITechPropeller"
 DisplayName = "螺旋桨升级"
-Description = "自爆飞机与四轴无人机移动速度 +50%。"
+Description = "自爆飞机、四轴无人机移动速度+50%"
 Category = 0
 ResearchTimeSeconds = 30.0
 RequiredTechIds = Array[String](["AIT2"])

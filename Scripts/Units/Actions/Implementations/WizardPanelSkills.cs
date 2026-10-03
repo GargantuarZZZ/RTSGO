@@ -63,7 +63,7 @@ namespace RTS.Actions.Implementation
 	[GlobalClass]
 	public partial class SummonStoneGolemAction : WizardSkillAction
 	{
-		[Export] public string DisplayNameText = "召唤石魔像";
+		[Export] public string DisplayNameText = "石魔像";
 		protected override long SkillBit => 256;
 		protected override string ActionId => "SummonStoneGolem";
 	}
@@ -72,7 +72,7 @@ namespace RTS.Actions.Implementation
 	[GlobalClass]
 	public partial class SummonEarthGolemAction : WizardSkillAction
 	{
-		[Export] public string DisplayNameText = "召唤土魔像";
+		[Export] public string DisplayNameText = "土魔像";
 		protected override long SkillBit => 512;
 		protected override string ActionId => "SummonEarthGolem";
 	}
