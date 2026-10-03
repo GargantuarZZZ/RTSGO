@@ -144,6 +144,10 @@ namespace RTS.Settings
 			Bindings.TryGetValue(action, out var list) ? list : new List<InputBinding>();
 
 		private const string SavePath = "user://settings.cfg";
+
+		/// <summary>键位布局版本的存档键（放在 general 组，避免被当成一个"动作"）。</summary>
+		private const string LayoutVersionKey = "keybind_layout";
+
 		private static bool _loaded = false;
 
 		public static void Load()
@@ -204,7 +208,27 @@ namespace RTS.Settings
 				}
 			}
 
+			long savedLayout = cfg.GetValue("general", LayoutVersionKey, 0L).AsInt64();
+
 			SyncPrimaryView();
+
+			// 老存档迁移：默认键位布局改过（面板回到 QWERT/ASDFG/ZXCVB，A/S/T 被挤走），
+			// 而存档里存着旧默认值 —— 不迁移的话老玩家看到的还是旧键位，
+			// "面板快捷键全是错的"永远修不掉。只动仍是旧默认值的项（玩家改过的不碰）。
+			if (savedLayout < InputActions.LayoutVersion)
+			{
+				int migrated = InputActions.MigrateLegacyDefaults(Bindings);
+				SyncPrimaryView();
+				if (migrated > 0)
+				{
+					GD.Print($"[Keys] 键位布局升级 v{savedLayout} → v{InputActions.LayoutVersion}，" +
+						$"迁移 {migrated} 项（玩家改过的键保持不变）");
+					// 立刻落盘，避免"迁移结果只活在内存里"：
+					// 玩家没进设置菜单就退出时，下次启动还得再迁一遍（虽然幂等，但没必要）。
+					Save();
+				}
+			}
+
 			ApplyAll();
 		}
 
@@ -279,6 +303,8 @@ namespace RTS.Settings
 			cfg.SetValue("audio", "music", MusicVolume);
 			cfg.SetValue("audio", "sfx", SfxVolume);
 			cfg.SetValue("video", "fullscreen", Fullscreen);
+			// 记住写出的是哪一版键位布局：下次启动据此判断要不要迁移老默认值。
+			cfg.SetValue("general", LayoutVersionKey, InputActions.LayoutVersion);
 			foreach (var kv in Bindings)
 			{
 				// 新格式：字符串数组，保留每个绑定的槽位/设备/修饰键。
@@ -335,6 +361,11 @@ namespace RTS.Settings
 					seen[sig] = kv.Key;
 				}
 			}
+
+			// 面板矩形自检：槽位字母必须与 InputActions.PanelGridKeys 逐项一致。
+			// 面板左上角第一个按钮写着 Q、按下去也是 Q，这件事以前没有任何断言守着。
+			foreach (string issue in InputActions.PanelGridProblems())
+				GD.PrintErr($"[Keys] 面板键位与矩形不一致：{issue}");
 		}
 
 		/// <summary>把键位编码成可读文本（A / F1 / ↑ / 空格 / …）。</summary>

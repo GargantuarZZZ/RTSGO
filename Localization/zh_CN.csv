@@ -214,7 +214,7 @@ build.requires,需要：{0}
 list_sep,、
 vote.rematch,重新开局
 vote.surrender_team,队伍投降
-vote.banner,"玩家 {0} 发起[{1}]投票  同意 N / 反对 M  ({2:0}s)"
+vote.banner,"玩家 {0} 发起[{1}]投票  同意 O / 反对 M  ({2:0}s)"
 vote.passed_rematch,重开投票通过，本局以平局结束
 vote.failed_rematch,重开投票未通过
 vote.passed_surrender,队伍投降投票通过
@@ -328,7 +328,7 @@ name.SlowBuff,减速
 name.StimBuff,兴奋剂
 chat.title,聊天
 chat.input_hint,输入消息，回车发送（Esc 关闭）
-chat.open_hint,按 T 打开聊天。Ctrl+中键在地图上打信号（联机时队友可见）；中键拖拽可平移视角
+chat.open_hint,按 Y（或回车）打开聊天。Ctrl+中键在地图上打信号（联机时队友可见）；中键拖拽可平移视角
 observer.check,旁观者模式（全图视野，不可操控，可看所有人资源）
 observer.short,旁观者
 observer.title,[旁观者] 全图视野 | 不可操控
@@ -443,6 +443,8 @@ pause,暂停/继续
 surrender,投降
 chat,打开聊天
 vote_rematch,发起重开投票（Ctrl+组合）
+vote_yes,投票同意
+vote_no,投票反对
 slot_1,技能槽 1
 slot_2,技能槽 2
 slot_3,技能槽 3
@@ -507,7 +509,7 @@ tutorial.Basics_tutorial_basics.tech.title,第 7 步：研究科技
 tutorial.Basics_tutorial_basics.tech.detail,"建造学院（Academy，需兵营作为前置），选中学院并研究一项科技。\n科技永久强化部队，是形成战力差距的主要手段。"
 tutorial.Basics_tutorial_basics.tech.done,科技研究完成。
 tutorial.Basics_tutorial_basics.attack.title,第 8 步：交战
-tutorial.Basics_tutorial_basics.attack.detail,"框选全部部队（或按 F2 全选作战单位），右键点击东侧中立塔。\n需要边移动边交战，使用攻击移动：按 A，再左键点击目标位置。"
+tutorial.Basics_tutorial_basics.attack.detail,"框选全部部队，右键点击东侧中立塔。\n需要边移动边交战，使用攻击移动：按 H，再左键点击目标位置。"
 tutorial.Basics_tutorial_basics.attack.done,目标已摧毁。基础操作完成。
 tutorial.Basics_tutorial_basics.select_move.done,标准指令方式：左键选择，右键下令。
 main_menu_tutorial,教程

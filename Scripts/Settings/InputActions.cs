@@ -214,19 +214,52 @@ namespace RTS.Settings
 		//
 		// 命名约定：`game_*` 一律走 InputMap（可改键）；`panel_*` 是技能槽。
 		//
-		// ---- 键位设计（这是重排过的，原方案有真实冲突）----
+		// ---- 键位设计：命令卡就是键盘上那个矩形 ----
 		//
-		// 冲突是本项目已经发生过的现实问题，所以这套表有两条硬规则：
+		// 命令卡是 5 列 × 3 行，15 个格子固定排布。键位取键盘上**同一个矩形**：
+		//
+		//        Q W E R T        ← 面板第 1 行（槽 1~5）
+		//        A S D F G        ← 面板第 2 行（槽 6~10）
+		//        Z X C V B        ← 面板第 3 行（槽 11~15）
+		//
+		// 这样"格子在哪、键就在哪"，玩家不用背这 15 个字母。
+		//
+		// 这里曾经反着做过一轮：为了给全局动作让路，把槽位改成
+		// Q/E/R/F/G + Z/X/C/V/B + N/M/U/I/O —— 于是面板第二行从 Z 开始、
+		// 第三行是 N M U I O，键位和格子位置完全对不上，玩家只能说"快捷键全是错的"。
+		// 结论：**面板占住 QWERT/ASDFG/ZXCVB，其它动作绕道**，不回退到"让面板躲"。
+		//
+		// 被挤走的全局键各自平移到同一物理行的右侧邻居（矩形右边正好多出 Y/H/J/N 四格）：
+		//     攻击移动  A → H       停止  S → J       聊天  T → Y
+		//     驻守      H → N
+		//     重开投票  Ctrl+H 不变（修饰键签名不同，与裸 H 不构成冲突）
+		//
+		// 两条硬规则：
 		//   规则1：**镜头不用 WASD**，改用方向键。
 		//          WASD 与 RTS 指令键（A 攻击移动 / S 停止 / H 驻守）天然打架。
 		//          星际2 的默认就是方向键平移、字母给指令，这里跟随同一习惯。
-		//   规则2：**面板技能槽避开全局动作键**。
-		//          原来技能槽占 QWERT/ASDFG/ZXCVB，把 A/S/T 全吃了，
-		//          而 A=攻击移动、S=停止、T=聊天 都是玩家肌肉记忆里的键。
-		//          现在槽位改用 Q/E/R/F/G/Z/X/C/V/B + T/Y，把 A/S/D/H/I/J/K/L/M/N/O/P/U/W 让出来。
+		//   规则2：**面板矩形与全局动作键不得重叠**（重合的后果是按键既触发技能又触发指令）。
 		//
-		// InputActions.FindDefaultConflicts() 会静态校验这两条，测试里也会断言。
+		// FindDefaultConflicts() 静态校验规则2；PanelGridProblems() 校验
+		// "槽位默认值 == PanelGridKeys 里声明的矩形"；测试里两条都会断言。
 		// =========================================================
+
+		/// <summary>
+		/// 面板 15 个格子在键盘上对应的矩形，顺序与槽位一致：从左到右、从上到下。
+		///
+		/// **这就是"面板键位"的唯一真相**：面板按钮上的角标、ActionPanel 的按键处理、
+		/// 设置菜单里 Panel 分组显示的键，全部由它派生。
+		/// 改这里等于改整块面板的键位，改完必须同步 LayoutVersion 让老存档迁移。
+		/// </summary>
+		public static readonly Key[] PanelGridKeys =
+		{
+			Key.Q, Key.W, Key.E, Key.R, Key.T,
+			Key.A, Key.S, Key.D, Key.F, Key.G,
+			Key.Z, Key.X, Key.C, Key.V, Key.B,
+		};
+
+		/// <summary>面板格子数（UI 与键位表共用，避免一边改一边忘）。</summary>
+		public const int PanelSlotCount = 15;
 
 		public static readonly InputActionDef[] All =
 		{
@@ -246,27 +279,38 @@ namespace RTS.Settings
 			new("game_select_idle_workers", Key.None, InputGroup.Selection, "select_idle_workers"),
 
 			// ---- 单位指令 ----
-			new("game_attack_move", Key.A, InputGroup.Orders, "attack_move"),
-			new("game_stop",        Key.S, InputGroup.Orders, "stop"),
-			new("game_hold",        Key.H, InputGroup.Orders, "hold"),
+			// 攻击移动/停止原本是 A/S，被面板矩形（ASDFG）征用，平移到同一物理行的右侧：
+			// H 是矩形右边第一格，J 是第二格；驻守原本就是 H，让给攻击移动后挪到底行 B 右边的 N。
+			new("game_attack_move", Key.H, InputGroup.Orders, "attack_move"),
+			new("game_stop",        Key.J, InputGroup.Orders, "stop"),
+			new("game_hold",        Key.N, InputGroup.Orders, "hold"),
 
 			// ---- 对局与社交 ----
 			new("game_pause",     Key.P, InputGroup.Match, "pause"),
 			new("game_surrender", Key.K, InputGroup.Match, "surrender"),
-			// 聊天同时保留 T 与 Enter 两个入口：T 是 RTS 习惯，Enter 是所有聊天框习惯。
+			// 聊天同时保留字母键与 Enter 两个入口：字母键是 RTS 习惯（原本是 T，
+			// 被面板第 5 槽征用后挪到它右侧的 Y），Enter 是所有聊天框习惯。
 			// 这里正好用上"次要键位"：不再靠 AllowsShare 绕冲突，而是**真的绑两个键**。
-			new("game_chat",      Key.T, InputGroup.Match, "chat",
+			new("game_chat",      Key.Y, InputGroup.Match, "chat",
 				rebindable: true, allowsShare: false, defaultSecondary: Key.Enter),
 			// 重开投票 = Ctrl+H。以前是"绑 H + 声明 AllowsShare"来绕开与驻守(H)的冲突，
 			// 那是权宜之计：冲突检测因此看不见它，玩家也看不出这是组合键。
-			// 现在用真正的修饰键绑定（DefaultCtrl），冲突检测能正确区分 H 与 Ctrl+H。
+			// 现在用真正的修饰键绑定（DefaultCtrl），冲突检测能正确区分 H 与 Ctrl+H
+			// （裸 H 现在是攻击移动，同样是"Ctrl+H 与裸 H 各自成立"的例子）。
 			new("game_vote_rematch", Key.H, InputGroup.Match, "vote_rematch",
 				rebindable: true, allowsShare: false, defaultCtrl: true),
+			// 投票的同意/反对。原来这两个键**写死在 VoteUI 里**（N/M），不在注册表里 ——
+			// 设置菜单看不见、冲突检测查不到，而 N 正好是驻守：按下同意会顺带让全军原地驻守。
+			// 收进注册表后：可改键、可检测冲突、界面显示的是真实绑定。
+			// 同意用 O（OK），反对保留 M。
+			new("game_vote_yes", Key.O, InputGroup.Match, "vote_yes"),
+			new("game_vote_no",  Key.M, InputGroup.Match, "vote_no"),
 
 			// ---- 面板技能槽（写死、不暴露改键）----
 			// 槽位顺序固定，玩家记的是"位置"而不是具体字母，所以不开放改键。
-			// 避开 A/S/D/H/T（见规则2）。T/Y 是刻意留的：T 已让给聊天，
-			// 所以第 5/6 槽改用 T/Y 会冲突，改到 T→(unused) 见下方说明。
+			// 字母必须与 PanelGridKeys 逐项一致（面板就是 QWERT/ASDFG/ZXCVB 这块矩形）。
+			// 为什么这里仍然手写一遍字母、而不是直接 PanelGridKeys[i]：
+			// 手写让"哪个槽是哪个键"在表里一眼可读，代价是靠 PanelGridProblems() 防漂移。
 			new("race_panel_slot_1", Key.F1, InputGroup.Panel, "race_slot_1", rebindable: false),
 			new("race_panel_slot_2", Key.F2, InputGroup.Panel, "race_slot_2", rebindable: false),
 			new("race_panel_slot_3", Key.F3, InputGroup.Panel, "race_slot_3", rebindable: false),
@@ -275,21 +319,24 @@ namespace RTS.Settings
 			new("race_panel_slot_6", Key.F6, InputGroup.Panel, "race_slot_6", rebindable: false),
 			new("race_panel_slot_7", Key.F7, InputGroup.Panel, "race_slot_7", rebindable: false),
 			new("race_panel_slot_8", Key.F8, InputGroup.Panel, "race_slot_8", rebindable: false),
+			// 第 1 行
 			new("panel_slot_1",  Key.Q, InputGroup.Panel, "slot_1",  rebindable: false),
-			new("panel_slot_2",  Key.E, InputGroup.Panel, "slot_2",  rebindable: false),
-			new("panel_slot_3",  Key.R, InputGroup.Panel, "slot_3",  rebindable: false),
-			new("panel_slot_4",  Key.F, InputGroup.Panel, "slot_4",  rebindable: false),
-			new("panel_slot_5",  Key.G, InputGroup.Panel, "slot_5",  rebindable: false),
-			new("panel_slot_6",  Key.Z, InputGroup.Panel, "slot_6",  rebindable: false),
-			new("panel_slot_7",  Key.X, InputGroup.Panel, "slot_7",  rebindable: false),
-			new("panel_slot_8",  Key.C, InputGroup.Panel, "slot_8",  rebindable: false),
-			new("panel_slot_9",  Key.V, InputGroup.Panel, "slot_9",  rebindable: false),
-			new("panel_slot_10", Key.B, InputGroup.Panel, "slot_10", rebindable: false),
-			new("panel_slot_11", Key.N, InputGroup.Panel, "slot_11", rebindable: false),
-			new("panel_slot_12", Key.M, InputGroup.Panel, "slot_12", rebindable: false),
-			new("panel_slot_13", Key.U, InputGroup.Panel, "slot_13", rebindable: false),
-			new("panel_slot_14", Key.I, InputGroup.Panel, "slot_14", rebindable: false),
-			new("panel_slot_15", Key.O, InputGroup.Panel, "slot_15", rebindable: false),
+			new("panel_slot_2",  Key.W, InputGroup.Panel, "slot_2",  rebindable: false),
+			new("panel_slot_3",  Key.E, InputGroup.Panel, "slot_3",  rebindable: false),
+			new("panel_slot_4",  Key.R, InputGroup.Panel, "slot_4",  rebindable: false),
+			new("panel_slot_5",  Key.T, InputGroup.Panel, "slot_5",  rebindable: false),
+			// 第 2 行
+			new("panel_slot_6",  Key.A, InputGroup.Panel, "slot_6",  rebindable: false),
+			new("panel_slot_7",  Key.S, InputGroup.Panel, "slot_7",  rebindable: false),
+			new("panel_slot_8",  Key.D, InputGroup.Panel, "slot_8",  rebindable: false),
+			new("panel_slot_9",  Key.F, InputGroup.Panel, "slot_9",  rebindable: false),
+			new("panel_slot_10", Key.G, InputGroup.Panel, "slot_10", rebindable: false),
+			// 第 3 行
+			new("panel_slot_11", Key.Z, InputGroup.Panel, "slot_11", rebindable: false),
+			new("panel_slot_12", Key.X, InputGroup.Panel, "slot_12", rebindable: false),
+			new("panel_slot_13", Key.C, InputGroup.Panel, "slot_13", rebindable: false),
+			new("panel_slot_14", Key.V, InputGroup.Panel, "slot_14", rebindable: false),
+			new("panel_slot_15", Key.B, InputGroup.Panel, "slot_15", rebindable: false),
 		};
 
 		/// <summary>按动作名取定义。</summary>
@@ -406,6 +453,115 @@ namespace RTS.Settings
 					if (Conflicts(All[i], All[j]))
 						issues.Add($"{All[i].Action}({All[i].Default}) ↔ {All[j].Action}({All[j].Default})");
 			return issues;
+		}
+
+		/// <summary>
+		/// 面板槽位表与 <see cref="PanelGridKeys"/> 是否还一致（诊断/自检用）。
+		///
+		/// 面板的键位是"格子 = 键位"的空间记忆，一旦某个槽的字母和矩形对不上，
+		/// 玩家看到的就是"快捷键全是错的"。这类错字不会让任何东西报错，
+		/// 所以必须有一条专门的断言。
+		/// </summary>
+		public static List<string> PanelGridProblems()
+		{
+			var issues = new List<string>();
+			for (int i = 0; i < PanelSlotCount; i++)
+			{
+				var def = Get($"panel_slot_{i + 1}");
+				if (def == null)
+				{
+					issues.Add($"panel_slot_{i + 1} 不在动作表里");
+					continue;
+				}
+				Key want = i < PanelGridKeys.Length ? PanelGridKeys[i] : Key.None;
+				if (def.Default != want)
+					issues.Add($"panel_slot_{i + 1} 默认是 {def.Default}，矩形里应为 {want}");
+			}
+			return issues;
+		}
+
+		// =========================================================
+		// 老存档迁移
+		//
+		// 面板槽位虽然 `rebindable: false`，但它们同样会被写进 settings.cfg
+		// （GameSettings.Save 遍历的是全部 Bindings）。所以只改默认值不够：
+		// 老玩家的存档里存着旧默认值，Load 会把它们读回来，新布局永远不生效。
+		//
+		// 迁移规则只有一条：**存档值仍等于旧默认值的，才升级成新默认值**。
+		// 玩家自己改过的键（哪怕改成了别的旧默认值）一律不动。
+		// =========================================================
+
+		/// <summary>
+		/// 默认键位布局版本。键位表动了布局（换字母、挪矩形）就 +1，
+		/// 老存档会在 GameSettings.Load 里按 <see cref="LegacyV1"/> 迁移。
+		/// </summary>
+		public const int LayoutVersion = 2;
+
+		/// <summary>
+		/// 版本 1 的默认键位中**与当前不同**的那些（动作、旧主键、旧次要键）。
+		/// 只列变过的：没变的动作即使存档里是旧值，迁移也没意义。
+		/// </summary>
+		public static readonly (string Action, Key Primary, Key Secondary)[] LegacyV1 =
+		{
+			// 全局动作：给面板矩形让路
+			("game_attack_move", Key.A, Key.None),
+			("game_stop",        Key.S, Key.None),
+			("game_hold",        Key.H, Key.None),
+			("game_chat",        Key.T, Key.Enter),
+			// 面板槽位：从"避让式"键位改回 QWERT/ASDFG/ZXCVB
+			("panel_slot_2",  Key.E, Key.None),
+			("panel_slot_3",  Key.R, Key.None),
+			("panel_slot_4",  Key.F, Key.None),
+			("panel_slot_5",  Key.G, Key.None),
+			("panel_slot_6",  Key.Z, Key.None),
+			("panel_slot_7",  Key.X, Key.None),
+			("panel_slot_8",  Key.C, Key.None),
+			("panel_slot_9",  Key.V, Key.None),
+			("panel_slot_10", Key.B, Key.None),
+			("panel_slot_11", Key.N, Key.None),
+			("panel_slot_12", Key.M, Key.None),
+			("panel_slot_13", Key.U, Key.None),
+			("panel_slot_14", Key.I, Key.None),
+			("panel_slot_15", Key.O, Key.None),
+			// panel_slot_1 旧新都是 Q，不需要迁移
+		};
+
+		/// <summary>
+		/// 把"仍是旧默认值"的绑定升级成当前默认值，返回迁移条数。
+		/// <paramref name="bindings"/> 会被原地修改。
+		/// </summary>
+		public static int MigrateLegacyDefaults(Dictionary<string, List<InputBinding>> bindings)
+		{
+			if (bindings == null) return 0;
+
+			int changed = 0;
+			foreach (var (action, oldPrimary, oldSecondary) in LegacyV1)
+			{
+				var def = Get(action);
+				if (def == null) continue;
+				if (!bindings.TryGetValue(action, out var cur)) continue;
+				if (!MatchesLegacy(cur, oldPrimary, oldSecondary)) continue;
+
+				bindings[action] = DefaultBindings(def);
+				changed++;
+			}
+			return changed;
+		}
+
+		/// <summary>恰好只绑了"旧主键（+旧次要键）"、没有修饰键 —— 说明玩家没改过它。</summary>
+		private static bool MatchesLegacy(List<InputBinding> list, Key primary, Key secondary)
+		{
+			var want = new List<Key> { primary };
+			if (secondary != Key.None) want.Add(secondary);
+
+			if (list == null || list.Count != want.Count) return false;
+			for (int i = 0; i < want.Count; i++)
+			{
+				var b = list[i];
+				if (b.Device != BindingDevice.Keyboard || b.HasModifier || b.AsKey != want[i])
+					return false;
+			}
+			return true;
 		}
 
 		/// <summary>

@@ -21,10 +21,11 @@ namespace RTS.Core
 		/// 技能槽快捷键。
 		///
 		/// **不要在这里再写死一份键位**：从 InputActions 注册表按 `panel_slot_N` 读。
-		/// 之前这里硬编码 QWERT/ASDFG/ZXCVB，把 A/S/T 全占了 ——
-		/// 而 A=攻击移动、S=停止、T=聊天 是玩家肌肉记忆里的键，
-		/// 结果"按 A 攻击移动"根本做不到（还会触发第 6 槽技能）。
-		/// 现在键位表与面板槽位是同一个来源，不可能再分叉。
+		/// 面板是 5×3 的格子，键位就是键盘上同一块矩形 QWERT/ASDFG/ZXCVB ——
+		/// "格子在哪、键就在哪"，所以按钮角标与实际按键必须是同一个来源。
+		/// 曾经这里硬编码过一份、注册表里另有一份，两份一分叉玩家就只能看到错的角标；
+		/// 现在唯一真相是 InputActions.PanelGridKeys，启动时 ReportKeybindProblems()
+		/// 会校验槽位与矩形一致。
 		/// </summary>
 		private static readonly Key[] _hotkeys = BuildHotkeys();
 
@@ -72,6 +73,7 @@ namespace RTS.Core
 
 		public override void _ExitTree()
 		{
+            if (Instance == this) Instance = null;
 			GameEventBus.SelectionChanged -= OnBusSelectionChanged;
 			base._ExitTree();
 		}

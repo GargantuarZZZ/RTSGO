@@ -32,6 +32,52 @@ public partial class MenuFlowTest : Node
             }
             GameSettings.ApplyKeybinds();
             Check(InputActions.FindDefaultConflicts().Count == 0, "Default shortcut conflict");
+
+            // 面板键位 = 键盘上那块矩形：QWERT / ASDFG / ZXCVB。
+            // 期望字母在这里**手写**（而不是引用 InputActions 自己的常量），
+            // 这样任何一个槽的字母被改错都会失败 ——
+            // "面板快捷键全是错的"就是这类错字，以前没有任何断言守着。
+            var grid = new[]
+            {
+                Key.Q, Key.W, Key.E, Key.R, Key.T,
+                Key.A, Key.S, Key.D, Key.F, Key.G,
+                Key.Z, Key.X, Key.C, Key.V, Key.B,
+            };
+            Check(InputActions.PanelGridKeys.Length == grid.Length, "Panel grid must declare 15 keys");
+            for (int i = 0; i < grid.Length; i++)
+            {
+                Check(InputActions.PanelGridKeys[i] == grid[i],
+                    $"Panel grid key {i + 1} is {InputActions.PanelGridKeys[i]}, expected {grid[i]}");
+                var slot = InputActions.Get($"panel_slot_{i + 1}");
+                Check(slot != null && slot.Default == grid[i],
+                    $"panel_slot_{i + 1} default is {slot?.Default}, expected {grid[i]}");
+            }
+            Check(InputActions.PanelGridProblems().Count == 0, "Panel slot keys drifted from the grid");
+
+            // 面板矩形与全局动作不许重叠：重合时同一个键既放技能又下指令。
+            foreach (var def in InputActions.All)
+            {
+                if (def.Group == InputGroup.Panel || def.Default == Key.None) continue;
+                Check(Array.IndexOf(grid, def.Default) < 0,
+                    $"Global action {def.Action} uses panel key {def.Default}");
+            }
+
+            // 老存档迁移：仍然是旧默认值的项升级到新布局，玩家改过的一律不动。
+            var legacy = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<InputBinding>>
+            {
+                ["game_attack_move"] = new() { InputBinding.Key(Key.A) },
+                ["game_chat"] = new() { InputBinding.Key(Key.T), InputBinding.Key(Key.Enter) },
+                ["panel_slot_6"] = new() { InputBinding.Key(Key.Z) },
+                ["game_stop"] = new() { InputBinding.Key(Key.L) }, // 玩家自己改过的
+            };
+            int migrated = InputActions.MigrateLegacyDefaults(legacy);
+            Check(legacy["game_attack_move"][0].AsKey == Key.H, "Legacy attack-move was not migrated to H");
+            Check(legacy["game_chat"].Count == 2 && legacy["game_chat"][0].AsKey == Key.Y,
+                "Legacy chat primary was not migrated to Y");
+            Check(legacy["panel_slot_6"][0].AsKey == Key.A, "Legacy panel slot 6 was not migrated onto the grid");
+            Check(legacy["game_stop"][0].AsKey == Key.L, "Player-customised bind must survive migration");
+            Check(migrated == 3, $"Expected 3 migrated actions, got {migrated}");
+
             // Keep the test runner outside CurrentScene so the real return transition can finish.
             GetTree().CurrentScene = null;
             MainMenuController.ReturningFromMatch = true;

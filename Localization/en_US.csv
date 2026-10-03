@@ -211,11 +211,11 @@ action.HeroSkill1,Skill 1
 action.HeroSkill2,Skill 2
 action.SelfDestructTip,Destroy self
 build.requires,Requires: {0}
-list_sep,,
+list_sep,","
 vote.rematch,Rematch
 vote.surrender_team,Team Surrender
-vote.banner,"Player {0} calls [{1}] vote  Yes N / No M  ({2:0}s)"
-vote.passed_rematch,Rematch vote passed, match ends in a draw
+vote.banner,"Player {0} calls [{1}] vote  Yes O / No M  ({2:0}s)"
+vote.passed_rematch,"Rematch vote passed, match ends in a draw"
 vote.failed_rematch,Rematch vote failed
 vote.passed_surrender,Team surrender vote passed
 vote.failed_surrender,Team surrender vote failed
@@ -327,9 +327,9 @@ name.ArmorBuff,Reinforced Armor
 name.SlowBuff,Slow
 name.StimBuff,Stim
 chat.title,Chat
-chat.input_hint,Type a message, Enter to send (Esc to close)
-chat.open_hint,Press T to chat. Ctrl+Middle-click to ping (allies can see it); Middle-drag pans the camera
-observer.check,Observer mode (full map, no control, see all resources)
+chat.input_hint,"Type a message, Enter to send (Esc to close)"
+chat.open_hint,Press Y (or Enter) to chat. Ctrl+Middle-click to ping (allies can see it); Middle-drag pans the camera
+observer.check,"Observer mode (full map, no control, see all resources)"
 observer.short,Observer
 observer.title,[Observer] Full map | Spectating
 lobby.group_prompt,Select team
@@ -414,14 +414,14 @@ action_state.deployed,Deployed
 action_state.packing,Packing
 action_state.mobile,Mobile
 keybind_hint,Click a key button to rebind; press Esc to cancel. A * marks a changed binding; "used by" means that key is also bound to another action.
-keybind_click_to_change,Click, then press a new key (Esc cancels)
+keybind_click_to_change,"Click, then press a new key (Esc cancels)"
 keybind_fixed,Fixed: ability slots follow grid position and are not rebindable
 keybind_conflict,Used by:
 keybind_applied,Bound
 keybind_cancelled,Rebind cancelled
 keybind_waiting,Press the key you want to bind…
 reset_keys,Restore default keys
-reset_keys_done,Restored defaults, changed
+reset_keys_done,"Restored defaults, changed"
 reset_keys_none,Keys are already at defaults
 keygroup_camera,Camera
 keygroup_selection,Selection &amp; Groups
@@ -443,6 +443,8 @@ pause,Pause / Resume
 surrender,Surrender
 chat,Open chat
 vote_rematch,Call rematch vote (Ctrl+combo)
+vote_yes,Vote yes
+vote_no,Vote no
 slot_1,Ability slot 1
 slot_2,Ability slot 2
 slot_3,Ability slot 3
@@ -482,7 +484,7 @@ race_slot_5,Faction panel skill 5
 race_slot_6,Faction panel skill 6
 race_slot_7,Faction panel skill 7
 race_slot_8,Faction panel skill 8
-keybind_secondary_hint,Secondary binding: click to set, right-click to clear
+keybind_secondary_hint,"Secondary binding: click to set, right-click to clear"
 keybind_cleared,Binding cleared
 tutorial.Basics_tutorial_basics.name,Basics
 tutorial.Basics_tutorial_basics.intro,"Core operations: select, move, gather, build, train, research, engage."
@@ -507,21 +509,21 @@ tutorial.Basics_tutorial_basics.tech.title,Step 7: Research Technology
 tutorial.Basics_tutorial_basics.tech.detail,"Build an Academy (requires a Barracks), select it, and research a technology.\nTech permanently upgrades your forces and is the primary source of combat advantage."
 tutorial.Basics_tutorial_basics.tech.done,Technology researched.
 tutorial.Basics_tutorial_basics.attack.title,Step 8: Engage
-tutorial.Basics_tutorial_basics.attack.detail,"Box-select your army (or press F2 to select all combat units) and right-click the neutral tower to the east.\nTo advance while engaging, use Attack-Move: press A, then left-click the destination."
+tutorial.Basics_tutorial_basics.attack.detail,"Box-select your army and right-click the neutral tower to the east.\nTo advance while engaging, use Attack-Move: press H, then left-click the destination."
 tutorial.Basics_tutorial_basics.attack.done,Target destroyed. Basics complete.
 tutorial.Basics_tutorial_basics.select_move.done,"Standard command scheme: left-click to select, right-click to order."
 main_menu_tutorial,Tutorial
 main_menu_map_editor,Map Editor
 tutorial_panel.title,Tutorials
-tutorial_panel.hint,Start with Basics to learn the controls, then open Advanced for your faction: mechanics, unit profiles, and the tech tree.
+tutorial_panel.hint,"Start with Basics to learn the controls, then open Advanced for your faction: mechanics, unit profiles, and the tech tree."
 tutorial_panel.back,Back to Main Menu
 tutorial_panel.start,Start This Tutorial
 tutorial_panel.objectives,🅐 Objectives
 tutorial_panel.codex,🅑 Reference: Mechanics / Units / Structures / Tech
-tutorial_panel.codex_hint,Values are read directly from game configs, so they always match live gameplay. Click an entry on the left. Reference pages do not affect tutorial progress.
+tutorial_panel.codex_hint,"Values are read directly from game configs, so they always match live gameplay. Click an entry on the left. Reference pages do not affect tutorial progress."
 tutorial_panel.body,Body
 tutorial.Advanced_tutorial_union.name,Union - Core Economy
-tutorial.Advanced_tutorial_union.intro,You command the Union. Establish an economy with SCVs, then raise an army and destroy the enemy tower.
+tutorial.Advanced_tutorial_union.intro,"You command the Union. Establish an economy with SCVs, then raise an army and destroy the enemy tower."
 tutorial.Advanced_tutorial_union.gather.title,Gather Minerals
 tutorial.Advanced_tutorial_union.gather.detail,Select an SCV and right-click a mineral node to gather. Cargo returns to the Command Center automatically.
 tutorial.Advanced_tutorial_union.gather.done,Minerals are the Union's primary resource.

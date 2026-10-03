@@ -662,12 +662,14 @@ public partial class MainMenuController : Control
 			GD.PrintErr($"[SettingsRT] 默认键位冲突：{c}");
 
 		// 3. 改键 → 重置 → 必须回到默认，且 ApplyKeybinds 不能抛
+		//    探针键用 L：它既不是面板矩形（QWERT/ASDFG/ZXCVB）里的字母，
+		//    也不是任何全局动作的默认键 —— 否则"改成别的键"这一步等于没改。
 		string probe = "game_stop";
 		try
 		{
 			// 走新的"绑定"接口（不再直接改 Keybinds 投影）
 			RTS.Settings.GameSettings.SetBinding(probe, RTS.Settings.BindingSlot.Primary, 0,
-				RTS.Settings.InputBinding.Key(Key.J));
+				RTS.Settings.InputBinding.Key(Key.L));
 			RTS.Settings.GameSettings.ApplyKeybinds();
 			bool applied = InputMap.HasAction(probe) && InputMap.ActionGetEvents(probe).Count > 0;
 
@@ -686,7 +688,9 @@ public partial class MainMenuController : Control
 			GD.PrintErr($"[SettingsRT] 改键/重置抛异常：{e.Message}");
 		}
 
-		// 3b. 修饰键组合：Ctrl+H 必须与裸 H 区分，且不与"驻守(H)"冲突
+		// 3b. 修饰键组合：Ctrl+H 必须与裸 H 区分。
+		//     裸 H 现在是"攻击移动"（面板矩形把 A/S/T 挤走了），所以要跟它比：
+		//     Ctrl+H 与 H 并存，靠的就是"签名 = 键 + 修饰键"这条判定。
 		try
 		{
 			var ctrlH = RTS.Settings.InputBinding.Key(Key.H, RTS.Settings.BindingSlot.Primary, ctrl: true);
@@ -694,7 +698,7 @@ public partial class MainMenuController : Control
 			bool distinct = !ctrlH.SameAs(plainH);
 			bool ctrlHConflict = RTS.Settings.InputActions.Conflicts(
 				RTS.Settings.InputActions.Get("game_vote_rematch"),
-				RTS.Settings.InputActions.Get("game_hold"));
+				RTS.Settings.InputActions.Get("game_attack_move"));
 			string text = RTS.Settings.GameSettings.BindingToText(ctrlH);
 
 			GD.Print($"[SettingsRT] 修饰键：签名区分={distinct} 与裸键冲突={ctrlHConflict} 文本='{text}'");
@@ -737,13 +741,13 @@ public partial class MainMenuController : Control
 			GD.PrintErr($"[SettingsRT] 鼠标绑定检查抛异常：{e.Message}");
 		}
 
-		// 3d. 次要键位：聊天默认应有 T 与 Enter 两条
+		// 3d. 次要键位：聊天默认应有字母键与 Enter 两条
 		try
 		{
 			int kb = 0;
 			foreach (var x in RTS.Settings.GameSettings.BindingsOf("game_chat"))
 				if (!x.IsEmpty) kb++;
-			GD.Print($"[SettingsRT] 次要键位：game_chat 绑定数={kb}（默认应为 2：T + Enter）");
+			GD.Print($"[SettingsRT] 次要键位：game_chat 绑定数={kb}（默认应为 2：Y + Enter）");
 			if (kb < 2) GD.PrintErr("[SettingsRT] 次要键位没生效，chat 只绑了一条。");
 		}
 		catch (System.Exception e)
@@ -759,8 +763,10 @@ public partial class MainMenuController : Control
 		//    "次要键位重启后丢失"这类问题查不出来。
 		try
 		{
+			// 同样用 L 而不是 game_stop 的默认键：写一个"与默认不同"的值，
+			// 读回来才对不上号；写默认值的话，SetBinding 整个失效也测不出来。
 			RTS.Settings.GameSettings.SetBinding("game_stop", RTS.Settings.BindingSlot.Primary, 0,
-				RTS.Settings.InputBinding.Key(Key.J));
+				RTS.Settings.InputBinding.Key(Key.L));
 			RTS.Settings.GameSettings.SetBinding("game_hold", RTS.Settings.BindingSlot.Secondary, 0,
 				RTS.Settings.InputBinding.Mouse(MouseButton.Xbutton1, RTS.Settings.BindingSlot.Secondary));
 			RTS.Settings.GameSettings.Save();
@@ -785,7 +791,7 @@ public partial class MainMenuController : Control
 					if (b.Device == RTS.Settings.BindingDevice.Mouse) { holdB = b; break; }
 				}
 
-				bool ok = stopB.AsKey == Key.J && holdB.AsMouse == MouseButton.Xbutton1;
+				bool ok = stopB.AsKey == Key.L && holdB.AsMouse == MouseButton.Xbutton1;
 				GD.Print($"[SettingsRT] 磁盘往返：game_stop={RTS.Settings.GameSettings.BindingToText(stopB)} " +
 					$"game_hold(次)={RTS.Settings.GameSettings.BindingToText(holdB)} {(ok ? "OK" : "★ 不一致")}");
 				if (!ok)

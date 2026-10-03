@@ -74,12 +74,16 @@ namespace RTS.UI
 			if (@event is not InputEventKey key || !key.Pressed || key.Echo)
 				return;
 
-			if (key.Keycode == Key.N)
+			// 走 InputMap 而不是写死 Keycode：
+			//   1) 玩家改键后这里自动跟着变（以前写死 N/M，改键对投票无效）；
+			//   2) N 曾经和"驻守"撞车 —— 按同意会顺带让全军驻守。
+			// 事件的归属由注册表（InputActions）定义，这里只负责"哪个动作投什么票"。
+			if (InputMap.EventIsAction(@event, "game_vote_yes"))
 			{
 				SendVote(vote.Kind, true);
 				GetViewport().SetInputAsHandled();
 			}
-			else if (key.Keycode == Key.M)
+			else if (InputMap.EventIsAction(@event, "game_vote_no"))
 			{
 				SendVote(vote.Kind, false);
 				GetViewport().SetInputAsHandled();
